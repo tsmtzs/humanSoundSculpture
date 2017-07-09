@@ -1,0 +1,14 @@
+{
+  "name": "humansoundscuplture",
+  "version": "1.0.0",
+  "description": "A web browser version of the piece Human Sound Sculpture",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tassos Tsesmetzis",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3"
+  }
+}
