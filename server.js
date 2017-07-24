@@ -51,16 +51,11 @@ const udpPromise = new Promise( (resolve, reject) => {
 udpPromise.then( (udpPort) => {
     return new Promise( (resolve, reject) => {
 	udpPort.on('message', (msg) => {
-	    try {
-		console.log('Recieved SC message:\n', msg, `\n\taddress:\t ${msg.address}\n`, `\targs:\t${msg.args[0].value}, ${msg.args[1].value}, ${msg.args[2].value}`);
-	    }
-	    catch (err) {
-		console.log(err);
-	    };
-
 	    const msgObj = {type: msg.address};
 	    if (msg.args) {
 		Object.assign(msgObj, {args: msg.args.map(x => x.value)})
+
+		console.log('Recieved SC message:\n', msgObj);
 	    };
 
 	    wss.broadcast( JSON.stringify(msgObj) );
@@ -70,27 +65,19 @@ udpPromise.then( (udpPort) => {
     console.log('ERROR: udpPort');
 });
 
+// // OSC messages sent by web server to SC
+// const oscMsgs = {
+//     start: { address: '/start' },
+//     stop: { address: '/stop' }
+// };
+
 // websockets: web server - web clients
 wss.on('connection', ws => {
     ws.on('message', msg => {
 	console.log('Client message: ', msg);
 
-	udpPromise.then( (udpPort) => {
-	    // OSC messages sent by web server to SC
-	    const oscMsgs = {
-		start: { address: '/start' },
-		stop: { address: '/stop' }
-	    };
-
-	    udpPort.send(oscMsgs[msg]);
-
-	    // Every second, send an OSC message to SuperCollider
-	    // setInterval(function() {
-	    // 	var msg = Math.random() > 0.5 ? oscMsgs.start : oscMsgs.end;
-
-	    // 	console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
-	    // 	udpPort.send(msg);
-	    // }, 10000);
+	udpPromise.then( udpPort => {
+	    udpPort.send({address: '/action', args: {type: 's', value: msg}});
 
 	})
 	    .catch( console.log(console) );

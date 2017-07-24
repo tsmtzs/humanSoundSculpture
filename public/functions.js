@@ -61,22 +61,6 @@ window.onload = () => {
 
     const button = document.querySelector('input');
 
-    console.log('Button: ', button);
-
-    function clickButton(button, websocket) {
-
-	if (button) {
-	    button.addEventListener('click', event => {
-		console.log('Inside click callback');
-		if (button.value === 'Start') {
-		    button.value = 'Stop';
-		} else {
-		    button.value = 'Start';
-		};
-	    });
-	};
-    };
-
     ////////////////////////////////////////////////////////////
     // Websockets
     ////////////////////////////////////////////////////////////
@@ -84,8 +68,7 @@ window.onload = () => {
     const wsMsgHandler = ( (aButton) => {
 	return {
 	    '/note': synth,
-	    '/start':  () => { if (aButton) aButton.value = 'stop'; }, 
-	    '/stop': () => { if (aButton) aButton.value = 'start'}
+	    '/action':  (action) => { if (aButton) aButton.value = {play: 'stop', stop: 'play'}[action]; }
 	}
     })(button);
 
@@ -98,40 +81,27 @@ window.onload = () => {
 	    console.log('Websocket message: ', msg.args, msg.type, msg);
 
 	    wsMsgHandler[msg.type](...msg.args, audioCtx);
-
-	    // if (button) {
-	    //     button.value = msg.type;
-	    // };
 	};
 	socket.onopen = () => resolve(socket);
 	socket.onerror = () => reject(socket);
     });
 
-    // websocketPromise.then( socket => {
-    //     console.log('After websocketPromise');
-    //     return  new Promise( resolve => {
-    // 	console.log('\tAfter websocketPromise. on message');
-    // 	socket.onmessage = message => resolve(message);
-    //     });
-    // })
     websocketPromise.then( socket => {
 	console.log('*** Sending websocket msg');
 
 	if (button) {
-
 	    button.addEventListener('click', event => {
-		console.log('Inside click callback');
+		// console.log('Inside click callback');
 
 		socket.send(button.value);
 		
-		if (button.value === 'start') {
+		if (button.value === 'play') {
 		    button.value = 'stop';
 		} else {
-		    button.value = 'start';
+		    button.value = 'play';
 		};
 
 	    });
 	};
-	// setInterval( () => socket.send('Hallo from client'), 4000);
     }).catch( console.log.bind(console) );
 };
