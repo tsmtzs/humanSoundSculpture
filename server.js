@@ -4,7 +4,7 @@ const path = require('path');
 const osc = require('osc');
 const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({port: 8080});
+const wss = new WebSocket.Server({port: 8080, clientTracking: true});
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -18,16 +18,16 @@ app.get('/conductor', (req, res) => {
 
 app.listen(3000, () => console.log('Server listening on port 3000'));
 
-wss.broadcast = data => {
-    console.log('Inside wss.broadcast');
+wss.sendToRandomClient = data => {
+    var size = wss.clients.size;
+    var clients = Array.from(wss.clients);
+    var client = clients[ Math.floor(Math.random() * size) ];
 
-    wss.clients.forEach( client => {
-	if (client.readyState === WebSocket.OPEN) {
-	    console.log('\tInside wss.broadcast. Sending data to clients');
-	    client.send(data)
-	};
-    });
+    if (client.readyState === WebSocket.OPEN) {
+	client.send(data);
+    };
 };
+
 
 // OSC: web server - SC
 const udpPromise = new Promise( (resolve, reject) => {
@@ -58,7 +58,7 @@ udpPromise.then( (udpPort) => {
 		console.log('Recieved SC message:\n', msgObj);
 	    };
 
-	    wss.broadcast( JSON.stringify(msgObj) );
+	    wss.sendToRandomClient(JSON.stringify(msgObj));
 	});
     });
 }, (udpPort) => {
