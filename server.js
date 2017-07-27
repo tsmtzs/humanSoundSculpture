@@ -18,13 +18,18 @@ app.get('/conductor', (req, res) => {
 
 app.listen(3000, () => console.log('Server listening on port 3000'));
 
+wss.lastClient = null;
+
 wss.sendToRandomClient = data => {
-    var size = wss.clients.size;
     var clients = Array.from(wss.clients);
+    clients = wss.clients.size > 2 ? clients : clients.filter( elem => elem !== wss.lastClient );
+    console.log('Clients: ', clients);
+    var size = clients.length;
     var client = clients[ Math.floor(Math.random() * size) ];
 
     if (client.readyState === WebSocket.OPEN) {
 	client.send(data);
+	wss.lastClient = client;
     };
 };
 
@@ -64,12 +69,6 @@ udpPromise.then( (udpPort) => {
 }, (udpPort) => {
     console.log('ERROR: udpPort');
 });
-
-// // OSC messages sent by web server to SC
-// const oscMsgs = {
-//     start: { address: '/start' },
-//     stop: { address: '/stop' }
-// };
 
 // websockets: web server - web clients
 wss.on('connection', ws => {
