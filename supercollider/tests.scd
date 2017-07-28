@@ -5,21 +5,17 @@ Event.addEventType(\sendOsc, {
 ~hss = (
 	notes: [ Rest, 11, 10, 1, 12, 4, 5, 2, 3, 7, 6, 9, 8 ],
 	amps: [ 0.07, 0.09 ] ++ [ 0.07, 0.1, 0.07, 0.15, 0.07, 0.2 ].mirror,
-	durs: [ 1, 1/2 ] ++ [ 1, 1/3, 1, 1/4, 1, 1/6 ].mirror,
+	durs: [ 1, 1/2 ] ++ [ 1, 2/3, 1, 3/4, 1, 5/6 ].mirror,
 
 	ampMul: 0.5,
 	durMul: 22,
-	deltaMul: { [ 0.1.rrand(0.3), 0.8.rrand(1.2), 1.5.rrand(2.5) ].wchoose([0.15, 0.05, 0.8]) },
+	deltaMul: { [ 0.1.rrand(0.2), 0.55.rrand(0.85), 1.0.rrand(1.1) ].wchoose([0.05, 0.6, 0.35]) },
 	
 	minOctave: {| ev, aServer, aFloat |	// aFloat \in [-1.0, 1.0]
-		5
+		6
 	},
 	maxOctave: {| ev, aServer, aFloat |	// aFloat \in [-1.0, 1.0]
-		7
-	},
-
-	deltas: {|ev, val|
-		
+		8
 	},
 
 	// Given a matrix, this function returns
@@ -83,7 +79,7 @@ Event.addEventType(\sendOsc, {
 					param2.map( vertex )
 				).floor
 			},
-			\delta, Pkey(\dur) * ev.deltaMul.value
+			\delta, Pkey(\dur) * Pfunc({ ev.deltaMul })
 		);
 
 		ev.put(\eventStreamPlayer, EventStreamPlayer(paleyPbind.asStream));
@@ -103,9 +99,9 @@ Event.addEventType(\sendOsc, {
 ~hss.init( NetAddr("127.0.0.1", 57121) );
 
 ~hss.play;
-~hss.durMul =20;
-~hss.ampMul = 0.6;
-~hss.deltaMul = { [ 0.1.rrand(0.2), 0.5.rrand(0.8) ].wchoose([0.1, 0.9]) };
+~hss.durMul =22;
+~hss.ampMul = 1.2;
+~hss.deltaMul = { [ 0.1.rrand(0.2), 0.55.rrand(0.85), 1.0.rrand(1.1) ].wchoose([0.05, 0.6, 0.35]) };
 ~hss.minOctave = 6;
 ~hss.maxOctave = 8;
 ~hss[\stop].();

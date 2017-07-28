@@ -6,6 +6,15 @@ const WebSocket = require('ws');
 
 const wss = new WebSocket.Server({port: 8080, clientTracking: true});
 
+const oscMessageHandler = {
+    '/action': (data, wss) => {
+	wss.broadcast(data);
+    },
+    '/note': (data, wss) => {
+	wss.sendToRandomClient(data);
+    }
+};
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
@@ -20,14 +29,22 @@ app.listen(3000, () => console.log('Server listening on port 3000'));
 
 wss.lastClient = null;
 
+wss.broadcast = data => {
+    wss.clients.forEach( client => {
+	if (client.readyState === WebSocket.OPEN) {
+	    client.send(data);
+	};
+    });
+};
+
 wss.sendToRandomClient = data => {
     var clients = Array.from(wss.clients);
     clients = wss.clients.size > 2 ? clients : clients.filter( elem => elem !== wss.lastClient );
-    console.log('Clients: ', clients);
     var size = clients.length;
+        console.log('Clients no: ', size);
     var client = clients[ Math.floor(Math.random() * size) ];
 
-    if (client.readyState === WebSocket.OPEN) {
+    if (client && client.readyState === WebSocket.OPEN) {
 	client.send(data);
 	wss.lastClient = client;
     };
@@ -57,13 +74,11 @@ udpPromise.then( (udpPort) => {
     return new Promise( (resolve, reject) => {
 	udpPort.on('message', (msg) => {
 	    const msgObj = {type: msg.address};
-	    if (msg.args) {
-		Object.assign(msgObj, {args: msg.args.map(x => x.value)})
+	    Object.assign(msgObj, {args: msg.args.map(x => x.value)})
 
-		console.log('Recieved SC message:\n', msgObj);
-	    };
+	    console.log('Recieved SC message:\n', msgObj);
 
-	    wss.sendToRandomClient(JSON.stringify(msgObj));
+	    oscMessageHandler[msgObj.type](JSON.stringify(msgObj), wss);
 	});
     });
 }, (udpPort) => {
