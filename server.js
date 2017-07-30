@@ -39,9 +39,10 @@ wss.broadcast = data => {
 
 wss.sendToRandomClient = data => {
     var clients = Array.from(wss.clients);
-    clients = wss.clients.size > 2 ? clients : clients.filter( elem => elem !== wss.lastClient );
+    clients = wss.clients.size < 2 ? clients : clients.filter( elem => elem !== wss.lastClient );
+
     var size = clients.length;
-        console.log('Clients no: ', size);
+    console.log(`There are ${size} clients online`);
     var client = clients[ Math.floor(Math.random() * size) ];
 
     if (client && client.readyState === WebSocket.OPEN) {

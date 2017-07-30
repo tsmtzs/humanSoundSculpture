@@ -7,7 +7,7 @@ Event.addEventType(\sendOsc, {
 	amps: [ 0.07, 0.09 ] ++ [ 0.07, 0.1, 0.07, 0.15, 0.07, 0.2 ].mirror,
 	durs: [ 1, 1/2 ] ++ [ 1, 2/3, 1, 3/4, 1, 5/6 ].mirror,
 
-	ampMul: 0.5,
+	ampMul: 0.6,
 	durMul: 22,
 	deltaMul: { [ 0.1.rrand(0.2), 0.55.rrand(0.85), 1.0.rrand(1.1) ].wchoose([0.05, 0.6, 0.35]) },
 	

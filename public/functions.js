@@ -5,10 +5,10 @@ window.onload = () => {
     const audioCtx = new AudioContext();
 
     // custom periodic waveform
-    var mag1 = Math.random() * 0.5 + 0.4, phase1 = 0.0, mag2 = Math.random() * 0.5 + 0.4, phase2 = Math.PI * Math.random(), mag3 = Math.random() * 0.5 + 0.4, phase3 = Math.PI * Math.random();
-    var real = new Float32Array([0, mag1 * Math.cos(phase1), mag2 * Math.cos(phase2), mag3 * Math.cos(phase3)]);
-    var imag = new Float32Array([0, mag1 * Math.sin(phase1), mag2 * Math.sin(phase2), mag3 * Math.sin(phase3)]);
-    var wave = audioCtx.createPeriodicWave(real, imag);
+    const mag1 = Math.random() * 0.5 + 0.4, phase1 = 0.0, mag2 = Math.random() * 0.5 + 0.4, phase2 = Math.PI * Math.random(), mag3 = Math.random() * 0.5 + 0.4, phase3 = Math.PI * Math.random();
+    const real = new Float32Array([0, mag1 * Math.cos(phase1), mag2 * Math.cos(phase2), mag3 * Math.cos(phase3)]);
+    const imag = new Float32Array([0, mag1 * Math.sin(phase1), mag2 * Math.sin(phase2), mag3 * Math.sin(phase3)]);
+    const wave = audioCtx.createPeriodicWave(real, imag);
 
     const  synth = ( (context, wave, shaperType = 'sawtooth') => {
 	return function(freq, amp, dur) {
@@ -80,7 +80,7 @@ window.onload = () => {
 	    const msg = JSON.parse(message.data);
 	    console.log('Websocket message: ', msg.args, msg.type, msg);
 
-	    wsMsgHandler[msg.type](...msg.args, audioCtx);
+	    wsMsgHandler[msg.type](...msg.args);
 	};
 	socket.onopen = () => resolve(socket);
 	socket.onerror = () => reject(socket);
