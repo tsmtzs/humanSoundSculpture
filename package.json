@@ -9,6 +9,8 @@
   "author": "Tassos Tsesmetzis",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.3"
+    "express": "^4.15.3",
+    "osc": "^2.2.0",
+    "ws": "^3.0.0"
   }
 }
