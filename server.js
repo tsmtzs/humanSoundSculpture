@@ -25,8 +25,15 @@ app.get('/conductor', (req, res) => {
     res.sendFile(path.join(__dirname,'views/conductor.html'));
 });
 
+// error handling - from https://expressjs.com/en/guide/error-handling.html
+app.use( (err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Oops! Something went wrong.');
+});
+
 app.listen(3000, () => console.log('Server listening on port 3000'));
 
+// Last client that played a note
 wss.lastClient = null;
 
 wss.broadcast = data => {
@@ -38,12 +45,13 @@ wss.broadcast = data => {
 };
 
 wss.sendToRandomClient = data => {
-    var clients = Array.from(wss.clients);
-    clients = wss.clients.size < 2 ? clients : clients.filter( elem => elem !== wss.lastClient );
+    let clients = Array.from(wss.clients);
+    // select all clients that are different from lastClient
+    clients = wss.clients.size < 2 ? clients : clients.filter(elem => elem !== wss.lastClient);
 
-    var size = clients.length;
+    let size = clients.length;
     console.log(`There are ${size} clients online`);
-    var client = clients[ Math.floor(Math.random() * size) ];
+    let client = clients[ Math.floor(Math.random() * size) ];
 
     if (client && client.readyState === WebSocket.OPEN) {
 	client.send(data);
@@ -84,10 +92,14 @@ udpPromise.then( (udpPort) => {
     });
 }, (udpPort) => {
     console.log('ERROR: udpPort');
-});
+})
+    .catch(err => console.log('Something went wrong in udpPromise'));
 
 // websockets: web server - web clients
 wss.on('connection', ws => {
+    // catch ws errors
+    ws.onerror = err => {console.log("Something went wrong in a WebSocket")};
+
     ws.on('message', msg => {
 	console.log('Client message: ', msg);
 

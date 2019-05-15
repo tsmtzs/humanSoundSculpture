@@ -79,7 +79,7 @@ Event.addEventType(\sendOsc, {
 					param2.map( vertex )
 				).floor
 			},
-			\delta, Pkey(\dur) * Pfunc({ ev.deltaMul })
+			\delta, Pkey(\dur) * PGauss(1.0, 0.25)
 		);
 
 		ev.put(\eventStreamPlayer, EventStreamPlayer(paleyPbind.asStream));
