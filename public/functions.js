@@ -74,7 +74,7 @@ window.onload = () => {
 
     const websocketPromise = new Promise( (resolve, reject) => {
 	// const socket = new WebSocket('ws://localhost:8080');
-	const socket = new WebSocket('ws://192.168.1.3:8080');
+	const socket = new WebSocket('ws://192.168.10.2:8080');
 
 	// console.log('Inside websocketpromise');
 	socket.onmessage = message => {

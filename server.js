@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const osc = require('osc');
 const WebSocket = require('ws');
+const webServerPort = 3000;
 
 const wss = new WebSocket.Server({port: 8080, clientTracking: true});
 
@@ -31,7 +32,7 @@ app.use( (err, req, res, next) => {
     res.status(500).send('Oops! Something went wrong.');
 });
 
-app.listen(3000, () => console.log('Server listening on port 3000'));
+app.listen(webServerPort, () => console.log('Server listening on port: ', webServerPort));
 
 // Last client that played a note
 wss.lastClient = null;
@@ -50,8 +51,9 @@ wss.sendToRandomClient = data => {
     clients = wss.clients.size < 2 ? clients : clients.filter(elem => elem !== wss.lastClient);
 
     let size = clients.length;
-    console.log(`There are ${size} clients online`);
     let client = clients[ Math.floor(Math.random() * size) ];
+
+    console.log(`There are ${size + 1} clients online.\n Selected client is:\n ${client}`);
 
     if (client && client.readyState === WebSocket.OPEN) {
 	client.send(data);
@@ -90,8 +92,6 @@ udpPromise.then( (udpPort) => {
 	    oscMessageHandler[msgObj.type](JSON.stringify(msgObj), wss);
 	});
     });
-}, (udpPort) => {
-    console.log('ERROR: udpPort');
 })
     .catch(err => console.log('Something went wrong in udpPromise'));
 
