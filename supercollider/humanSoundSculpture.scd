@@ -3,7 +3,8 @@
 "hssEvent.scd".loadRelative;
 
 // NetAddr: the address of the web server
-~hss.init( NetAddr("127.0.0.1", 57121) );
+// ~hss.init( NetAddr("127.0.0.1", 57121) );
+~hss.init( NetAddr("localhost", 57121) ); // Assumes SupperCollider and web server are on the same machine
 
 ~hss.play;
 ~hss.durMul = 22;

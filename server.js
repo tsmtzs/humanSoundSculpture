@@ -1,7 +1,12 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const osc = require('osc');
+// OSC communication with SuperCollider
+const osc = require('node-osc');
+const oscServer = new osc.Server(57121, '0.0.0.0');
+const sclang = new osc.Client('localhost', 57120); // CAUTION: static ip address
+const oscPath = '/action';
+// web sockets
 const WebSocket = require('ws');
 const webServerPort = 3000;
 
@@ -50,8 +55,9 @@ wss.sendToRandomClient = data => {
     // select all clients that are different from lastClient
     clients = wss.clients.size < 2 ? clients : clients.filter(elem => elem !== wss.lastClient);
 
-    let size = clients.length;
-    let client = clients[ Math.floor(Math.random() * size) ];
+    const candidateClients = clients.filter(wsClient => wsClient !== wss.lastClient);
+    const size = candidateClients.length;
+    const client = candidateClients[Math.floor(Math.random() * size)];
 
     console.log(`There are ${size + 1} clients online.\n Selected client is:\n ${client}`);
 
@@ -62,40 +68,17 @@ wss.sendToRandomClient = data => {
 };
 
 
-// OSC: web server - SC
-const udpPromise = new Promise( (resolve, reject) => {
-    const udpPort = new osc.UDPPort({
-    // This is the port we're listening on.
-    localAddress: "127.0.0.1",
-    localPort: 57121,
+// OSC: SC => web server
+oscServer.on('message', (msg) => {
+    const msgObj = {type: msg[0]};
 
-    // This is where sclang is listening for OSC messages.
-    remoteAddress: "127.0.0.1",
-    remotePort: 57120,
-    metadata: true
+    Object.assign(msgObj,{args: msg.slice(1)});
+
+    oscMessageHandler[msgObj.type](JSON.stringify(msgObj), wss);
+    console.log('Recieved SC message:\n', msgObj);
 });
 
-    udpPort.open();
-    udpPort.on('ready', resolve(udpPort));
-    udpPort.on('error', reject(udpPort));
-});
-
-
-udpPromise.then( (udpPort) => {
-    return new Promise( (resolve, reject) => {
-	udpPort.on('message', (msg) => {
-	    const msgObj = {type: msg.address};
-	    Object.assign(msgObj, {args: msg.args.map(x => x.value)})
-
-	    console.log('Recieved SC message:\n', msgObj);
-
-	    oscMessageHandler[msgObj.type](JSON.stringify(msgObj), wss);
-	});
-    });
-})
-    .catch(err => console.log('Something went wrong in udpPromise'));
-
-// websockets: web server - web clients
+// websockets: web server => web clients
 wss.on('connection', ws => {
     // catch ws errors
     ws.onerror = err => {console.log("Something went wrong in a WebSocket")};
@@ -103,10 +86,6 @@ wss.on('connection', ws => {
     ws.on('message', msg => {
 	console.log('Client message: ', msg);
 
-	udpPromise.then( udpPort => {
-	    udpPort.send({address: '/action', args: {type: 's', value: msg}});
-
-	})
-	    .catch( console.log(console) );
+	sclang.send(oscPath, msg);
     });
 });
