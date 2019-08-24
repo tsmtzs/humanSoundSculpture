@@ -59,9 +59,8 @@ wss.sendToRandomClient = data => {
     const size = candidateClients.length;
     const client = candidateClients[Math.floor(Math.random() * size)];
 
-    console.log(`There are ${size + 1} clients online.\n Selected client is:\n ${client}`);
-
     if (client && client.readyState === WebSocket.OPEN) {
+	console.log(`There are ${size + 1} clients online.\n Selected client is:\n ${client}`);
 	client.send(data);
 	wss.lastClient = client;
     };
@@ -70,12 +69,12 @@ wss.sendToRandomClient = data => {
 
 // OSC: SC => web server
 oscServer.on('message', (msg) => {
-    const msgObj = {type: msg[0]};
+	const msgObj = {type: msg[0]};
 
-    Object.assign(msgObj,{args: msg.slice(1)});
+	Object.assign(msgObj,{args: msg.slice(1)});
 
-    oscMessageHandler[msgObj.type](JSON.stringify(msgObj), wss);
-    console.log('Recieved SC message:\n', msgObj);
+	oscMessageHandler[msgObj.type](JSON.stringify(msgObj), wss);
+	console.log('Recieved SC message:\n', msgObj);
 });
 
 // websockets: web server => web clients
