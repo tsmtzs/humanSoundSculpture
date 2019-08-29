@@ -1,0 +1,111 @@
+# This file collects notes, ideas and TODOS for the piece
+# 	Human Sound Sculpture
+
+* NOTES
+  /Human Sound Sculpture/ uses a web server to distibute
+  note events to /clients/.
+  The web server is implemented in *node.js*.
+  *SuperCollider* (=sclang=) is used to generate a random walk
+  on the nodes of a Paley graph of order 13.
+  This random walk is used to generate the note sequence
+  of the piece.
+  Relevant files:
+  - =node=:	=server.js=
+  - =sclang=:	=supercollider/hssEvent.scd= /and/ =supercollider/humanSoundSculpture.scd=
+
+** Running on Raspberry Pi 3b
+   Rpi is used as a wifi hotspot. 
+   For this you need *hostapd* and *dhcpd* packages. Both programs are run
+   as systemd services. You should /enable/ them in order to start at boot.
+   For this run
+		~sudo systemctl enable <service file>~
+
+*** *hostapd*
+    Save the following lines as file =hostapd@.service= in =/etc/systemd/system/=
+	
+        # Code from Piotr Ożarowski
+        # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=889508
+
+        [Unit]
+        Description=Advanced IEEE 802.11 AP and IEEE 802.1X/WPA/WPA2/EAP Authenticator (%I)
+        After=network.target
+        BindsTo=sys-subsystem-net-devices-%i.device
+
+        [Service]
+        EnvironmentFile=/etc/default/hostapd
+        ExecStart=/usr/sbin/hostapd $DAEMON_OPTS /etc/hostapd/%i.conf
+        Restart=on-failure
+        RestartSec=1
+
+        [Install]
+        WantedBy=multi-user.target sys-subsystem-net-devices-%i.device
+
+        # it assumes one will feed it with wlan interface name, f.e.
+
+        #   $ systemctl start hostapd@wlan0.service
+
+        # will read config data from /etc/hostapd/wlan0.conf which should contain
+        # "interface=wlan0" and will be stopped automatically if wlan0 interface is no
+        # longer available (I use it to disable hostapd if USB device is removed or start
+        # hostapd when USB device is inserted)		
+
+   In order to =start= or =enable= the process you must append the wlan interface after the
+   at(@) symbol, in order to replace the ~%i~. For example, if your interface is =wlan0=
+   enable with ~sudo systemctl enable hostapd@wlan0.service~.
+   The configuration file for you wifi interface (=wlan0= in our case) is save in =/etc/hostapd/=
+   It consists of the lines
+
+      interface=wlan0
+
+      # Driver interface type (hostap/wired/none/nl80211/bsd)
+      driver=nl80211
+
+      # SSID to be used in IEEE 802.11 management frames
+      ssid=pi
+
+      # Operation mode (a = IEEE 802.11a (5 GHz), b = IEEE 802.11b (2.4 GHz)
+      hw_mode=g
+      # Channel number
+      channel=11
+
+      # Add password:
+      # wpa=1
+      # wpa_passphrase=raspberry
+      # wpa_key_mgmt=WPA-PSK
+      # wpa_pairwise=TKIP CCMP
+      # wpa_ptk_rekey=600
+      macaddr_acl=0
+
+*** *hcpd*
+    Similarly, save as =dhcpd4.service= under =/etc/systemd/system/=, the next lines
+
+        [Unit]
+        Description=IPv4 DHCP server
+        After=network.target network-online.target
+        Wants=network-online.target
+
+        [Service]
+        Type=forking
+        ExecStart=/usr/sbin/dhcpd -4 -q -cf /etc/dhcp/dhcpd.conf -pf /run/dhcpd4/dhcpd.pid
+        RuntimeDirectory=dhcpd4
+        PIDFile=/run/dhcpd4/dhcpd.pid
+        User=root
+        ProtectSystem=full
+        ProtectHome=on
+        KillSignal=SIGINT
+        # We pull in network-online.target for a configured network connection.
+        # However this is not guaranteed to be the network connection our
+        # networks are configured for. So try to restart on failure with a delay
+        # of two seconds. Rate limiting kicks in after 12 seconds.
+        RestartSec=2s
+        Restart=on-failure
+        StartLimitInterval=12s
+
+        [Install]
+        WantedBy=multi-user.target
+
+    The line with ~User=root~ throws an error if another user is used.
+
+*** Starting *node.js* and *sclang*
+    Make shure that the file =bin/startHSS.sh= is executable and added to crontab.
+    See the comments in the [[file:bin/startHss.sh][file]].

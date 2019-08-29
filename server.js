@@ -1,10 +1,11 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const exec = require('child_process').exec;
 // OSC communication with SuperCollider
 const osc = require('node-osc');
 const oscServer = new osc.Server(57121, '0.0.0.0');
-const sclang = new osc.Client('localhost', 57120); // CAUTION: static ip address
+const sclang = new osc.Client('192.168.100.2', 57120); // CAUTION: static ip address
 const oscPath = '/action';
 // web sockets
 const WebSocket = require('ws');
@@ -84,6 +85,12 @@ wss.on('connection', ws => {
 
     ws.on('message', msg => {
 	console.log('Client message: ', msg);
+
+	if (msg = 'shutdown') {
+	    // Kill all sclang and node instances. Shutdown computer (????)
+	    exec('sh ../bin/killHSS.sh');
+	    return
+	}
 
 	sclang.send(oscPath, msg);
     });

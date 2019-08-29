@@ -67,36 +67,61 @@ function asrEnvelope(attack = 0.5, sustain = 0.0, release = 0.5, startValue = 0.
 };
 
 ////////////////////////////////////////////////////////////
-// Button
+// Start button
 ////////////////////////////////////////////////////////////
-const button = document.querySelector('input');
+const startButton = document.getElementById('startBtn');
 
 // add 'click' event listener if client loaded 'conductor.html'
-if (button) {
-    button.addEventListener('click', event => {
+if (startButton) {
+    startButton.addEventListener('click', event => {
 	// console.log('Inside click callback');
 
-	socket.send(button.value);
+	socket.send(startButton.value);
 	
-	if (button.value === 'play') {
-	    button.value = 'stop';
+	if (startButton.value === 'play') {
+	    startButton.value = 'stop';
 	} else {
-	    button.value = 'play';
+	    startButton.value = 'play';
 	};
 
     });
 };
+
+////////////////////////////////////////////////////////////
+// Close computer button
+////////////////////////////////////////////////////////////
+const shutdownBtn = document.getElementById('shutdownBtn');
+
+// add 'dbclick' event listener if client loaded 'conductor.html'
+if (shutdownBtn) {
+    shutdownBtn.addEventListener('dbclick', event => {
+	// console.log('Inside click callback');
+
+	socket.send(shutdownBtn.value);
+	
+	if (shutdownBtn.value === 'play') {
+	    shutdownBtn.value = 'stop';
+	} else {
+	    shutdownBtn.value = 'play';
+	};
+
+    },
+				 {
+				     once: true   
+				 });
+};
+
 ////////////////////////////////////////////////////////////
 // Websockets
 ////////////////////////////////////////////////////////////
 const wsMsgHandler = ( (aButton) => {
     return {
 	'/note': synth,
-	'/action':  (action) => { if (aButton) aButton.value = {play: 'stop', stop: 'play'}[action]; }
+	'/action':  (action) => { if (aButton) aButton.value = action === 'play' ? 'stop' : 'play'; }
     }
-})(button);
+})(startButton);
 
-const socket = new WebSocket('ws://192.168.10.2:8080');
+const socket = new WebSocket('ws://192.168.100.2:8080'); // static IP
 
 // console.log('Inside websocketpromise');
 socket.onmessage = message => {

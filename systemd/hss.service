@@ -1,0 +1,48 @@
+# Service file for
+#	Human Sound Culture
+#
+# This files handles all the necessary proccesses to run the piece.
+# Save this file unde /etc/systemd/system/
+# Start it with
+#	sudo systemctl start hss.service
+# In order to start the piece on pc start up, enable the service with
+#	sudo systemctl enable hss.service
+# Currently NOT functional
+
+[Unit]
+Description=Human Sound Sculpture media art perfonmance
+Wants=network.target
+Requires=dhcpd4.service
+Requires=hostapd@wlan0.service
+After=network.target dhcpd4.service hostapd@wlan0.service
+
+[Service]
+Type=simple
+# Set environment variable HSS_PATH
+Environment="HSS_PATH=/home/pi/Documents/myProjects/humanSoundSculpture/" "DISPLAY=:0.0"
+
+WorkingDirectory=/home/pi/Documents/myProjects/humanSoundSculpture/
+
+# Set ethernet device down
+# ExecStartPre=/bin/ip link set eth0 down
+
+# Start Human Sound Sculpture's web service
+ExecStart=/usr/local/bin/node server.js
+
+# start SuperCollider in daemon mode and run hss.scd file
+# ExecStartPost=/usr/local/bin/sclang -D supercollider/humanSoundSculpture.scd
+
+# Kill SuperCollider when service stops. Not the best way to do
+# it, as there might be many instances of sclang
+ExecStopPost=/usr/bin/killall sclang
+# # Delete wlan's device ip
+# ExecStopPost=/bin/ip addr del 192.168.100.2/24 dev wlan0
+# # Start ethernet device
+# ExecStopPost=/bin/ip link set eth0 up
+# Wait 5sec for start-up
+TimeoutStartSec=5
+# Restart=on-failure
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target
