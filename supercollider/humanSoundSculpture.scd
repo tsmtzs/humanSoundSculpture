@@ -7,9 +7,9 @@ Event.addEventType(\sendOsc, {
 	amps: [ 0.07, 0.09 ] ++ [ 0.07, 0.1, 0.07, 0.15, 0.07, 0.2 ].mirror,
 	durs: [ 1, 1/2 ] ++ [ 1, 2/3, 1, 3/4, 1, 5/6 ].mirror,
 
-	ampMul: 1.2,
-	durMul: 20,
-	deltaMul: { [ 0.1.rrand(0.2), 0.55.rrand(0.85), 1.0.rrand(1.1) ].wchoose([0.05, 0.6, 0.35]) },
+	ampMul: 1.0,
+	durMul: 27,
+	deltaMul: { [ 0.1.rrand(0.4), 0.65.rrand(0.8), 0.8.rrand(1.05) ].wchoose([0.15, 0.5, 0.35]) },
 	
 	minOctave: {| ev, aServer, aFloat |	// aFloat \in [-1.0, 1.0]
 		6
@@ -79,7 +79,7 @@ Event.addEventType(\sendOsc, {
 					param2.map( vertex )
 				).floor
 			},
-			\delta, Pkey(\dur) * Pgauss(1.2, 0.25)
+			\delta, Pkey(\dur) * Pfunc {|ev| ~deltaMul.value}
 		);
 
 		ev.put(\eventStreamPlayer, EventStreamPlayer(paleyPbind.asStream));
@@ -111,8 +111,7 @@ Event.addEventType(\sendOsc, {
 // ~hss.init( NetAddr("127.0.0.1", 57121) );
 ~hss.init( NetAddr("192.168.100.2", 57121) ); // Assumes SupperCollider and web server are on the same machine
 // Set values
-~hss.durMul = 5;
-~hss.ampMul = 1.2;
+~hss.ampMul = ~amps.maxItem.reciprocal * 0.7;
 
 
 ~hss.play;

@@ -1,3 +1,4 @@
+(
 ~hss = (
 	notes: [ Rest, 11, 10, 1, 12, 4, 5, 2, 3, 7, 6, 9, 8 ],
 	amps: [ 0.07, 0.09 ] ++ [ 0.07, 0.1, 0.07, 0.15, 0.07, 0.2 ].mirror,
@@ -26,6 +27,7 @@
 		8
 	}
 );
+)
 
 "SynthDefs.scd".loadRelative;
 
@@ -44,7 +46,7 @@ transitionProbs =  normalizeRows.( ~hss.paley13.value );
 startVertex = 13.rand;
 paleyStream = PGraphWalk( transitionProbs, (..12), startVertex ).asStream;
 
-pat = Penvir(
+Penvir(
 	~hss,
 	Pbind(
 		\instrument, 'sync2',			// or \sync2
@@ -70,16 +72,16 @@ pat = Penvir(
 				prob2.map( vertex )
 			).floor
 		},
-		\delta, Pkey(\dur) * Pgauss(1.2, 0.25)
+		\delta, Pkey(\dur) * Pfunc { |ev| ~deltaMul.value.debug("DeltaMul inside Penvir") }
 	)
 ).play
 )
 
 ~hss.push;
-~deltas = ~durs;
-~deltaMul = 20;
-~durMul = 25;
-~ampMul = 2.2;
-~minOctave = 5;
+~deltaMul = { [ 0.1.rrand(0.4), 0.65.rrand(0.8), 0.8.rrand(1.05) ].wchoose([0.15, 0.5, 0.35]) };
+~deltaMul = {0.1.rrand(0.2)};
+~ampMul = ~amps.maxItem.reciprocal * 0.7;
+~durMul = 27;
+~minOctave = 6;
 ~maxOctave = 7;
 currentEnvironment.pop;
