@@ -36,7 +36,7 @@ ExecStart=/usr/local/bin/node server.js
 # it, as there might be many instances of sclang
 ExecStopPost=/usr/bin/killall sclang
 # # Delete wlan's device ip
-# ExecStopPost=/bin/ip addr del 192.168.100.2/24 dev wlan0
+# ExecStopPost=/bin/ip addr del __STATIC_IP/24 dev wlan0
 # # Start ethernet device
 # ExecStopPost=/bin/ip link set eth0 up
 # Wait 5sec for start-up

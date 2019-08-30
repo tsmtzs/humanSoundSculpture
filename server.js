@@ -5,7 +5,7 @@ const exec = require('child_process').exec;
 // OSC communication with SuperCollider
 const osc = require('node-osc');
 const oscServer = new osc.Server(57121, '0.0.0.0');
-const sclang = new osc.Client('192.168.100.2', 57120); // CAUTION: static ip address
+const sclang = new osc.Client('__STATIC_IP', 57120); // CAUTION: static ip address
 const oscPath = '/action';
 // web sockets
 const WebSocket = require('ws');

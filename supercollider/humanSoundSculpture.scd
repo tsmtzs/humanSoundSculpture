@@ -96,20 +96,10 @@ Event.addEventType(\sendOsc, {
 	}
 );
 
-// // hssEvent.scd file adds the eventType /sendOsc to Event
-// // and populates the current environment with the ~hss event
-// var workingDir = "HSS_PATH";
-// // ("WorkingDir = %".format(workingDir) ++ " >> /tmp/sclang").systemCmd;
-// ("WorkingDir = " ++ " >> /tmp/sclang").unixCmd;
-
-// (workingDir +/+ "supercollider/hssEvent.scd").load;
-// // or use
 // "hssEvent.scd".loadRelative;
 
-
 // NetAddr: the address of the web server
-// ~hss.init( NetAddr("127.0.0.1", 57121) );
-~hss.init( NetAddr("192.168.100.2", 57121) ); // Assumes SupperCollider and web server are on the same machine
+~hss.init( NetAddr("__STATIC_IP", 57121) );
 // Set values
 ~hss.ampMul = ~amps.maxItem.reciprocal * 0.7;
 
