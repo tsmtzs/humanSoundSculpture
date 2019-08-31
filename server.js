@@ -70,12 +70,12 @@ wss.sendToRandomClient = data => {
 
 // OSC: SC => web server
 oscServer.on('message', (msg) => {
-	const msgObj = {type: msg[0]};
+    const msgObj = {type: msg[0]};
 
-	Object.assign(msgObj,{args: msg.slice(1)});
+    Object.assign(msgObj,{args: msg.slice(1)});
 
-	oscMessageHandler[msgObj.type](JSON.stringify(msgObj), wss);
-	console.log('Recieved SC message:\n', msgObj);
+    oscMessageHandler[msgObj.type](JSON.stringify(msgObj), wss);
+    console.log('Recieved SC message:\n', msgObj);
 });
 
 // websockets: web server => web clients
@@ -86,12 +86,20 @@ wss.on('connection', ws => {
     ws.on('message', msg => {
 	console.log('Client message: ', msg);
 
-	if (msg = 'shutdown') {
-	    // Kill all sclang and node instances. Shutdown computer (????)
-	    exec('sh ../bin/killHSS.sh');
-	    return
-	}
+	if (msg === 'shutdown') {
+	    // On message 'shutdown' execute file 'killHSS.sh
+	    exec('sh .${HSS_DIR}/bin/killHSS.sh', (err, stdout, stderr) => {
+		if (err) {
+		    console.error(`exec error: ${err}`);
+		    return;
+		}
 
-	sclang.send(oscPath, msg);
+		console.log('Script killHSS.sh ecexuted');
+	    });
+	    // return
+	    console.log('PC Shutdown');
+	} else {
+	    sclang.send(oscPath, msg);
+	}
     });
 });

@@ -18,8 +18,8 @@ After=network.target dhcpd4.service hostapd@wlan0.service
 
 [Service]
 Type=simple
-# Set environment variable HSS_PATH
-Environment="HSS_PATH=/home/pi/Documents/myProjects/humanSoundSculpture/" "DISPLAY=:0.0"
+# Set environment variable HSS_DIR
+Environment="HSS_DIR=/home/pi/Documents/myProjects/humanSoundSculpture/" "DISPLAY=:0.0"
 
 WorkingDirectory=/home/pi/Documents/myProjects/humanSoundSculpture/
 

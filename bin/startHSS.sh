@@ -13,17 +13,20 @@
 /bin/ip link set wlan0 up
 
 # Working directory of the piece
-hssDir=/home/tassos/myProjects/humanSoundSculpture
+HSS_DIR=/home/tassos/myProjects/humanSoundSculpture
+# Export to a global variable
+export HSS_DIR
+
 
 # Replace all parameters from the
 # firt arg: base directory
 # second arg: parameter - value file
-sh ${hssDir}/bin/writeParValues.sh $hssDir ${hssDir}/bin/commonParameters
+sh ${HSS_DIR}/bin/writeParValues.sh $HSS_DIR ${HSS_DIR}/bin/commonParameters
 
 # Start up web server
-/usr/local/bin/node ${hssDir}/server.js &
+/usr/local/bin/node ${HSS_DIR}/server.js &
 
 sleep 2
 
 # Start headless SuperCollider
-/usr/local/bin/sclang -D ${hssDir}/supercollider/humanSoundSculpture.scd
+/usr/local/bin/sclang -D ${HSS_DIR}/supercollider/humanSoundSculpture.scd

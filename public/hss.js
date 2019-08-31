@@ -92,23 +92,15 @@ if (startButton) {
 ////////////////////////////////////////////////////////////
 const shutdownBtn = document.getElementById('shutdownBtn');
 
-// add 'dbclick' event listener if client loaded 'conductor.html'
+// add 'dblclick' event listener if client loaded 'conductor.html'
 if (shutdownBtn) {
-    shutdownBtn.addEventListener('dbclick', event => {
-	// console.log('Inside click callback');
+    shutdownBtn.addEventListener('dblclick', event => {
+	// console.log('Inside dblclick callback');
 
 	socket.send(shutdownBtn.value);
 	
-	if (shutdownBtn.value === 'play') {
-	    shutdownBtn.value = 'stop';
-	} else {
-	    shutdownBtn.value = 'play';
-	};
-
-    },
-				 {
-				     once: true   
-				 });
+	shutdownBtn.value = 'goodbye HSS';
+    });
 };
 
 ////////////////////////////////////////////////////////////

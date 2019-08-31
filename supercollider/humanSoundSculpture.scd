@@ -79,7 +79,7 @@ Event.addEventType(\sendOsc, {
 					param2.map( vertex )
 				).floor
 			},
-			\delta, Pkey(\dur) * Pfunc {|ev| ~deltaMul.value}
+			\delta, Pkey(\dur) * Pfunc { ev.deltaMul.value}
 		);
 
 		ev.put(\eventStreamPlayer, EventStreamPlayer(paleyPbind.asStream));
@@ -101,10 +101,10 @@ Event.addEventType(\sendOsc, {
 // NetAddr: the address of the web server
 ~hss.init( NetAddr("__STATIC_IP", 57121) );
 // Set values
-~hss.ampMul = ~amps.maxItem.reciprocal * 0.7;
+~hss.ampMul = ~hss.amps.maxItem.reciprocal * 0.5;
 
 
-~hss.play;
+// ~hss.play;
 // ~hss.deltaMul = { [ 0.1.rrand(0.2), 0.55.rrand(0.85), 1.0.rrand(1.1) ].wchoose([0.05, 0.6, 0.35]) };
 // ~hss.minOctave = 6;
 // ~hss.maxOctave = 8;
