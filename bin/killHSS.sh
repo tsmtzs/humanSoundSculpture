@@ -11,5 +11,5 @@ killall sclang;
 sh ${HSS_DIR}/bin/writeParNames.sh $HSS_DIR ${HSS_DIR}/bin/commonParameters
 
 # Shutdown computer after one minute
-# shutdown +1;
+shutdown +1;
 

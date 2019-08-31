@@ -13,7 +13,7 @@
 /bin/ip link set wlan0 up
 
 # Working directory of the piece
-HSS_DIR=/home/tassos/myProjects/humanSoundSculpture
+HSS_DIR=/home/pi/Documents/myProjects/humanSoundSculpture
 # Export to a global variable
 export HSS_DIR
 
