@@ -10,7 +10,7 @@
 #	@reboot sleep 60; /home/pi/Documents/myProjects/humanSoundSculpture/bin/startHSS.sh
 
 # Bring interface up
-/bin/ip link set wlan0 up
+echo raspberry | sudo -S /bin/ip link set wlan0 up
 
 # Working directory of the piece
 HSS_DIR=/home/pi/Documents/myProjects/humanSoundSculpture

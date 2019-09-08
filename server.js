@@ -88,7 +88,7 @@ wss.on('connection', ws => {
 
 	if (msg === 'shutdown') {
 	    // On message 'shutdown' execute file 'killHSS.sh
-	    exec('sh .${HSS_DIR}/bin/killHSS.sh', (err, stdout, stderr) => {
+	    exec('sh ${HSS_DIR}/bin/killHSS.sh', (err, stdout, stderr) => {
 		if (err) {
 		    console.error(`exec error: ${err}`);
 		    return;
