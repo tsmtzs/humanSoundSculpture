@@ -8,8 +8,8 @@ Event.addEventType(\sendOsc, {
 	durs: [ 1, 1/2 ] ++ [ 1, 2/3, 1, 3/4, 1, 5/6 ].mirror,
 
 	ampMul: 1.0,
-	durMul: 27,
-	deltaMul: { [ 0.1.rrand(0.4), 0.65.rrand(0.8), 0.8.rrand(1.05) ].wchoose([0.15, 0.5, 0.35]) },
+	durMul: 21,
+	deltaMul: { [ 0.1.rrand(0.4), 0.65.rrand(0.8), 0.8.rrand(1.05) ].wchoose([0.25, 0.5, 0.25]) },
 	
 	minOctave: {| ev, aServer, aFloat |	// aFloat \in [-1.0, 1.0]
 		6
@@ -99,9 +99,9 @@ Event.addEventType(\sendOsc, {
 // "hssEvent.scd".loadRelative;
 
 // NetAddr: the address of the web server
-~hss.init( NetAddr("__STATIC_IP", 57121) );
+~hss.init( NetAddr("192.168.100.2", 57121) );
 // Set values
-~hss.ampMul = ~hss.amps.maxItem.reciprocal * 0.5;
+~hss.ampMul = ~hss.amps.maxItem.reciprocal * 0.9;
 
 
 // ~hss.play;
