@@ -74,22 +74,7 @@ function asrEnvelope(attack = 0.5, sustain = 0.0, release = 0.5, startValue = 0.
 const testButton = document.getElementById('soundCheckBtn');
 // Random test frequency for each player.
 const testSynthFreq = 400.0 + Math.random()*600;
-let testSynth, testSynthMaxDur = 20, testSynthAmp = 1.0;
-
-// testButton.addEventListener('mousedown', event => {
-//     // resume audioContext
-//     // audioCtx.resume();
-
-//     testSynth = synth(testSynthFreq, testSynthAmp, testSynthMaxDur);
-
-//     console.log('Inside mousedown');
-// });
-
-// testButton.addEventListener('mouseup', event => {
-//     if (testSynth) testSynth.stop(0);
-
-//     console.log('Inside mouseup');
-// });
+let testSynth, testSynthMaxDur = 20, testSynthAmp = 0.9;
 
 testButton.addEventListener('click', event => {
     if (testSynth) {
