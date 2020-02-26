@@ -1,4 +1,5 @@
 # *Human Sound Sculpture*
+*To Kyriakos Kolesis*
 
 ## Overview
     Νύχτα.
@@ -10,7 +11,7 @@
     Ούτε πολύ κοντά, ούτε μακριά.
 
     Σταματημένος ο Χρόνος.
-*Human Sound Sculpture* is a piece for performers and algorithmic sound. It should be played outdoors in places like city parks, town squares, etc. This place must be quiet enought so that the overall amplitude of the piece stays in relative low levels and the frozen atmosphere is not destroyed. The ambient soundscape should be regarded as part of the piece.
+*Human Sound Sculpture* is a piece for performers and algorithmic sound. It should be played outdoors in places like city parks, town squares, etc. This place must be quiet enough so that the overall amplitude of the piece stays in relative low levels and the frozen atmosphere is not destroyed. The ambient soundscape should be regarded as part of the piece.
 
 The performance simply starts and lasts as long as the performers have decided. Similarly, the performance simply stops and the performers are leaving silently taking distinct paths.
 

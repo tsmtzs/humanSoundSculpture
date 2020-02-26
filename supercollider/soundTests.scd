@@ -78,10 +78,10 @@ Penvir(
 )
 
 ~hss.push;
-~deltaMul = { [ 0.1.rrand(0.4), 0.65.rrand(0.8), 0.8.rrand(1.05) ].wchoose([0.15, 0.5, 0.35]) };
+~deltaMul = { [ 0.1.rrand(0.4), 0.65.rrand(0.8), 0.8.rrand(1.05) ].wchoose([0.25, 0.5, 0.25]) };
 ~deltaMul = {0.1.rrand(0.2)};
-~ampMul = ~amps.maxItem.reciprocal * 0.7;
-~durMul = 27;
+~ampMul = ~amps.maxItem.reciprocal * 0.9;
+~durMul = 20;
 ~minOctave = 6;
 ~maxOctave = 7;
 currentEnvironment.pop;

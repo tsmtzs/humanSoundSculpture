@@ -101,7 +101,7 @@ Event.addEventType(\sendOsc, {
 // NetAddr: the address of the web server
 ~hss.init( NetAddr("__STATIC_IP", 57121) );
 // Set values
-~hss.ampMul = ~hss.amps.maxItem.reciprocal * 0.5;
+~hss.ampMul = ~hss.amps.maxItem.reciprocal * 0.8;
 
 
 // ~hss.play;
