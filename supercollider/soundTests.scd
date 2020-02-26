@@ -5,7 +5,7 @@
 	durs: [ 1, 1/2 ] ++ [ 1, 2/3, 1, 3/4, 1, 5/6 ].mirror,
 
 	ampMul: 2.5,
-	durMul: 20,
+	durMul: 26,
 	deltaMul: { [ 0.1.rrand(0.2), 0.55.rrand(0.85), 1.0.rrand(1.1) ].wchoose([0.05, 0.6, 0.35]) },
 
 	edgeFunc: {| ev, i |
@@ -60,7 +60,7 @@ Penvir(
 		\amp, Pfunc {| ev |
 			~amps[ ev.paley ]  * ~ampMul
 		},
-		\pan, 1.0.rand2,
+		\pan, Pfunc {1.0.rand2},
 		\octave, Pfunc {| ev |
 			var vertex, args;
 			vertex = ev.paley / 12;
