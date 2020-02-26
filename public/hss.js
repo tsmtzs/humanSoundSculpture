@@ -51,6 +51,8 @@ const  synth = ( (context, wave, shaperType = 'sawtooth') => {
 	shapingFunction.start(0);
 	shapingFunction.stop(context.currentTime + dur);
 	inputFunction.stop(context.currentTime + dur);
+
+	return shapingFunction;
     };
 })(audioCtx, wave);
 
@@ -65,6 +67,24 @@ function asrEnvelope(attack = 0.5, sustain = 0.0, release = 0.5, startValue = 0.
     gainNode.gain.setValueAtTime(endValue, now + attack + sustain);
     gainNode.gain.linearRampToValueAtTime(startValue, now + attack + sustain + release);
 };
+
+////////////////////////////////////////////////////////////
+// Test button
+////////////////////////////////////////////////////////////
+const testButton = document.getElementById('soundCheckBtn');
+// Random test frequency for each player.
+const testSynthFreq = 400.0 + Math.random()*600;
+let testSynth, testSynthMaxDur = 20, testSynthAmp = 0.9;
+
+testButton.addEventListener('click', event => {
+    if (testSynth) {
+	testSynth.stop(0);
+	testSynth = null;
+    } else {
+	testSynth = synth(testSynthFreq, testSynthAmp, testSynthMaxDur);
+	testSynth.addEventListener('ended', event => testSynth = null);
+    }
+});
 
 ////////////////////////////////////////////////////////////
 // Start button
@@ -113,7 +133,7 @@ const wsMsgHandler = ( (aButton) => {
     }
 })(startButton);
 
-const socket = new WebSocket('ws://__STATIC_IP:8080'); // static IP
+const socket = new WebSocket('ws://192.168.100.2:8080'); // static IP
 
 // console.log('Inside websocketpromise');
 socket.onmessage = message => {
@@ -129,4 +149,4 @@ socket.onopen = () => console.log('WebSocket open');
 socket.onerror = () => console.log('ERROR in WebSocket');
 
 // Initialize mobileConsole for posting console messages in web page
-mobileConsole.init();
+// if (mobileConsole) mobileConsole.init();
