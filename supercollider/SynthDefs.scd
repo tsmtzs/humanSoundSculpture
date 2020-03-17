@@ -28,5 +28,23 @@ SynthDef('sync2',{| out = 0, freq = 400, amp = 0.1, pan = 0.0, dur = 1.0 |
 	sig = CombN.ar(sig, 0.1, 0.1, 2, 1);
 	sig = LPF.ar( sig, LinExp.kr( env*amp, 0, 1, 600, 12000 ) );
 	sig = sig*env; 
-	Out.ar( out, Pan2.ar( sig*0.8, pan, amp ) )
+	Out.ar( out, Pan2.ar( sig*0.9, pan, amp ) )
 }).add;
+
+// OR
+// SynthDef('sync2',{| out = 0, freq = 400, amp = 0.1, pan = 0.0, dur = 1.0 |
+// 	var sig, env;
+// 	env = EnvGen.kr(
+// 		// Env.linen( Rand(0.5, 4.0), Rand(3.0, 7.0), Rand(2.0, 3.0) ),
+// 		Env.sine( dur ),
+// 		doneAction: 2
+// 	);
+// 	sig = SyncSaw.ar(
+// 		freq, 
+// 		LFNoise1.ar(1/15, 0, freq, freq*2 ),
+// 		mul: 0.1);
+// 	sig = CombN.ar(sig, 0.05, 0.05, 1, 1);
+// 	sig = LPF.ar( sig, LinExp.kr( env*amp, 0, 1, 600, 12000 ) );
+// 	sig = sig*env; 
+// 	Out.ar( out, Pan2.ar( sig*0.9, pan, amp ) )
+// }).add;
