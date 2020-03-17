@@ -9,7 +9,7 @@ const sclang = new osc.Client('192.168.100.2', 57120); // CAUTION: static ip add
 const oscPath = '/action';
 // web sockets
 const WebSocket = require('ws');
-const webServerPort = 3000;
+const webServerPort = process.env.NODE_PORT || 3000;
 
 const wss = new WebSocket.Server({port: 8080, clientTracking: true});
 

@@ -1,0 +1,29 @@
+# ##################################################
+#		Human Sound Sculpture
+# 
+# A systemd service file for starting the web server
+# of the piece.
+# Save this file under /lib/systemd/system.
+# CAUTION: Write the appropriate path for the field 'WorkingDirectory'.
+#
+# Based on:
+# https://nodesource.com/blog/running-your-node-js-app-with-systemd-part-1/
+# https://nodesource.com/blog/running-your-node-js-app-with-systemd-part-2
+# https://rollout.io/blog/running-node-js-linux-systemd/
+# ##################################################
+
+[Unit]
+Description=Run the web server of the piece Human Sound Sculpture
+Documentation=README.md
+After=network.target
+
+[Service]
+Environment=NODE_PORT=%i
+Type=simple
+User=tassos
+WorkingDirectory=/home/tassos/myProjects/humanSoundSculpture
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
