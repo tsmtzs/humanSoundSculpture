@@ -4,7 +4,7 @@
 # A systemd service file for starting the web server
 # of the piece.
 # Save this file under /lib/systemd/system.
-# CAUTION: Write the appropriate path for the field 'WorkingDirectory'.
+# CAUTION: Write the appropriate path in the field 'WorkingDirectory'.
 #
 # Based on:
 # https://nodesource.com/blog/running-your-node-js-app-with-systemd-part-1/
@@ -13,16 +13,17 @@
 # ##################################################
 
 [Unit]
-Description=Run the web server of the piece Human Sound Sculpture
+Description=Web server of the piece Human Sound Sculpture
 Documentation=README.md
 After=network.target
 
 [Service]
-Environment=NODE_PORT=%i
+Environment=NODE_PORT=300%i
+CPUAffinity=%i
 Type=simple
 User=tassos
 WorkingDirectory=/home/tassos/myProjects/humanSoundSculpture
-ExecStart=/usr/bin/node server.js
+ExecStart=taskset --cpu-list %i /usr/bin/node server.js
 Restart=on-failure
 
 [Install]
