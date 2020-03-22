@@ -98,8 +98,18 @@ Event.addEventType(\sendOsc, {
 
 // "hssEvent.scd".loadRelative;
 
+// Read the IP from an environment variable.
+// Set it to an Interpreter variable or as a
+// value to an appropriate current environment's key.
+// For some reason assignment to variables doesn't work in daemon mode (-D flag)
+// with the usual 'var ip = "HSS_IP".getenv'.
+~ip = "HSS_IP".getenv;
+
+//
+~ip.postln;
+
 // NetAddr: the address of the web server
-~hss.init( NetAddr("192.168.100.2", 57121) );
+~hss.init(NetAddr(~ip, 57121));
 // Set values
 ~hss.ampMul = ~hss.amps.maxItem.reciprocal * 0.9;
 

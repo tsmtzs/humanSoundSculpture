@@ -4,7 +4,8 @@
 # A systemd service file for starting the web server
 # of the piece.
 # Save this file under /lib/systemd/system.
-# CAUTION: Write the appropriate path in the field 'WorkingDirectory'.
+# CAUTION: Write the appropriate path in the fields
+# 'EnvironmentFile' and 'WorkingDirectory'.
 #
 # Based on:
 # https://nodesource.com/blog/running-your-node-js-app-with-systemd-part-1/
@@ -14,17 +15,20 @@
 
 [Unit]
 Description=Web server of the piece Human Sound Sculpture
-Documentation=README.md
+Documentation=file:/README.md
+Requires=hss-supercollider.service
 After=network.target
 
 [Service]
 Environment=NODE_PORT=300%i
-CPUAffinity=%i
+EnvironmentFile=/home/tassos/myProjects/humanSoundSculpture/systemd/hss-environment
 Type=simple
 User=tassos
 WorkingDirectory=/home/tassos/myProjects/humanSoundSculpture
+# Start the web server and assign it at cpu core %i
 ExecStart=taskset --cpu-list %i /usr/bin/node server.js
-Restart=on-failure
+# Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
+Also=hss-supercollider.service

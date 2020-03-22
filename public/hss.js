@@ -133,7 +133,7 @@ const wsMsgHandler = ( (aButton) => {
     }
 })(startButton);
 
-const socket = new WebSocket('ws://192.168.100.2:8080'); // static IP
+const socket = new WebSocket('ws://192.168.10.2:8080'); // static IP
 
 // console.log('Inside websocketpromise');
 socket.onmessage = message => {

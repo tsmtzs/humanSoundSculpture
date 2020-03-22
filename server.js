@@ -2,14 +2,19 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const exec = require('child_process').exec;
+const execSync = require('child_process').execSync;
 // OSC communication with SuperCollider
 const osc = require('node-osc');
 const oscServer = new osc.Server(57121, '0.0.0.0');
-const sclang = new osc.Client('192.168.100.2', 57120); // CAUTION: static ip address
+const ip = process.env.HSS_IP || '192.168.100.2';
+const sclang = new osc.Client(ip, 57120); // CAUTION: static ip address
 const oscPath = '/action';
 // web sockets
 const WebSocket = require('ws');
 const webServerPort = process.env.NODE_PORT || 3000;
+
+// Replace environment variables in public files
+execSync(`/usr/bin/sed -i -e "s/HSS_IP/${ip}/g" ${path.join(__dirname,"public/*")}`);
 
 // const wss = new WebSocket.Server({port: 8080, clientTracking: true});
 
