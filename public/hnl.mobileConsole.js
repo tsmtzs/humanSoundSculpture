@@ -348,7 +348,7 @@ var mobileConsole = (function () {
       paddingBottom: options.browserinfo.isMobile ? '35px' : '25px',
       margin: 0,
       border: '0 none',
-      borderTop: '1px solid #808080',
+      borderTop: '1px solid #WEBSOCKET_PORT80',
       backgroundColor: '#ffffff'
     }),
     topbar : createElem('div', 'topbar', {
@@ -633,7 +633,7 @@ var mobileConsole = (function () {
 
       return function (element, type, msg) {
         if (status.initialized) {
-          color = (typeof msg === 'undefined' || msg === htmlToString(messages.empty)) ? {color: '#808080'} : ((msg  === htmlToString(messages.clear)) ? {color: '#808080', fontStyle: 'italic'} : (lineStyles(type) !== undefined ? lineStyles(type).text : lineStyles.log.text));
+          color = (typeof msg === 'undefined' || msg === htmlToString(messages.empty)) ? {color: '#WEBSOCKET_PORT80'} : ((msg  === htmlToString(messages.clear)) ? {color: '#WEBSOCKET_PORT80', fontStyle: 'italic'} : (lineStyles(type) !== undefined ? lineStyles(type).text : lineStyles.log.text));
           dot = typeof lineStyles(type) !== 'undefined' ? lineStyles(type).dot : lineStyles.log.dot;
           setCSS(element, color);
           //has dot?
@@ -960,10 +960,10 @@ var mobileConsole = (function () {
           value = '"' + value + '"';
         }
       } else if (value === null) {
-        valueColor = '#808080';
+        valueColor = '#WEBSOCKET_PORT80';
         value = 'null';
       } else if (typeof value === 'undefined' || value === undefined) {
-        valueColor = '#808080';
+        valueColor = '#WEBSOCKET_PORT80';
         value = 'undefined';
       } else if (typeof value === 'object') {
         if (isEmpty(value)) {
@@ -1152,7 +1152,7 @@ var mobileConsole = (function () {
 
           //populate right side
           if (stackTrace && typeof stackTrace[stackTrace.length - 1] !== 'undefined') {
-            rightContainer.appendChild(setCSS(getLink(stackTrace[0].url, stackTrace[0].linkText), {color: '#808080'}));
+            rightContainer.appendChild(setCSS(getLink(stackTrace[0].url, stackTrace[0].linkText), {color: '#WEBSOCKET_PORT80'}));
           }
 
           //add to line
@@ -1176,7 +1176,7 @@ var mobileConsole = (function () {
           //handle grouping (group and groupEnd
           if (options.paddingLeft !== 0) {
             setCSS(leftContainer, {paddingLeft: options.paddingLeft});
-            setCSS(msgContainer, {borderLeft: '1px solid #808080', paddingLeft: '5px'});
+            setCSS(msgContainer, {borderLeft: '1px solid #WEBSOCKET_PORT80', paddingLeft: '5px'});
           }
 
           //add the line to the table
