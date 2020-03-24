@@ -25,9 +25,11 @@ EnvironmentFile=/home/tassos/myProjects/humanSoundSculpture/systemd/hss-environm
 Type=simple
 User=tassos
 WorkingDirectory=/home/tassos/myProjects/humanSoundSculpture
+# Start wireless interface 'wlan0'. This is for RaspberryPi.
+ExecStartPre=-/usr/bin/ip link set wlan0 up
 # Start the web server and assign it at cpu core %i
 ExecStart=taskset --cpu-list %i /usr/bin/node server.js
-ExecStop=/home/tassos/myProjects/humanSoundSculpture/bin/setEnvirVarNames.sh public/*
+ExecStop=/home/tassos/myProjects/humanSoundSculpture/bin/setEnvirVarNames.sh public/hss.js
 # Restart=on-failure
 
 [Install]

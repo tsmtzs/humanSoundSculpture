@@ -133,6 +133,11 @@ const wsMsgHandler = ( (aButton) => {
     }
 })(startButton);
 
+// 'HSS_IP' and 'WEBSOCKET_PORT' are
+// bash environment variables.
+// For each session they are set in server.js with a 'sed' command.
+// After perfomance, they are unset in bin/setEnvirParNames.sh'
+// from the hss-webServer@.service.
 const socket = new WebSocket('ws://HSS_IP:WEBSOCKET_PORT');
 
 // console.log('Inside websocketpromise');
