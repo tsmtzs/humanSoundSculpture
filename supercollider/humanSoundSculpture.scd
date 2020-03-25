@@ -1,5 +1,5 @@
 Event.addEventType(\sendOsc, {
-	~address.sendMsg("/note", ~freq.(), ~amp, ~dur);
+	~address.sendMsg("/note", ~freq.(), ~amp, ~dur, ~cpuCore);
 });
 
 ~hss = (
@@ -40,10 +40,12 @@ Event.addEventType(\sendOsc, {
 		var startVertex = 13.rand, paleyStream, transitionProbs;
 		var param1, param2, paleyPbind;
 
+		ev.put(\cpuCores, List[]);
+
 		ev.put(\netAddr, aNetAddr);
 		ev.put(\oscFunc, OSCFunc({|msg, time, addr, recPort|
 			msg.postln;
-			ev.action(msg.last);
+			ev.action(*msg[1..]);
 		}, '/action')
 		);
 
@@ -54,22 +56,22 @@ Event.addEventType(\sendOsc, {
 		param1 = [ 0.5, 2.5, \lin ].asSpec;
 		param2 = [ 2.5, 0.5, \lin ].asSpec;
 
-		paleyStream = PGraphWalk( transitionProbs, (..12), startVertex ).asStream;
+		paleyStream = PGraphWalk(transitionProbs, (..12), startVertex).asStream;
 
 		paleyPbind = Pbind(
 			\type, \sendOsc,
 			\address, ev.netAddr,
-			\paley, Pfunc { paleyStream.next },
-			\note, Pfunc {| event |
+			\paley, Pfunc {paleyStream.next},
+			\note, Pfunc {|event|
 				ev.notes[event.paley]
 			},
-			\dur, Pfunc {| event |
+			\dur, Pfunc {|event|
 				ev.durs[event.paley] * ev.durMul;
 			},
-			\amp, Pfunc {| event |
+			\amp, Pfunc {|event|
 				ev.amps[event.paley]  * ev.ampMul
 			},
-			\octave, Pfunc {| event |
+			\octave, Pfunc {|event|
 				var vertex, args;
 				vertex = event.paley / 12;
 				ev.minOctave.(event)
@@ -79,6 +81,7 @@ Event.addEventType(\sendOsc, {
 					param2.map( vertex )
 				).floor
 			},
+			\cpuCore, Pfunc {|ev| ev.cpuCores.choose},
 			\delta, Pkey(\dur) * Pfunc { ev.deltaMul.value}
 		);
 
@@ -86,9 +89,13 @@ Event.addEventType(\sendOsc, {
 	},
 
 	// actions: play - stop the EventStreamPlayer
-	action: {|ev, action|
-		ev.netAddr.sendMsg("/action", action);
-		ev.eventStreamPlayer.perform(action);
+	action: {|ev, action ...moreArgs|
+		(action == "addCPUCore").if({
+			ev.cpuCores.add(moreArgs[0]); 
+		}, {
+			ev.netAddr.sendMsg("/action", action);
+			ev.eventStreamPlayer.perform(action);
+		})
 	},
 
 	freeOSCFunc: {|ev|

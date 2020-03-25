@@ -27,6 +27,9 @@ const oscMessageHandler = {
 // Replace environment variables in public files
 execSync(`/usr/bin/sed -i -e "s/HSS_IP/${ip}/g" -e "s/WEBSOCKET_PORT/${webSocketPort}/g" ${path.join(__dirname,"public/hss.js")}`);
 
+// Inform SuperCollider about the server running on a specific core (key: 'webSocketPort').
+sclang.send(oscPath, 'addCPUCore', webSocketPort);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
@@ -66,7 +69,9 @@ wss.sendToRandomClient = data => {
     const client = candidateClients[Math.floor(Math.random() * size)];
 
     if (client && client.readyState === WebSocket.OPEN) {
-	console.log(`There are ${size + 1} clients online.\n Selected client is:\n ${client}`);
+	console.log(
+	    `There are ${size + 1} clients online on CPU core ${webSocketPort}. \n Selected client is:\n ${client}`
+		   );
 	client.send(data);
 	wss.lastClient = client;
     };
@@ -74,13 +79,15 @@ wss.sendToRandomClient = data => {
 
 
 // OSC: SC => web server
-oscServer.on('message', (msg) => {
-    const msgObj = {type: msg[0]};
+oscServer.on('message', msg => {
+    if (msg[0] !== '/note' || msg.includes(webSocketPort)) {
+	const msgObj = {type: msg[0]};
 
-    Object.assign(msgObj,{args: msg.slice(1)});
+	Object.assign(msgObj,{args: msg.slice(1)});
 
-    oscMessageHandler[msgObj.type](JSON.stringify(msgObj), wss);
-    console.log('Recieved SC message:\n', msgObj);
+	oscMessageHandler[msgObj.type](JSON.stringify(msgObj), wss);
+	console.log('Recieved SC message:\n', msgObj);
+    }
 });
 
 // websockets: web server => web clients
