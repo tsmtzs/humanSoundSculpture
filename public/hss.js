@@ -153,5 +153,6 @@ socket.onmessage = message => {
 socket.onopen = () => console.log('WebSocket open');
 socket.onerror = () => console.log('ERROR in WebSocket');
 
-// Initialize mobileConsole for posting console messages in web page
+// Initialize mobileConsole for posting console messages in the web page.
 // if (mobileConsole) mobileConsole.init();
+

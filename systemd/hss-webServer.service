@@ -4,6 +4,7 @@
 # A systemd service file for starting the web server
 # of the piece.
 # Save this file under /lib/systemd/system.
+#		see: man systemd.unit for paths
 # CAUTION: Write the appropriate absolute paths in the fields
 # 'EnvironmentFile', 'WorkingDirectory' and 'ExecStop'.
 #
@@ -15,20 +16,19 @@
 
 [Unit]
 Description=Web server of the piece Human Sound Sculpture
-Documentation=file:/README.md
+Documentation=file:///./README.md
 Requires=hss-supercollider.service
 After=network.target
 
 [Service]
-Environment=NODE_PORT=300%i WEBSOCKET_PORT=808%i
 EnvironmentFile=/home/tassos/myProjects/humanSoundSculpture/systemd/hss-environment
 Type=simple
 User=tassos
 WorkingDirectory=/home/tassos/myProjects/humanSoundSculpture
-# Start wireless interface 'wlan0'. This is for RaspberryPi.
+# Start wireless interface 'wlan0'.
 ExecStartPre=-/usr/bin/ip link set wlan0 up
-# Start the web server and assign it at cpu core %i
-ExecStart=taskset --cpu-list %i /usr/bin/node server.js
+# Start the web server.
+ExecStart=/usr/bin/node server.js
 ExecStop=/home/tassos/myProjects/humanSoundSculpture/bin/setEnvirVarNames.sh public/hss.js
 # Restart=on-failure
 

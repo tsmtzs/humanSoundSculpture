@@ -1,3 +1,8 @@
+// ////////////////////////////////////////////////////////////
+//		Human Sound Sculpture
+//
+// This file sets the web server of the piece
+// ////////////////////////////////////////////////////////////
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -13,7 +18,7 @@ const oscPath = '/action';
 const WebSocket = require('ws');
 const webServerPort = process.env.NODE_PORT || 3000;
 const webSocketPort = process.env.WEBSOCKET_PORT || 8080;
-const wss = new WebSocket.Server({port: webSocketPort, clientTracking: true});
+const wss = new WebSocket.Server({ port: webSocketPort, clientTracking: true });
 
 const oscMessageHandler = {
     '/action': (data, wss) => {
@@ -26,9 +31,6 @@ const oscMessageHandler = {
 
 // Replace environment variables in public files
 execSync(`/usr/bin/sed -i -e "s/HSS_IP/${ip}/g" -e "s/WEBSOCKET_PORT/${webSocketPort}/g" ${path.join(__dirname,"public/hss.js")}`);
-
-// Inform SuperCollider about the server running on a specific core (key: 'webSocketPort').
-sclang.send(oscPath, 'addCPUCore', webSocketPort);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -71,19 +73,19 @@ wss.sendToRandomClient = data => {
     if (client && client.readyState === WebSocket.OPEN) {
 	console.log(
 	    `There are ${size + 1} clients online on CPU core ${webSocketPort}. \n Selected client is:\n ${client}`
-		   );
+	);
 	client.send(data);
 	wss.lastClient = client;
     };
 };
 
 
-// OSC: SC => web server
+// OSC: SuperCollider => web server
 oscServer.on('message', msg => {
     if (msg[0] !== '/note' || msg.includes(webSocketPort)) {
-	const msgObj = {type: msg[0]};
+	const msgObj = { type: msg[0] };
 
-	Object.assign(msgObj,{args: msg.slice(1)});
+	Object.assign(msgObj,{ args: msg.slice(1) });
 
 	oscMessageHandler[msgObj.type](JSON.stringify(msgObj), wss);
 	console.log('Recieved SC message:\n', msgObj);
@@ -93,14 +95,14 @@ oscServer.on('message', msg => {
 // websockets: web server => web clients
 wss.on('connection', ws => {
     // catch ws errors
-    ws.onerror = err => {console.log("Something went wrong in a WebSocket")};
+    ws.onerror = err => { console.log("Something went wrong in a WebSocket") };
 
     ws.on('message', msg => {
 	console.log('Client message: ', msg);
 
 	if (msg === 'shutdown') {
 	    // On message 'shutdown' execute file 'killHSS.sh
-		// OR USE sh /usr/bin/shutdown now
+	    // OR USE sh /usr/bin/shutdown now
 	    exec('sh ${HSS_DIR}/bin/killHSS.sh', (err, stdout, stderr) => {
 		if (err) {
 		    console.error(`exec error: ${err}`);

@@ -3,14 +3,15 @@
 # 
 # A systemd service file for starting SuperCollider
 # Save this file under /lib/systemd/system.
+#		see: man systemd.unit for paths
 # CAUTION: Write the appropriate path in the fields
 # 'EnvironmentFile' and 'WorkingDirectory'.
 # ##################################################
 
 [Unit]
 Description=Run SuperCollider for the piece Human Sound Sculpture
-Documentation=file:/README.md
-Wants=hss-webServer@.service
+Documentation=file:///./README.md
+Wants=hss-webServer.service
 After=network.target
 
 [Service]

@@ -13,7 +13,7 @@ if [ "$#" == "0" ]; then
     exit 1
 fi
 
-if [-z "$HSS_IP" ] || [ -z "$WEBSOCKET_PORT" ]; then
+if [ -z "$HSS_IP" ] || [ -z "$WEBSOCKET_PORT" ]; then
     echo "At least one of the variables HSS_IP and WEBSOCKET_PORT is empty."
     exit 1
 fi
