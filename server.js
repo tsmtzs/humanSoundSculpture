@@ -22,7 +22,7 @@ const wss = new WebSocket.Server({ port: webSocketPort, clientTracking: true });
 
 const oscMessageHandler = {
     '/action': (data, wss) => {
-	wss.broadcast(data);
+    	wss.broadcast(data);
     },
     '/note': (data, wss) => {
 	wss.sendToRandomClient(data);
@@ -66,13 +66,12 @@ wss.sendToRandomClient = data => {
     // select all clients that are different from lastClient
     clients = wss.clients.size < 2 ? clients : clients.filter(elem => elem !== wss.lastClient);
 
-    const candidateClients = clients.filter(wsClient => wsClient !== wss.lastClient);
-    const size = candidateClients.length;
-    const client = candidateClients[Math.floor(Math.random() * size)];
+    const size = clients.length;
+    const client = clients[Math.floor(Math.random() * size)];
 
     if (client && client.readyState === WebSocket.OPEN) {
 	console.log(
-	    `There are ${size + 1} clients online on CPU core ${webSocketPort}. \n Selected client is:\n ${client}`
+	    `There are ${size} clients online. \n Selected client is:\n ${client}`
 	);
 	client.send(data);
 	wss.lastClient = client;

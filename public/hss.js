@@ -1,19 +1,38 @@
-////////////////////////////////////////////////////////////
-// Sound
-////////////////////////////////////////////////////////////
-const audioCtx = new AudioContext();
+// ////////////////////////////////////////////////////////////
+//		Human Sound Sculpture
+//
+// Web client javascript.
+// ////////////////////////////////////////////////////////////
+import { Maybe } from './functors.mjs';
 
-// Unlock web audio if audioCtx.state = 'suspended'
-webAudioTouchUnlock(audioCtx)
-    .then(function (unlocked) {
-        if(unlocked) {
-            // AudioContext was unlocked from an explicit user action, sound should start playing now
-        } else {
-            // There was no need for unlocking, devices other than iOS
-        }
-    }, function(reason) {
-        console.error(reason);
-    });
+// tap combinator
+const tap = func => a => (func(a), a);
+
+const addEventListener = eventType => htmlElement => listener =>  {
+    htmlElement.addEventListener(eventType, listener);
+};
+const startButtonListener =  socket => startButton => event => {
+    // Send web server the value of the button.
+    socket.send(startButton.value);
+    // Change the value of the button.
+    startButton.value = startButton.value === 'play' ? 'stop' : 'play';
+};
+
+// ////////////////////////////////////////////////////////////
+// Websockets
+// ////////////////////////////////////////////////////////////
+// Initialize WebSockets
+// 'HSS_IP' and 'WEBSOCKET_PORT' are
+// bash environment variables.
+// For each session they are set in server.js with a 'sed' command.
+// After perfomance, they are unset in bin/setEnvirParNames.sh'
+// from the hss-webServer@.service.
+const socket = new WebSocket('ws://HSS_IP:WEBSOCKET_PORT');
+
+// ////////////////////////////////////////////////////////////
+// Sound
+// ////////////////////////////////////////////////////////////
+const audioCtx = new AudioContext();
 
 // custom periodic waveform
 const mag1 = Math.random() * 0.5 + 0.4, phase1 = 0.0, mag2 = Math.random() * 0.5 + 0.4, phase2 = Math.PI * Math.random(), mag3 = Math.random() * 0.5 + 0.4, phase3 = Math.PI * Math.random();
@@ -28,7 +47,6 @@ const  synth = ( (context, wave, shaperType = 'sawtooth') => {
 	const gain = context.createGain();
 	const indexFunction = context.createGain();
 
-	// console.log('Inside synth ', freq, amp, dur);
 	shapingFunction.type = shaperType;
 
 	// amp envelope
@@ -68,83 +86,66 @@ function asrEnvelope(attack = 0.5, sustain = 0.0, release = 0.5, startValue = 0.
     gainNode.gain.linearRampToValueAtTime(startValue, now + attack + sustain + release);
 };
 
+socket.addEventListener('open', event => {
+
 ////////////////////////////////////////////////////////////
 // Test button
 ////////////////////////////////////////////////////////////
-const testButton = document.getElementById('soundCheckBtn');
-// Random test frequency for each player.
-const testSynthFreq = 400.0 + Math.random()*600;
-let testSynth, testSynthMaxDur = 20, testSynthAmp = 0.9;
+// const testButton = document.getElementById('soundCheckBtn');
+// // Random test frequency for each player.
+// const testSynthFreq = 400.0 + Math.random()*600;
+// let testSynth, testSynthMaxDur = 20, testSynthAmp = 0.9;
 
-testButton.addEventListener('click', event => {
-    if (testSynth) {
-	testSynth.stop(0);
-	testSynth = null;
-    } else {
-	testSynth = synth(testSynthFreq, testSynthAmp, testSynthMaxDur);
-	testSynth.addEventListener('ended', event => testSynth = null);
-    }
-});
+// testButton.addEventListener('click', event => {
+//     if (testSynth) {
+// 	testSynth.stop(0);
+// 	testSynth = null;
+//     } else {
+// 	testSynth = synth(testSynthFreq, testSynthAmp, testSynthMaxDur);
+// 	testSynth.addEventListener('ended', event => testSynth = null);
+//     }
+// });
 
 ////////////////////////////////////////////////////////////
 // Start button
 ////////////////////////////////////////////////////////////
-const startButton = document.getElementById('startBtn');
+const startBtnMaybe = Maybe.of(document.getElementById('startBtn'));
 
-// add 'click' event listener if client loaded 'conductor.html'
-if (startButton) {
-    startButton.addEventListener('click', event => {
-	// console.log('Inside click callback');
-
-	socket.send(startButton.value);
-	
-	if (startButton.value === 'play') {
-	    startButton.value = 'stop';
-	} else {
-	    startButton.value = 'play';
-	};
-
-    });
-};
+    // On every 'click' event send a 'start' / 'stop'
+    // message to the web server.
+    startBtnMaybe.map(addEventListener('click'))
+    .ap(startBtnMaybe.map(startButtonListener(socket)));
 
 ////////////////////////////////////////////////////////////
 // Close computer button
 ////////////////////////////////////////////////////////////
-const shutdownBtn = document.getElementById('shutdownBtn');
+// const shutdownBtn = document.getElementById('shutdownBtn');
 
-// add 'dblclick' event listener if client loaded 'conductor.html'
-if (shutdownBtn) {
-    shutdownBtn.addEventListener('dblclick', event => {
-	// console.log('Inside dblclick callback');
+// // add 'dblclick' event listener if client loaded 'conductor.html'
+// if (shutdownBtn) {
+//     shutdownBtn.addEventListener('dblclick', event => {
+// 	// console.log('Inside dblclick callback');
 
-	socket.send(shutdownBtn.value);
+// 	socket.send(shutdownBtn.value);
 	
-	shutdownBtn.value = 'goodbye HSS';
-    });
+// 	shutdownBtn.value = 'goodbye HSS';
+//     });
+// };
+
+
+// WebSocket message handler.
+const wsMsgHandlerObj = {
+    '/note': synth,
+    // '/action': do something on messages of type 'start', 'stop', 'end', 'shutdown'.
+    // Do nothing for now.
+    '/action': () => {}
 };
-
-////////////////////////////////////////////////////////////
-// Websockets
-////////////////////////////////////////////////////////////
-const wsMsgHandler = ( (aButton) => {
-    return {
-	'/note': synth,
-	'/action':  (action) => { if (aButton) aButton.value = action === 'play' ? 'stop' : 'play'; }
-    }
-})(startButton);
-
-// 'HSS_IP' and 'WEBSOCKET_PORT' are
-// bash environment variables.
-// For each session they are set in server.js with a 'sed' command.
-// After perfomance, they are unset in bin/setEnvirParNames.sh'
-// from the hss-webServer@.service.
-const socket = new WebSocket('ws://HSS_IP:WEBSOCKET_PORT');
 
 // console.log('Inside websocketpromise');
 socket.onmessage = message => {
     const msg = JSON.parse(message.data);
-
-    wsMsgHandler[msg.type](...msg.args);
+    console.log(msg);
+    wsMsgHandlerObj[msg.type](...msg.args);
 
     console.log('Websocket message: ', msg.args, msg.type, msg);
     
@@ -154,4 +155,5 @@ socket.onopen = () => console.log('WebSocket open');
 socket.onerror = () => console.log('ERROR in WebSocket');
 
 // Initialize mobileConsole for posting console messages in the web page.
-if (mobileConsole) mobileConsole.init();
+// if (mobileConsole) mobileConsole.init();
+});
