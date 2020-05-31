@@ -82,14 +82,12 @@ wss.sendToRandomClient = data => {
 
 // OSC: SuperCollider => web server
 oscServer.on('message', msg => {
-    if (msg[0] !== '/note' || msg.includes(webSocketPort)) {
-	const msgObj = { type: msg[0] };
+    const msgObj = { type: msg[0] };
 
-	Object.assign(msgObj,{ args: msg.slice(1) });
+    Object.assign(msgObj,{ args: msg.slice(1) });
 
-	oscMessageHandler[msgObj.type](JSON.stringify(msgObj), wss);
-	console.log('Recieved SC message:\n', msgObj);
-    }
+    oscMessageHandler[msgObj.type](JSON.stringify(msgObj), wss);
+    console.log('Recieved SC message:\n', msgObj);
 });
 
 // websockets: web server => web clients
