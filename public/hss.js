@@ -11,23 +11,31 @@ const tap = func => a => (func(a), a);
 const addEventListener = eventType => htmlElement => listener =>  {
     htmlElement.addEventListener(eventType, listener);
 };
+// Listener for 'startButton' html element
 const startButtonListener =  socket => startButton => event => {
     // Send web server the value of the button.
     socket.send(startButton.value);
     // Change the value of the button.
     startButton.value = startButton.value === 'play' ? 'stop' : 'play';
 };
+// Listener for 'startButton' html element
+const shutdownBtnListener = socket => shutdownButton => event => {
+    // Send to web server the value of the button.
+    socket.send(shutdownBtn.value);
+    // Change the value of the button.
+    shutdownBtn.value = 'goodbye HSS';
+};
 
 // ////////////////////////////////////////////////////////////
 // Websockets
 // ////////////////////////////////////////////////////////////
 // Initialize WebSockets
-// 'HSS_IP' and 'WEBSOCKET_PORT' are
+// '192.168.10.2' and '8080' are
 // bash environment variables.
 // For each session they are set in server.js with a 'sed' command.
 // After perfomance, they are unset in bin/setEnvirParNames.sh'
 // from the hss-webServer@.service.
-const socket = new WebSocket('ws://HSS_IP:WEBSOCKET_PORT');
+const socket = new WebSocket('ws://192.168.10.2:8080');
 
 // ////////////////////////////////////////////////////////////
 // Sound
@@ -88,72 +96,65 @@ function asrEnvelope(attack = 0.5, sustain = 0.0, release = 0.5, startValue = 0.
 
 socket.addEventListener('open', event => {
 
-////////////////////////////////////////////////////////////
-// Test button
-////////////////////////////////////////////////////////////
-// const testButton = document.getElementById('soundCheckBtn');
-// // Random test frequency for each player.
-// const testSynthFreq = 400.0 + Math.random()*600;
-// let testSynth, testSynthMaxDur = 20, testSynthAmp = 0.9;
+    ////////////////////////////////////////////////////////////
+    // Test button
+    ////////////////////////////////////////////////////////////
+    // const testButton = document.getElementById('soundCheckBtn');
+    // // Random test frequency for each player.
+    // const testSynthFreq = 400.0 + Math.random()*600;
+    // let testSynth, testSynthMaxDur = 20, testSynthAmp = 0.9;
 
-// testButton.addEventListener('click', event => {
-//     if (testSynth) {
-// 	testSynth.stop(0);
-// 	testSynth = null;
-//     } else {
-// 	testSynth = synth(testSynthFreq, testSynthAmp, testSynthMaxDur);
-// 	testSynth.addEventListener('ended', event => testSynth = null);
-//     }
-// });
+    // testButton.addEventListener('click', event => {
+    //     if (testSynth) {
+    // 	testSynth.stop(0);
+    // 	testSynth = null;
+    //     } else {
+    // 	testSynth = synth(testSynthFreq, testSynthAmp, testSynthMaxDur);
+    // 	testSynth.addEventListener('ended', event => testSynth = null);
+    //     }
+    // });
 
-////////////////////////////////////////////////////////////
-// Start button
-////////////////////////////////////////////////////////////
-const startBtnMaybe = Maybe.of(document.getElementById('startBtn'));
+    ////////////////////////////////////////////////////////////
+    // Start button
+    ////////////////////////////////////////////////////////////
+    const startBtnMaybe = Maybe.of(document.getElementById('startBtn'));
 
     // On every 'click' event send a 'start' / 'stop'
     // message to the web server.
     startBtnMaybe.map(addEventListener('click'))
-    .ap(startBtnMaybe.map(startButtonListener(socket)));
+	.ap(startBtnMaybe.map(startButtonListener(socket)));
 
-////////////////////////////////////////////////////////////
-// Close computer button
-////////////////////////////////////////////////////////////
-// const shutdownBtn = document.getElementById('shutdownBtn');
-
-// // add 'dblclick' event listener if client loaded 'conductor.html'
-// if (shutdownBtn) {
-//     shutdownBtn.addEventListener('dblclick', event => {
-// 	// console.log('Inside dblclick callback');
-
-// 	socket.send(shutdownBtn.value);
-	
-// 	shutdownBtn.value = 'goodbye HSS';
-//     });
-// };
-
-
-// WebSocket message handler.
-const wsMsgHandlerObj = {
-    '/note': synth,
-    // '/action': do something on messages of type 'start', 'stop', 'end', 'shutdown'.
-    // Do nothing for now.
-    '/action': () => {}
-};
-
-// console.log('Inside websocketpromise');
-socket.onmessage = message => {
-    const msg = JSON.parse(message.data);
-    console.log(msg);
-    wsMsgHandlerObj[msg.type](...msg.args);
-
-    console.log('Websocket message: ', msg.args, msg.type, msg);
+    ////////////////////////////////////////////////////////////
+    // Shutdown computer button
+    ////////////////////////////////////////////////////////////
+    const shutdownBtnMaybe = Maybe.of(document.getElementById('shutdownBtn'));
     
-};
+    // When conductor double clicks the button,
+    // send a 'shutdown' message to web server.
+    shutdownBtnMaybe.map(addEventListener('dblclick'))
+	.ap(shutdownBtnMaybe.map(shutdownBtnListener(socket)));
 
-socket.onopen = () => console.log('WebSocket open');
-socket.onerror = () => console.log('ERROR in WebSocket');
+    // WebSocket message handler.
+    const wsMsgHandlerObj = {
+	'/note': synth,
+	// '/action': do something on messages of type 'start', 'stop', 'end', 'shutdown'.
+	// Do nothing for now.
+	'/action': () => {}
+    };
 
-// Initialize mobileConsole for posting console messages in the web page.
-// if (mobileConsole) mobileConsole.init();
+    // console.log('Inside websocketpromise');
+    socket.onmessage = message => {
+	const msg = JSON.parse(message.data);
+	console.log(msg);
+	wsMsgHandlerObj[msg.type](...msg.args);
+
+	console.log('Websocket message: ', msg.args, msg.type, msg);
+	
+    };
+
+    socket.onopen = () => console.log('WebSocket open');
+    socket.onerror = () => console.log('ERROR in WebSocket');
+
+    // Initialize mobileConsole for posting console messages in the web page.
+    // if (mobileConsole) mobileConsole.init();
 });

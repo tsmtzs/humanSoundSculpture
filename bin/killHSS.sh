@@ -10,4 +10,4 @@
 # Add stuff to be done before shutting down.
 
 # Shutdown computer
-shutdown now;
+# shutdown now;
