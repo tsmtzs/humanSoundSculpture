@@ -15,10 +15,13 @@ const ip = process.env.HSS_IP || '192.168.100.2';
 const sclang = new osc.Client(ip, 57120);
 const oscPath = '/action';
 // web sockets
-const WebSocket = require('ws');
+// HSS_WSS loads the 'ws' module.
+const HSS_WSS = require(__dirname + '/webServerJS/hss_wss.js').HSS_WSS;
 const webServerPort = process.env.NODE_PORT || 3000;
 const webSocketPort = process.env.WEBSOCKET_PORT || 8080;
-const wss = new WebSocket.Server({ port: webSocketPort, clientTracking: true });
+
+// const wss = new WebSocket.Server({ port: webSocketPort, clientTracking: true });
+const wss = new HSS_WSS({ port: webSocketPort, clientTracking: true });
 
 const oscMessageHandler = {
     '/action': (data, wss) => {
@@ -49,35 +52,6 @@ app.use( (err, req, res, next) => {
 });
 
 app.listen(webServerPort, () => console.log('Server listening on port: ', webServerPort));
-
-// Last client that played a note
-wss.lastClient = null;
-
-wss.broadcast = data => {
-    wss.clients.forEach(client => {
-	if (client.readyState === WebSocket.OPEN) {
-	    client.send(data);
-	};
-    });
-};
-
-wss.sendToRandomClient = data => {
-    let clients = Array.from(wss.clients);
-    // select all clients that are different from lastClient
-    clients = wss.clients.size < 2 ? clients : clients.filter(elem => elem !== wss.lastClient);
-
-    const size = clients.length;
-    const client = clients[Math.floor(Math.random() * size)];
-
-    if (client && client.readyState === WebSocket.OPEN) {
-	console.log(
-	    `There are ${size} clients online. \n Selected client is:\n ${client}`
-	);
-	client.send(data);
-	wss.lastClient = client;
-    };
-};
-
 
 // OSC: SuperCollider => web server
 oscServer.on('message', msg => {
