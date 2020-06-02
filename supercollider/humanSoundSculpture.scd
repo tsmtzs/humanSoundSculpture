@@ -13,7 +13,7 @@ hss = "hssEvent.scd".loadRelative.at(0);
 Event.addEventType(\sendOsc, {
 	// Uncomment the next code line when debugging.
 	// Run in bash
-	//	sudo journalctl -u hss-supercollider -f
+	//		 journalctl -u hss-supercollider -f
 	// to see logs using journactl.
 	[~freq.(), ~amp, ~dur].postln;
 	// 
@@ -32,10 +32,10 @@ ip = "HSS_IP".getenv;
 ip.postln;
 
 // NetAddr: the address of the web server
-hss.init(NetAddr(ip.asString, 57121));
+hss.init(NetAddr(ip, 57121));
 // Set values
 hss.ampMul = hss.amps.maxItem.reciprocal * 0.9;
 
 // Uncomment the next code line if there is no conductor
 // among the performers.
-hss.play;
+// hss.play;
