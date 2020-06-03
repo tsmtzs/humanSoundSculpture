@@ -21,7 +21,7 @@ const buttonListener =  socket => valueFunc => button => event => {
     // Change the value of the button.
     button.value = valueFunc(button.value);
 };
-// Listener for the h3 element.
+// Listener for the h2 element.
 const tapListener = element => event => {
     document.body.removeChild(element);
 };
