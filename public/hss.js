@@ -23,8 +23,14 @@ const buttonListener =  socket => valueFunc => button => event => {
 };
 // Listener for the h2 element.
 const tapListener = element => event => {
+    const inputElements = Array.from(document.body.getElementsByTagName('input'));
+
+    // Show all input buttons.
+    inputElements.forEach(elem => elem.type = 'button');
+
+    // Remove h2 element from the node tree.
     document.body.removeChild(element);
-};
+   };
 // WebSocket message handler.
 const wsMsgHandler = func => {
     return {
@@ -121,7 +127,7 @@ tapEl.addEventListener('click', tapListener(tapEl), {once: true});
 // For each session they are set in server.js with a 'sed' command.
 // After perfomance, they are unset in bin/setEnvirParNames.sh'
 // when the hss-webServer.service stops.
-const socket = new WebSocket('ws://HSS_IP:WEBSOCKET_PORT');
+const socket = new WebSocket('ws://192.168.10.2:8080');
 
 socket.onerror = event => console.log('ERROR in WebSocket', event);
 
