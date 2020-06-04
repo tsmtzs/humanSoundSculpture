@@ -29,7 +29,7 @@ ip = "HSS_IP".getenv;
 
 // Check for logs using systemd's 'journalctl'
 //		journalctl --unit hss-supercollider --follow
-ip.postln;
+// ip.postln;
 
 // NetAddr: the address of the web server
 hss.init(NetAddr(ip, 57121));

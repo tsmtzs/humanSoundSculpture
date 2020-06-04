@@ -4,7 +4,10 @@
   "description": "A web browser version of the piece Human Sound Sculpture",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "sudo systemctl start hss-webServer",
+      "stop": "sudo systemctl stop hss-supercollider",
+      "restart": "sudo systemctl restart hss-webServer"
   },
   "author": "Tassos Tsesmetzis",
   "license": "ISC",

@@ -4,8 +4,6 @@
 # Shell environment variables.
 #	HSS_IP: web server's IP on the local network
 #	NODE_PORT: HTTP port number
-#	WEBSOCKET_PORT: WebSockets port number
 # ##################################################
 HSS_IP=192.168.10.2
 NODE_PORT=3000
-WEBSOCKET_PORT=8080
