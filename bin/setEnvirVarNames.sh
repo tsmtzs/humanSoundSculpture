@@ -13,13 +13,13 @@ if [ "$#" == "0" ]; then
     exit 1
 fi
 
-if [ -z "$HSS_IP" ] || [ -z "$WEBSOCKET_PORT" ]; then
-    echo "At least one of the variables HSS_IP and WEBSOCKET_PORT is empty."
+if [ -z "$HSS_IP" ] || [ -z "$NODE_PORT" ]; then
+    echo "At least one of the variables HSS_IP and NODE_PORT is empty."
     exit 1
 fi
 
 while (("$#")); do
-	/usr/bin/sed -i -e "s/${HSS_IP}/HSS_IP/g" -e "s/${WEBSOCKET_PORT}/WEBSOCKET_PORT/g" $1
+	/usr/bin/sed -i -e "s/${HSS_IP}/HSS_IP/g" -e "s/${NODE_PORT}/NODE_PORT/g" $1
 
     shift
 done

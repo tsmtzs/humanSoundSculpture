@@ -8,7 +8,15 @@
 // ////////////////////////////////////////////////////////////
 const express = require('express');
 const app = express();
+const fs = require('fs');
 const path = require('path');
+const https = require('https');
+const credentials = {
+    key: fs.readFileSync('./certs/hss.key'),
+    cert: fs.readFileSync('./certs/hss.crt')
+};
+// Create the server:
+const server = https.createServer(credentials, app);
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
 // OSC communication with SuperCollider
@@ -21,8 +29,7 @@ const oscPath = '/action';
 // HSS_WSS implicitly loads the 'ws' module.
 const HSS_WSS = require(__dirname + '/webServerJS/hss_wss.js').HSS_WSS;
 const webServerPort = process.env.NODE_PORT || 3000;
-const webSocketPort = process.env.WEBSOCKET_PORT || 8080;
-const wss = new HSS_WSS({ port: webSocketPort, clientTracking: true });
+const wss = new HSS_WSS({ server: server, clientTracking: true });
 // ////////////////////////////////////////////////////////////
 // Event listeners:
 // ////////////////////////////////////////////////////////////
@@ -83,7 +90,7 @@ const oscMessageHandler = wss => {
 };
 
 // Replace environment variables in public files
-execSync(`/usr/bin/sed -i -e "s/HSS_IP/${ip}/g" -e "s/WEBSOCKET_PORT/${webSocketPort}/g" ${path.join(__dirname,"public/hss.js")}`);
+execSync(`/usr/bin/sed -i -e "s/HSS_IP/${ip}/g" -e "s/NODE_PORT/${webServerPort}/g" ${path.join(__dirname,"public/hss.js")}`);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -106,4 +113,6 @@ oscServer.on('message', oscMsgListener(oscMessageHandler(wss)));
 wss.on('connection', wsConnectionListener(wsErrorListener, wsMsgListener(sclang, oscPath)));
 
 // ////////////////////////////////////////////////////////////
-app.listen(webServerPort, () => console.log('Server listening on port: ', webServerPort));
+// Create the SSL/TSL server.
+// ////////////////////////////////////////////////////////////
+server.listen({ port: webServerPort, host: ip }, () => console.log('Server listening on port: ', webServerPort));

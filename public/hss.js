@@ -126,12 +126,12 @@ tapEl.addEventListener('click', tapListener(tapEl), {once: true});
 // Websockets
 // ////////////////////////////////////////////////////////////
 // Initialize WebSockets
-// 'hss_ip' and 'websocket_port' are
+// 'hss_ip' and 'node_port' are
 // bash environment variables.
 // For each session they are set in server.js with a 'sed' command.
 // After perfomance, they are unset in bin/setEnvirParNames.sh'
 // when the hss-webServer.service stops.
-const socket = new WebSocket('ws://192.168.10.2:8080');
+const socket = new WebSocket('wss://HSS_IP:NODE_PORT');
 
 socket.onerror = event => console.log('ERROR in WebSocket', event);
 
