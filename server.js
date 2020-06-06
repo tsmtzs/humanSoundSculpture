@@ -12,8 +12,8 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const credentials = {
-    key: fs.readFileSync('./certs/hss.key'),
-    cert: fs.readFileSync('./certs/hss.crt')
+    key: fs.readFileSync('./cert/hss-key.pem', 'utf8'),
+    cert: fs.readFileSync('./cert/hss-crt.pem', 'utf8')
 };
 // Create the server:
 const server = https.createServer(credentials, app);
@@ -48,7 +48,7 @@ const oscMsgListener = msgHandler => msg => {
     console.log('Recieved SC message:\n', msgObj);
 };
 // WebSocket error listener:
-const wsErrorListener = error => console.log("Something went wrong in WebSockets", error);
+const wsErrorListener = error => console.log("Something went wrong in WebSockets", error.stack);
 // WebSocket message listener:
 const wsMsgListener = (sclang, oscPath) => msg => {
     console.log('Client message: ', msg);
@@ -72,10 +72,11 @@ const wsMsgListener = (sclang, oscPath) => msg => {
 };
 // WebSocket listener on 'connection' event:
 const wsConnectionListener = (errorListener, msgListener) => ws => {
+    ws.on('message', msgListener);
+
     // catch ws errors
     ws.onerror = errorListener;
 
-    ws.on('message', msgListener);
 };
 // ////////////////////////////////////////////////////////////
 // Function 'oscMessageHandler' return an object;

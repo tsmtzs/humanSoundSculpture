@@ -1,0 +1,24 @@
+############################################################
+# Based on
+#	https://www.feistyduck.com/library/openssl-cookbook/online/ch-openssl.html
+# and
+#	https://bbs.archlinux.org/viewtopic.php?id=235724
+[ usr_cert ]
+basicConstraints = critical,CA:true
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+
+[ req ]
+prompt = no
+distinguished_name = dn
+req_extensions = ext
+# input_password = PASSPHRASE
+
+[ dn ]
+CN = 192.168.10.2
+emailAddress = ttsesmetzis@gmail.com
+O = Human Sound Sculpture
+OU = HSS - Web Sever
+
+[ ext ]
+subjectAltName = IP:192.168.10.2, IP:127.0.0.1, DNS:localhost
