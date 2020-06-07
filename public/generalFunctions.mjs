@@ -8,22 +8,13 @@
 
 // Enable full screen mode
 // adapted from
-//https://developer.mozilla.org/samples/domref/fullscreen.html
-function toggleFullScreen(elem) {
-    if (!document.mozFullScreen && !document.webkitFullScreen) {
-	if (elem.mozRequestFullScreen) {
-            elem.mozRequestFullScreen();
-	} else {
-            elem.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-	}
+// https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullScreen
+function toggleFullscreen(element) {
+    if (!document.fullscreenElement) {
+	element.requestFullscreen().catch(err => {
+	    alert(`Error in Promises: ${err.message} (${err.name})`);
+	});
     } else {
-	if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
-	} else {
-            document.webkitCancelFullScreen();
-	}
+	document.exitFullscreen();
     }
 }
-
-export { toggleFullScreen };
-
