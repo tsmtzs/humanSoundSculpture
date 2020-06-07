@@ -91,18 +91,18 @@ const oscMessageHandler = wss => {
 };
 
 // Replace environment variables in public files
-execSync(`/usr/bin/sed -i -e "s/HSS_IP/${ip}/g" -e "s/NODE_PORT/${webServerPort}/g" ${path.join(__dirname,"public/hss.js")}`);
+execSync(`/usr/bin/sed -i -e "s/HSS_IP/${ip}/g" -e "s/NODE_PORT/${webServerPort}/g" ${path.join(__dirname,"public/javascript/hss.js")}`);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Send to performers the basic web page of the piece:
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname,'views/index.html'));
+    res.sendFile(path.join(__dirname,'public/views/index.html'));
 });
 
 // Send the 'conductor' web page:
 app.get('/conductor', (req, res) => {
-    res.sendFile(path.join(__dirname,'views/conductor.html'));
+    res.sendFile(path.join(__dirname,'public/views/conductor.html'));
 });
 
 app.use(appErrorListener);

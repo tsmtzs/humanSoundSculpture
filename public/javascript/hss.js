@@ -7,6 +7,25 @@ import { Maybe } from './functors.mjs';
 import Sound from './sound.mjs';
 
 // ////////////////////////////////////////////////////////////
+// Register the ServiceWorker
+// ////////////////////////////////////////////////////////////
+// from https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/register
+if ('serviceWorker' in navigator) {
+    // Register a service worker hosted at the root of the
+    // site using the default scope.
+    navigator.serviceWorker
+	.register('./sw.js')
+	.then( registration => {
+	    console.log('Service worker registration succeeded:', registration);
+	})
+	.catch( error => {
+	    console.log('Service worker registration failed:', error);
+	});
+} else {
+    console.log('Service workers are not supported.');
+}
+
+// ////////////////////////////////////////////////////////////
 // Functions
 // ////////////////////////////////////////////////////////////
 
@@ -130,7 +149,7 @@ tapEl.addEventListener('click', tapListener(tapEl), {once: true});
 // For each session they are set in server.js with a 'sed' command.
 // After perfomance, they are unset in bin/setEnvirParNames.sh'
 // when the hss-webServer.service stops.
-const socket = new WebSocket('wss://HSS_IP:NODE_PORT');
+const socket = new WebSocket('wss://192.168.10.2:3000');
 
 socket.onerror = event => console.log('ERROR in WebSocket', event);
 
@@ -138,4 +157,4 @@ socket.onopen = wsOpenListener;
 
 // Initialize mobileConsole. Post console messages on the web page.
 // Usefull for tests. 
-// if (mobileConsole) mobileConsole.init();
+if (mobileConsole) mobileConsole.init();

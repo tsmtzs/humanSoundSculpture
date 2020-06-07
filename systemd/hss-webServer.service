@@ -29,7 +29,7 @@ WorkingDirectory=/home/tassos/myProjects/humanSoundSculpture
 ExecStartPre=-/usr/bin/ip link set wlan0 up
 # Start the web server.
 ExecStart=/usr/bin/node server.js
-ExecStop=/home/tassos/myProjects/humanSoundSculpture/bin/setEnvirVarNames.sh public/hss.js
+ExecStop=/home/tassos/myProjects/humanSoundSculpture/bin/setEnvirVarNames.sh public/javascript/hss.js
 # Restart=on-failure
 
 [Install]
