@@ -5,7 +5,6 @@
 // ////////////////////////////////////////////////////////////
 import { Maybe } from './functors.mjs';
 import Sound from './sound.mjs';
-import { toggleFullScreen } from './generalFunctions.mjs';
 
 // ////////////////////////////////////////////////////////////
 // Functions
@@ -33,7 +32,7 @@ const tapListener = element => event => {
     document.body.removeChild(element);
 
     // Set body in full screen.
-    toggleFullScreen(document.body);
+    document.body.requestFullscreen();
    };
 // WebSocket message handler.
 const wsMsgHandler = func => {

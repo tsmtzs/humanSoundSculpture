@@ -18,3 +18,5 @@ function toggleFullscreen(element) {
 	document.exitFullscreen();
     }
 }
+
+export { toggleFullscreen };
