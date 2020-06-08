@@ -12,8 +12,8 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const credentials = {
-    key: fs.readFileSync('./certs/hss.key'),
-    cert: fs.readFileSync('./certs/hss.crt')
+    key: fs.readFileSync('./certs/hss-key.pem', 'utf8'),
+    cert: fs.readFileSync('./certs/hss-crt.pem', 'utf8')
 };
 // Create the server:
 const server = https.createServer(credentials, app);
@@ -48,7 +48,7 @@ const oscMsgListener = msgHandler => msg => {
     console.log('Recieved SC message:\n', msgObj);
 };
 // WebSocket error listener:
-const wsErrorListener = error => console.log("Something went wrong in WebSockets", error);
+const wsErrorListener = error => console.log("Something went wrong in WebSockets", error.stack);
 // WebSocket message listener:
 const wsMsgListener = (sclang, oscPath) => msg => {
     console.log('Client message: ', msg);
@@ -72,10 +72,11 @@ const wsMsgListener = (sclang, oscPath) => msg => {
 };
 // WebSocket listener on 'connection' event:
 const wsConnectionListener = (errorListener, msgListener) => ws => {
+    ws.on('message', msgListener);
+
     // catch ws errors
     ws.onerror = errorListener;
 
-    ws.on('message', msgListener);
 };
 // ////////////////////////////////////////////////////////////
 // Function 'oscMessageHandler' return an object;
@@ -90,18 +91,18 @@ const oscMessageHandler = wss => {
 };
 
 // Replace environment variables in public files
-execSync(`/usr/bin/sed -i -e "s/HSS_IP/${ip}/g" -e "s/NODE_PORT/${webServerPort}/g" ${path.join(__dirname,"public/hss.js")}`);
+execSync(`/usr/bin/sed -i -e "s/HSS_IP/${ip}/g" -e "s/NODE_PORT/${webServerPort}/g" ${path.join(__dirname,"public/javascript/hss.js")}`);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Send to performers the basic web page of the piece:
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname,'views/index.html'));
+    res.sendFile(path.join(__dirname,'public/views/index.html'));
 });
 
 // Send the 'conductor' web page:
 app.get('/conductor', (req, res) => {
-    res.sendFile(path.join(__dirname,'views/conductor.html'));
+    res.sendFile(path.join(__dirname,'public/views/conductor.html'));
 });
 
 app.use(appErrorListener);

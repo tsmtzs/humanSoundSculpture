@@ -5,7 +5,25 @@
 // ////////////////////////////////////////////////////////////
 import { Maybe } from './functors.mjs';
 import Sound from './sound.mjs';
-import { toggleFullScreen } from './generalFunctions.mjs';
+
+// ////////////////////////////////////////////////////////////
+// Register the ServiceWorker
+// ////////////////////////////////////////////////////////////
+// from https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/register
+if ('serviceWorker' in navigator) {
+    // Register a service worker hosted at the root of the
+    // site using the default scope.
+    navigator.serviceWorker
+	.register('./sw.js')
+	.then( registration => {
+	    console.log('Service worker registration succeeded:', registration);
+	})
+	.catch( error => {
+	    console.log('Service worker registration failed:', error);
+	});
+} else {
+    console.log('Service workers are not supported.');
+}
 
 // ////////////////////////////////////////////////////////////
 // Functions
@@ -31,9 +49,6 @@ const tapListener = element => event => {
 
     // Remove h2 element from the node tree.
     document.body.removeChild(element);
-
-    // Set body in full screen.
-    toggleFullScreen(document.body);
    };
 // WebSocket message handler.
 const wsMsgHandler = func => {
