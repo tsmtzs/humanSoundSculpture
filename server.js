@@ -12,8 +12,8 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const credentials = {
-    key: fs.readFileSync('./cert/hss-key.pem', 'utf8'),
-    cert: fs.readFileSync('./cert/hss-crt.pem', 'utf8')
+    key: fs.readFileSync('./certs/hss-key.pem', 'utf8'),
+    cert: fs.readFileSync('./certs/hss-crt.pem', 'utf8')
 };
 // Create the server:
 const server = https.createServer(credentials, app);

@@ -49,9 +49,6 @@ const tapListener = element => event => {
 
     // Remove h2 element from the node tree.
     document.body.removeChild(element);
-
-    // Set body in full screen.
-    document.body.requestFullscreen();
    };
 // WebSocket message handler.
 const wsMsgHandler = func => {
@@ -149,7 +146,7 @@ tapEl.addEventListener('click', tapListener(tapEl), {once: true});
 // For each session they are set in server.js with a 'sed' command.
 // After perfomance, they are unset in bin/setEnvirParNames.sh'
 // when the hss-webServer.service stops.
-const socket = new WebSocket('wss://192.168.10.2:3000');
+const socket = new WebSocket('wss://HSS_IP:NODE_PORT');
 
 socket.onerror = event => console.log('ERROR in WebSocket', event);
 
@@ -157,4 +154,4 @@ socket.onopen = wsOpenListener;
 
 // Initialize mobileConsole. Post console messages on the web page.
 // Usefull for tests. 
-if (mobileConsole) mobileConsole.init();
+// if (mobileConsole) mobileConsole.init();

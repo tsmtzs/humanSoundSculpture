@@ -7,7 +7,11 @@
       "test": "echo \"Error: no test specified\" && exit 1",
       "start": "sudo systemctl start hss-webServer",
       "stop": "sudo systemctl stop hss-supercollider",
-      "restart": "sudo systemctl restart hss-webServer"
+      "restart": "sudo systemctl restart hss-webServer",
+      "log": "journalctl -u hss-webServer -r",
+      "log-sc": "journalctl -u hss-supercollider -r",
+      "log-follow": "journalctl -u hss-webServer -f",
+      "log-sc-follow": "journalctl -u hss-supercollider -f"
   },
   "author": "Tassos Tsesmetzis",
   "license": "ISC",
