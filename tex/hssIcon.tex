@@ -1,0 +1,32 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% Human Sound Sculpture
+% 
+% This XeLaTex file produces an icon for the piece.
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\documentclass[12pt,a4page]{article}
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\usepackage{xgreek}
+\usepackage{xcolor}
+
+\setmainfont[Mapping=tex-text]{Linux Biolinum O}
+
+% Package geometry. Set text area dimensions.
+\usepackage{geometry}
+\geometry{paperwidth=3.5cm,paperheight=3.5cm,lines=3,ignoreall,hmargin=5pt,vmargin=16pt,centering}
+
+\pagestyle{empty}
+
+\linespread{1.5}
+
+\definecolor{background}{HTML}{293F50}
+\begin{document}
+\bf
+\pagecolor{background}
+\color{darkgray!35}
+\noindent
+\makebox[\linewidth][s]{H U M A N}\\
+\makebox[\linewidth][s]{S O U N D}\\
+\makebox[\linewidth][s]{S C U L P T U R E}
+\end{document}
