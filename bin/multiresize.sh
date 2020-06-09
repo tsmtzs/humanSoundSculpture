@@ -13,10 +13,6 @@
 #	rest args - new size(s)
 # ##################################################
 
-# Resize a given image name.ext to
-# size NxN.
-# The output picture is saved as 'name_NxN.ext'.
-
 # Usage script
 function usage() {
     echo "Usage: $0 <filename> <size(s)>"
@@ -30,7 +26,7 @@ fi
 
 
 if [[ ! -e $1 ]]; then
-    echo "First argument should be a picture file."
+    echo "First argument should be an image file."
     exit 1
 fi
 
