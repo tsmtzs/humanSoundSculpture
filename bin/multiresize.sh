@@ -41,5 +41,8 @@ for size in ${@:2}; do
     out="${filename}_${size}x${size}.${extension}"
 
     # Resize picture to SIZE x SIZE
-    ffmpeg -i "${fl}" -vf scale=${size}:-1 "${out}"
+    # Maybe remove the '2>&-' at the end
+    # so that ffmpeg stout text is printed in
+    # the console?
+    ffmpeg -i "${fl}" -vf scale=${size}:-1 "${out}" 2>&-
 done

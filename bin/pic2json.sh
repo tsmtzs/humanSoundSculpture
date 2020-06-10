@@ -1,13 +1,44 @@
 #!/bin/bash
+# ##################################################
+#		Human Sound Sculpture
+# 
+# webmanifest file 'icons' field.
+#
+# Discussion:	This little programme is a help script
+#		that generates a json formated text.
+#		The output string is suitable for the
+#		'icons' field of a webmanifest
+#		json file.
+#		
+# args:
+#	$1 - A path that prepends the file name in
+#	     the field "src".
+#	>$1 - Image file names under current working
+#	     directory.
+#
+# Surely, there are neater ways to do the same thing
+# in bash. (jq??)
+# ##################################################
 
-function join { local IFS="$1"; shift; echo "$*"; }
+# Usage script
+function usage() {
+    echo "Usage: $0 <path> <image(s)>"
+}
+
+# Print usage if number of args given is less than 2.
+if [[ "$#" < "2" ]]; then
+    usage
+    exit 1
+fi
+
 
 relativePath=$1
-jsonArray=()
+argArray=($@)
+JSON=$'[\n'
 
-for file in ${@:2}; do
+for ((i=1; i < $#; i++)); do
+    file=${argArray[$i]}
     fullname=$(basename "$file")
-    json=''
 
     # Get image's size.
     # From llogan's answer on
@@ -18,17 +49,21 @@ for file in ${@:2}; do
     # jozxyqk's and bhups's answer on
     # https://stackoverflow.com/questions/2227182/how-can-i-find-out-a-files-mime-type-content-type
     mime=$(file -b --mime-type $file)
+ 
+    jsonEntry='{
+    "src": "%s",
+    "sizes": "%s",
+    "type": "%s"
+}'
+    json=$(printf "$jsonEntry" "${relativePath}/${fullname}" "$size" "$mime")
 
-
-    # Convert to json
-    # From Diego Torres Milano's asnwer on
-    # https://stackoverflow.com/questions/48470049/build-a-json-string-with-bash-variables?noredirect=1&lq=1
-    JSON_FMT=$'{"src":"%s","sizes":"%s","type":"%s"}'
-
-    json=$(printf "$JSON_FMT" "${relativePath}/${fullname}" "$size" "$mime")
-
-    # echo $json
-    jsonArray+=(${json})
+    JSON+=$json
+    
+    if (( $i != $# - 1 )); then
+    	JSON+=$',\n'
+    fi
 done
 
-echo "${jsonArray[@]}" | json_reformat -s
+JSON+=$'\n]'
+
+echo "${JSON}"
