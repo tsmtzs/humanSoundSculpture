@@ -1,26 +1,22 @@
 {
-  "name": "Human Sound Sculpture",
-  "description": "Human Sound Sculpture - Conductor's web page",
-  "display": "fullscreen",
-  "background_color": "#293f50",
-  "icons": [
-    {
-      "src": "/icons/hss-64x64.png",
-      "sizes": "64x64",
-      "type": "image/png"
-    },
-    {
-      "src": "/icons/hss-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/icons/hss-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ],
-  "name": "Human Sound Sculpture - Conductor",
-  "short_name": "HSS - Conductor",
-  "start_url": "/"
+    "name": "Human Sound Sculpture",
+    "description": "Human Sound Sculpture - Conductor's web page",
+    "display": "fullscreen",
+    "background_color": "#293f50",
+    "icons": [
+	{
+	    "src": "/icons/hssIcon_192x192.png",
+	    "sizes": "192x192",
+	    "type": "image/png"
+	},
+	{
+	    "src": "/icons/hssIcon_512x512.png",
+	    "sizes": "512x512",
+	    "type": "image/png"
+	}
+    ]
+    ,
+    "name": "Human Sound Sculpture - Conductor",
+    "short_name": "HSS - Conductor",
+    "start_url": "/"
 }
