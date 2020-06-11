@@ -5,7 +5,7 @@
 }
 
 html {
-    font-size: 3vmin;
+    font-size: 14px;
     text-align: center;
     background: #293f50;
 }
@@ -61,8 +61,47 @@ a:visited {
     color: black;
 }
 
+section {
+    padding: 5px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+section h2 {
+    text-align: left;
+    font-size: 150%;
+}
+
+section p {
+    text-align: left;
+}
+
+#textScore {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
+.italics {
+    font-style: italic;
+}
+
+#name {
+    margin-right: 15px;
+    text-align: right;
+    font-size:90%;
+}
+
 @media (max-width: 400px) {
     html {
-	font-size: 12px;
+	font-size: 14px;
     }
+}
+
+@media screen and (min-width: 900px) {
+  section {
+     font-size: 15px;
+  }
 }
