@@ -1,5 +1,5 @@
 # *Human Sound Sculpture*
-*To Kyriakos Kolesis*
+<p style="text-align: right;">To Kyriakos Kolesis</p>
 
 ## Overview
     Νύχτα.

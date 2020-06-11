@@ -95,6 +95,9 @@ execSync(`/usr/bin/sed -i -e "s/HSS_IP/${ip}/g" -e "s/NODE_PORT/${webServerPort}
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ////////////////////////////////////////////////////////////
+// Respond to incoming HTTP messages.
+// ////////////////////////////////////////////////////////////
 // Send to performers the basic web page of the piece:
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname,'public/views/index.html'));
@@ -103,6 +106,16 @@ app.get('/', (req, res) => {
 // Send the 'conductor' web page:
 app.get('/conductor', (req, res) => {
     res.sendFile(path.join(__dirname,'public/views/conductor.html'));
+});
+
+// Send the 'player' web page:
+app.get('/player', (req, res) => {
+    res.sendFile(path.join(__dirname,'public/views/player.html'));
+});
+
+// Send the 'description' web page:
+app.get('/description', (req, res) => {
+    res.sendFile(path.join(__dirname,'public/views/description.html'));
 });
 
 app.use(appErrorListener);

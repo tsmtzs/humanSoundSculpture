@@ -34,6 +34,33 @@ input {
     text-transform: uppercase;
 }
 
+nav {
+    margin-top: 10vh;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40vw;
+    /* background: snow; */
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+    font-size: 120%;
+    /* background: yellow; */
+}
+
+li {
+    margin: 3.5vh 0;
+}
+
+a:link {
+    color: darkgray;
+}
+
+a:visited {
+    color: black;
+}
+
 @media (max-width: 400px) {
     html {
 	font-size: 12px;

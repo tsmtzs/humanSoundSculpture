@@ -5,16 +5,24 @@
     <meta name="author" content="Tassos Tsesmetzis">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="player.webmanifest" crossorigin="use-credentials">
+    <!-- <link rel="manifest" href="player.webmanifest" crossorigin="use-credentials"> -->
     <!-- A workaround to avoid the annoying chrome error message -->
     <!-- 'favicon not found' -->
     <link rel="shortcut icon" href="">
     <title>Human Sound Sculpture</title>
   </head>
   <body>
-    <h1>Player</h1>
-    <h2 id="tapEl">Tap on this sentence to enable sound.</h2>
-    <input type="hidden" id="soundCheckBtn" value="test"></input>
+    <h1>Human Sound Sculpture</h1>
+    <nav id="menu">
+      <ul>
+	<!-- Go to Conductor's page -->
+	<li><a href="/conductor">Conductor</a></li>
+	<!-- Go to Player's page -->
+	<li><a href="/player">Player</a></li>
+	<!-- Go to description page -->
+	<li><a href="/description">Description</a></li>
+      </ul>
+    </nav>
     <!-- Print console messages on the  web page with the next script. -->
     <!-- Use 'hnl.mobileConsole.js' in git's 'develop' branch. -->
     <!-- Comment or delete in 'master'. -->

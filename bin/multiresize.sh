@@ -42,7 +42,7 @@ for size in ${@:2}; do
 
     # Resize picture to SIZE x SIZE
     # Maybe remove the '2>&-' at the end
-    # so that ffmpeg stout text is printed in
+    # so that ffmpeg stout is printed in
     # the console?
     ffmpeg -i "${fl}" -vf scale=${size}:-1 "${out}" 2>&-
 done
