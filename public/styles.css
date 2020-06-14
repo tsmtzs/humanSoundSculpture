@@ -5,7 +5,7 @@
 }
 
 html {
-    font-size: 14px;
+    font-size: 16px;
     text-align: center;
     background: #293f50;
 }
@@ -79,6 +79,7 @@ section p {
 
 #textScore {
     width: 70%;
+    max-width: 16em;
     margin-left: auto;
     margin-right: auto;
     text-align: left;
@@ -89,7 +90,7 @@ section p {
 }
 
 #name {
-    margin-right: 15px;
+    margin-right: 25px;
     text-align: right;
     font-size:90%;
 }

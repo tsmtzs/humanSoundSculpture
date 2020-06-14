@@ -1,6 +1,6 @@
 {
     "name": "Human Sound Sculpture",
-    "description": "Human Sound Sculpture - Player's web page",
+    "description": "Human Sound Sculpture - a public performance art piece.",
     "display": "fullscreen",
     "background_color": "#293f50",
     "icons": [
@@ -15,7 +15,7 @@
 	    "type": "image/png"
 	}
     ],
-    "name": "Human Sound Sculpture - Player",
-    "short_name": "HSS - Player",
+    "name": "Human Sound Sculpture",
+    "short_name": "HSS",
     "start_url": "/"
 }

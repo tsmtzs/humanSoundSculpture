@@ -8,6 +8,8 @@
       "start": "sudo systemctl start hss-webServer",
       "stop": "sudo systemctl stop hss-supercollider",
       "restart": "sudo systemctl restart hss-webServer",
+      "status": "systemctl status hss-webServer",
+      "status-sc": "systemctl status hss-supercollider",
       "log": "journalctl -u hss-webServer -r",
       "log-sc": "journalctl -u hss-supercollider -r",
       "log-follow": "journalctl -u hss-webServer -f",
