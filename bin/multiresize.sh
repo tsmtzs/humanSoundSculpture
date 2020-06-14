@@ -1,13 +1,15 @@
 #!/bin/bash
 # ##################################################
 #		Human Sound Sculpture
+# 
 # A help script to generate the icons for the
 # webmanifest file.
 #
 # Discussion:	This programme is used to resize
 #		a given image 'name.ext' to size NxN.
 #		The output picture is saved as
-#		'name_NxN.ext'.
+#		'name_NxN.ext' under the current working
+#		directory.
 # args:
 #	$1 - an image file
 #	rest args - new size(s)

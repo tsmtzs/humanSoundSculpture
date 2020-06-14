@@ -5,13 +5,38 @@
     "background_color": "#293f50",
     "icons": [
 	{
+	    "src": "/icons/hssIcon_128x128.png",
+	    "sizes": "128x128",
+	    "type": "image/png"
+	},
+	{
+	    "src": "/icons/hssIcon_152x152.png",
+	    "sizes": "152x152",
+	    "type": "image/png"
+	},
+	{
+	    "src": "/icons/hssIcon_167x167.png",
+	    "sizes": "167x167",
+	    "type": "image/png"
+	},
+	{
+	    "src": "/icons/hssIcon_180x180.png",
+	    "sizes": "180x180",
+	    "type": "image/png"
+	},
+	{
 	    "src": "/icons/hssIcon_192x192.png",
 	    "sizes": "192x192",
 	    "type": "image/png"
 	},
 	{
-	    "src": "/icons/hssIcon_512x512.png",
-	    "sizes": "512x512",
+	    "src": "/icons/hssIcon_196x196.png",
+	    "sizes": "196x196",
+	    "type": "image/png"
+	},
+	{
+	    "src": "/icons/hssIcon_32x32.png",
+	    "sizes": "32x32",
 	    "type": "image/png"
 	}
     ],

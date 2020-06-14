@@ -2,9 +2,7 @@
 # ##################################################
 #		Human Sound Sculpture
 # 
-# webmanifest file 'icons' field.
-#
-# Discussion:	This little programme is a help script
+# Discussion:	This little program is a help script
 #		that generates a json formated text.
 #		The output string is suitable for the
 #		'icons' field of a webmanifest
