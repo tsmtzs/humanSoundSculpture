@@ -7,9 +7,35 @@ import { Maybe } from './functors.mjs';
 import Sound from './sound.mjs';
 
 // ////////////////////////////////////////////////////////////
+// Constants
+// ////////////////////////////////////////////////////////////
+const wsOpenMsg = 'Tap on this sentence to enable sound.';
+const wsErrorMsg = 'Cannot connect.';
+
+// ////////////////////////////////////////////////////////////
+// Get the html element with id 'textMsg'.
+// This element is used to post messages on the page.
+//	* On WebSocket load prints 'wsLoadMsg'
+//	* On WebSocket error prints 'wsErrorMsg'
+// ////////////////////////////////////////////////////////////
+const textMsgMaybe = Maybe.of(document.getElementById('textMsg'));
+
+// ////////////////////////////////////////////////////////////
+// Websockets
+// ////////////////////////////////////////////////////////////
+// Initialize WebSockets
+// 'hss_ip' and 'node_port' are
+// bash environment variables.
+// For each session they are set in server.js with a 'sed' command.
+// After perfomance, they are unset in bin/setEnvirParNames.sh'
+// when the hss-webServer.service stops.
+const socket = new WebSocket('wss://HSS_IP:NODE_PORT');
+
+// ////////////////////////////////////////////////////////////
 // Functions
 // ////////////////////////////////////////////////////////////
-
+// Set text to a DOM element
+const setText = text => elem => elem.textContent = text;
 // Event Listeners
 const addEventListener = eventType => htmlElement => listener =>  {
     htmlElement.addEventListener(eventType, listener);
@@ -21,7 +47,7 @@ const buttonListener =  socket => valueFunc => button => event => {
     // Change the value of the button.
     button.value = valueFunc(button.value);
 };
-// Listener for the h2 element.
+// Listener for the <p> element with ID 'textMsg'.
 const tapListener = element => event => {
     const inputElements = Array.from(document.body.getElementsByTagName('input'));
 
@@ -49,8 +75,23 @@ const wsListener = msgHandlerObj => message => {
     console.log('Websocket message: ', msg.args, msg.type, msg);
     
 };
+// WebSocket 'error' event listener.
+const wsErrorListener = event => {
+    // Set text to 'wsErrorMsg'
+    textMsgMaybe.map(setText(wsErrorMsg));
+    console.log('ERROR in WebSocket', event);
+};
 // WebSocket 'open' event listener.
 const wsOpenListener = event => {
+    ////////////////////////////////////////////////////////////
+    // 'textMsg' element
+    ////////////////////////////////////////////////////////////
+    // Set text to 'wsOpenMsg'
+    textMsgMaybe.map(setText(wsOpenMsg));
+    // Attach the 'tapListener' function to the 'click' event.
+    textMsgMaybe.map(addEventListener('click'))
+	.ap(textMsgMaybe.map(tapListener));
+
     ////////////////////////////////////////////////////////////
     // Start button
     ////////////////////////////////////////////////////////////
@@ -110,27 +151,10 @@ const createTestSynth = soundObj => {
 	}	
     };
 };
-// ////////////////////////////////////////////////////////////
-// Get the html element with id 'tapEl'.
-// This element is used to enable the AudioContext.
-// ////////////////////////////////////////////////////////////
-const tapElMaybe = Maybe.of(document.getElementById('tapEl'));
-
-tapElMaybe.map(addEventListener('click'))
-    .ap(tapElMaybe.map(tapListener));
 
 // ////////////////////////////////////////////////////////////
-// Websockets
-// ////////////////////////////////////////////////////////////
-// Initialize WebSockets
-// 'hss_ip' and 'node_port' are
-// bash environment variables.
-// For each session they are set in server.js with a 'sed' command.
-// After perfomance, they are unset in bin/setEnvirParNames.sh'
-// when the hss-webServer.service stops.
-const socket = new WebSocket('wss://192.168.10.2:3000');
-
-socket.onerror = event => console.log('ERROR in WebSocket', event);
+// Set WebSocket listeners
+socket.onerror = wsErrorListener;
 
 socket.onopen = wsOpenListener;
 

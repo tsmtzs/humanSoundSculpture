@@ -38,4 +38,4 @@ hss.ampMul = hss.amps.maxItem.reciprocal * 0.9;
 
 // Uncomment the next code line if there is no conductor
 // among the performers.
-// hss.play;
+hss.play;
