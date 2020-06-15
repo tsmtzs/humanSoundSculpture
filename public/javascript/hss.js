@@ -69,10 +69,9 @@ const wsMsgHandler = func => {
 // WebSockets listener.
 const wsListener = msgHandlerObj => message => {
     const msg = JSON.parse(message.data);
-    console.log(msg);
     msgHandlerObj[msg.type](...msg.args);
 
-    console.log('Websocket message: ', msg.args, msg.type, msg);
+    // console.log('Websocket message: ', msg.args, msg.type, msg);
     
 };
 // WebSocket 'error' event listener.

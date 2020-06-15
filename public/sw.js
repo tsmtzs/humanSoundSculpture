@@ -40,13 +40,8 @@ self.addEventListener('install', event => {
 		    './javascript/sound.mjs',
 		    './javascript/hss.js',
 		    './javascript/hnl.mobileConsole.js',
-    	    	    './icons/hssIcon_32x32.png',
-    	    	    './icons/hssIcon_128x128.png',
-    	    	    './icons/hssIcon_152x152.png',
-		    './icons/hssIcon_167x167.png',
-		    './icons/hssIcon_180x180.png',
 		    './icons/hssIcon_192x192.png',
-		    './icons/hssIcon_196x196.png'
+		    './icons/hssIcon_513x513.png'
     	    	]);
     	    })
 	    .catch(console.log)

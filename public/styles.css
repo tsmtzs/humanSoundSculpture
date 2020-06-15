@@ -82,6 +82,11 @@ section p {
     text-align: left;
 }
 
+#textMsg {
+    margin-top: 10vh;
+    font-size: 140%;
+}
+
 .italics {
     font-style: italic;
 }
