@@ -23,9 +23,11 @@ After=network.target
 [Service]
 EnvironmentFile=/home/tassos/myProjects/humanSoundSculpture/systemd/hss-environment
 Type=simple
-User=tassos
+User=hss
+Group=hss
+DynamicUser=true
 WorkingDirectory=/home/tassos/myProjects/humanSoundSculpture
-# Start wireless interface 'wlan0'.
+# Start the wireless interface 'wlan0' if there is one.
 ExecStartPre=-/usr/bin/ip link set wlan0 up
 # Start the web server.
 ExecStart=/usr/bin/node server.js

@@ -18,7 +18,9 @@ After=network.target
 Environment=QT_QPA_PLATFORM=offscreen
 EnvironmentFile=/home/tassos/myProjects/humanSoundSculpture/systemd/hss-environment
 Type=simple
-User=tassos
+User=hss
+Group=hss
+DynamicUser=true
 WorkingDirectory=/home/tassos/myProjects/humanSoundSculpture
 # Start supercollider
 ExecStart=/usr/bin/sclang -D supercollider/humanSoundSculpture.scd
