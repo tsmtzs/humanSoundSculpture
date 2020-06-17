@@ -26,7 +26,6 @@ Type=simple
 WorkingDirectory=/home/tassos/myProjects/humanSoundSculpture
 # Start the wireless interface 'wlan0' if there is one.
 ExecStartPre=-/usr/bin/ip link set wlan0 up
-X-ExecStartPre=-/usr/bin/ip addr 
 # Start the web server.
 ExecStart=/usr/bin/node server.js
 ExecStop=/home/tassos/myProjects/humanSoundSculpture/bin/setEnvirVarNames.sh public/javascript/hss.js
