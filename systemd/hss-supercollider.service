@@ -2,7 +2,7 @@
 #		Human Sound Sculpture
 # 
 # A systemd service file for starting SuperCollider
-# Save this file under /lib/systemd/system.
+# Save this file under ~/.config/systemd/user.
 #		see: man systemd.unit for paths
 # CAUTION: Write the appropriate path in the fields
 # 'EnvironmentFile' and 'WorkingDirectory'.
@@ -18,9 +18,6 @@ After=network.target
 Environment=QT_QPA_PLATFORM=offscreen
 EnvironmentFile=/home/tassos/myProjects/humanSoundSculpture/systemd/hss-environment
 Type=simple
-User=hss
-Group=hss
-DynamicUser=true
 WorkingDirectory=/home/tassos/myProjects/humanSoundSculpture
 # Start supercollider
 ExecStart=/usr/bin/sclang -D supercollider/humanSoundSculpture.scd

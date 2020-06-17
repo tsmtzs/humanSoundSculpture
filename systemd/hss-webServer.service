@@ -3,7 +3,7 @@
 # 
 # A systemd service file for starting the web server
 # of the piece.
-# Save this file under /lib/systemd/system.
+# Save this file under ~/.config/systemd/user.
 #		see: man systemd.unit for paths
 # CAUTION: Write the appropriate absolute paths in the fields
 # 'EnvironmentFile', 'WorkingDirectory' and 'ExecStop'.
@@ -23,12 +23,10 @@ After=network.target
 [Service]
 EnvironmentFile=/home/tassos/myProjects/humanSoundSculpture/systemd/hss-environment
 Type=simple
-User=hss
-Group=hss
-DynamicUser=true
 WorkingDirectory=/home/tassos/myProjects/humanSoundSculpture
 # Start the wireless interface 'wlan0' if there is one.
 ExecStartPre=-/usr/bin/ip link set wlan0 up
+X-ExecStartPre=-/usr/bin/ip addr 
 # Start the web server.
 ExecStart=/usr/bin/node server.js
 ExecStop=/home/tassos/myProjects/humanSoundSculpture/bin/setEnvirVarNames.sh public/javascript/hss.js
