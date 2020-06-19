@@ -21,14 +21,14 @@ Requires=hss-supercollider.service
 After=network.target
 
 [Service]
-EnvironmentFile=/home/tassos/myProjects/humanSoundSculpture/systemd/hss-environment
+# EnvironmentFile=/home/tassos/myProjects/humanSoundSculpture/systemd/hss-environment
 Type=simple
-WorkingDirectory=/home/tassos/myProjects/humanSoundSculpture
+WorkingDirectory=HSS_DIR
 # Start the wireless interface 'wlan0' if there is one.
 ExecStartPre=-/usr/bin/ip link set wlan0 up
 # Start the web server.
 ExecStart=/usr/bin/node server.js
-ExecStop=/home/tassos/myProjects/humanSoundSculpture/bin/setEnvirVarNames.sh public/javascript/hss.js
+ExecStop=HSS_DIR/bin/setEnvirVarNames.sh public/javascript/hss.js
 # Restart=on-failure
 
 [Install]
