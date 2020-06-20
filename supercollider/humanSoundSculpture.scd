@@ -24,9 +24,9 @@ Event.addEventType(\sendOsc, {
 // Set it to an Interpreter variable or as a
 // value to an appropriate current environment's key.
 // For some reason assignment to variables doesn't work in daemon mode (-D flag)
-// with the usual 'var ip = "HSS_IP".getenv'.
+// with the usual 'var ip = "192.168.100.2".getenv'.
 // ip = "HSS _IP".getenv;
-ip = HSS_IP;
+ip = 192.168.100.2;
 
 // Check for logs using systemd's 'journalctl'
 //		journalctl --unit hss-supercollider --follow

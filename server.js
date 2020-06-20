@@ -22,7 +22,7 @@ const execSync = require('child_process').execSync;
 // OSC communication with SuperCollider
 const osc = require('node-osc');
 const oscServer = new osc.Server(57121, '0.0.0.0');
-const ip = HSS_IP;
+const ip = 192.168.100.2;
 const sclang = new osc.Client(ip, 57120);
 const oscPath = '/action';
 // web sockets

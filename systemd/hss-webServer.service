@@ -23,7 +23,7 @@ After=network.target
 [Service]
 # EnvironmentFile=/home/tassos/myProjects/humanSoundSculpture/systemd/hss-environment
 Type=simple
-WorkingDirectory=HSS_DIR
+WorkingDirectory=/home/pi/Documents/humanSoundSculpture
 # Start the wireless interface 'wlan0' if there is one.
 ExecStartPre=-/usr/bin/ip link set wlan0 up
 # Start the web server.

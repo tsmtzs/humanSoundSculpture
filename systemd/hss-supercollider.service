@@ -18,7 +18,7 @@ After=network.target
 X-Environment=QT_QPA_PLATFORM=offscreen
 # EnvironmentFile=/home/tassos/myProjects/humanSoundSculpture/systemd/hss-environment
 Type=simple
-WorkingDirectory=HSS_DIR
+WorkingDirectory=/home/pi/Documents/humanSoundSculpture
 # Start supercollider
 ExecStart=/usr/bin/sclang -D supercollider/humanSoundSculpture.scd
 # Restart=on-failure
