@@ -23,6 +23,6 @@ do
 	# if file {} is a regular file the substitute parVal with parName
 	find $1 -type d \( -path ${1}/node_modules -o -path ${1}/bin -o -path ${1}/.git \) \
 	     -prune  -o \
-	     -exec test -f {} \; -exec sed -i -e "s/$parVal/$parName/g" {} \;
+	     -exec test -f {} \; -exec sed -i -e "s|$parVal|$parName|g" {} \;
     fi
 done < $2

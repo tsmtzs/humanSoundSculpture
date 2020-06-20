@@ -15,7 +15,7 @@ Wants=hss-webServer.service
 After=network.target
 
 [Service]
-Environment=QT_QPA_PLATFORM=offscreen
+X-Environment=QT_QPA_PLATFORM=offscreen
 # EnvironmentFile=/home/tassos/myProjects/humanSoundSculpture/systemd/hss-environment
 Type=simple
 WorkingDirectory=HSS_DIR
