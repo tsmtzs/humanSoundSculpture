@@ -29,7 +29,7 @@ const textMsgMaybe = Maybe.of(document.getElementById('textMsg'));
 // For each session they are set in server.js with a 'sed' command.
 // After perfomance, they are unset in bin/setEnvirParNames.sh'
 // when the hss-webServer.service stops.
-const socket = new WebSocket('wss://192.168.100.2:NODE_PORT');
+const socket = new WebSocket('wss://HSS_IP:NODE_PORT');
 
 // ////////////////////////////////////////////////////////////
 // Functions
@@ -109,7 +109,7 @@ const wsOpenListener = event => {
     // When conductor double clicks the button,
     // send a 'shutdown' message to web server.
     shutdownBtnMaybe.map(addEventListener('dblclick'))
-	.ap(shutdownBtnMaybe.map(buttonListener(socket)(() => 'goodbye hss!')));
+	.ap(shutdownBtnMaybe.map(buttonListener(socket)(() => 'hss ended')));
 
     // ////////////////////////////////////////////////////////////
     // Start AudioContext and play sound.

@@ -22,13 +22,13 @@ const execSync = require('child_process').execSync;
 // OSC communication with SuperCollider
 const osc = require('node-osc');
 const oscServer = new osc.Server(57121, '0.0.0.0');
-const ip = 192.168.100.2;
+const ip = 'HSS_IP';		// HSS _IP
 const sclang = new osc.Client(ip, 57120);
 const oscPath = '/action';
 // web sockets
 // HSS_WSS implicitly loads the 'ws' module.
 const HSS_WSS = require(__dirname + '/webServerJS/hss_wss.js').HSS_WSS;
-const webServerPort = NODE_PORT;
+const webServerPort = 'NODE_PORT'; // HSS _PORT
 const wss = new HSS_WSS({ server: server, clientTracking: true });
 // ////////////////////////////////////////////////////////////
 // Event listeners:
