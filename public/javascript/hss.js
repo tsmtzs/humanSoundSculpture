@@ -109,7 +109,7 @@ const wsOpenListener = event => {
     // When conductor double clicks the button,
     // send a 'shutdown' message to web server.
     shutdownBtnMaybe.map(addEventListener('dblclick'))
-	.ap(shutdownBtnMaybe.map(buttonListener(socket)(() => 'goodbye hss!')));
+	.ap(shutdownBtnMaybe.map(buttonListener(socket)(() => 'hss ended')));
 
     // ////////////////////////////////////////////////////////////
     // Start AudioContext and play sound.

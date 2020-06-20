@@ -22,13 +22,13 @@ const execSync = require('child_process').execSync;
 // OSC communication with SuperCollider
 const osc = require('node-osc');
 const oscServer = new osc.Server(57121, '0.0.0.0');
-const ip = process.env.HSS_IP || '192.168.100.2';
+const ip = 'HSS_IP';		// HSS _IP
 const sclang = new osc.Client(ip, 57120);
 const oscPath = '/action';
 // web sockets
 // HSS_WSS implicitly loads the 'ws' module.
 const HSS_WSS = require(__dirname + '/webServerJS/hss_wss.js').HSS_WSS;
-const webServerPort = process.env.NODE_PORT || 3000;
+const webServerPort = 'NODE_PORT'; // HSS _PORT
 const wss = new HSS_WSS({ server: server, clientTracking: true });
 // ////////////////////////////////////////////////////////////
 // Event listeners:
@@ -90,8 +90,6 @@ const oscMessageHandler = wss => {
     };
 };
 
-// Replace environment variables in public files
-execSync(`/usr/bin/sed -i -e "s/HSS_IP/${ip}/g" -e "s/NODE_PORT/${webServerPort}/g" ${path.join(__dirname,"public/javascript/hss.js")}`);
 
 app.use(express.static(path.join(__dirname, 'public')));
 

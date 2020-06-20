@@ -12,13 +12,12 @@
 Description=Run SuperCollider for the piece Human Sound Sculpture
 Documentation=file:///./README.md
 Wants=hss-webServer.service
-After=network.target
+After=network-online.target
 
 [Service]
-Environment=QT_QPA_PLATFORM=offscreen
-EnvironmentFile=/home/tassos/myProjects/humanSoundSculpture/systemd/hss-environment
+X-Environment=QT_QPA_PLATFORM=offscreen
 Type=simple
-WorkingDirectory=/home/tassos/myProjects/humanSoundSculpture
+WorkingDirectory=HSS_DIR
 # Start supercollider
 ExecStart=/usr/bin/sclang -D supercollider/humanSoundSculpture.scd
 # Restart=on-failure

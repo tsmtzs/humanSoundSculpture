@@ -20,12 +20,8 @@ Event.addEventType(\sendOsc, {
 	~address.sendMsg("/note", ~freq.(), ~amp, ~dur);
 });
 
-// Read the IP from an environment variable.
-// Set it to an Interpreter variable or as a
-// value to an appropriate current environment's key.
-// For some reason assignment to variables doesn't work in daemon mode (-D flag)
-// with the usual 'var ip = "HSS_IP".getenv'.
-ip = "HSS_IP".getenv;
+// Set ip using a project global variable.
+ip = "HSS_IP";							// HSS _IP
 
 // Check for logs using systemd's 'journalctl'
 //		journalctl --unit hss-supercollider --follow
