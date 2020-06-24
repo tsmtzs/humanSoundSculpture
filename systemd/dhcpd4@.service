@@ -1,13 +1,15 @@
-# This systemd service file is provided by
+# This systemd service file is adapted from
 # the 'dhcpd' package of the Arch Linux distribution.
 [Unit]
-Description=IPv4 DHCP server
+Description=IPv4 DHCP server on %I
 After=network.target network-online.target
 Wants=network-online.target
 
 [Service]
 Type=forking
-ExecStart=/usr/sbin/dhcpd -4 -q -cf /etc/dhcp/dhcpd.conf -pf /run/dhcpd4/dhcpd.pid
+# Add IP to interface wlan0
+ExecStartPre=-/sbin/ip addr add HSS_IP/24 dev wlan0
+ExecStart=/usr/sbin/dhcpd -4 -q -cf /etc/dhcp/dhcpd.conf -pf /run/dhcpd4/dhcpd.pid %I
 RuntimeDirectory=dhcpd4
 PIDFile=/run/dhcpd4/dhcpd.pid
 User=root

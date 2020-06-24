@@ -15,12 +15,13 @@ Wants=hss-webServer.service
 After=network-online.target
 
 [Service]
-X-Environment=QT_QPA_PLATFORM=offscreen
+Environment=QT_QPA_PLATFORM=offscreen DISPLAY=:0.0
 Type=simple
+User=pi
 WorkingDirectory=HSS_DIR
 # Start supercollider
-ExecStart=/usr/bin/sclang -D supercollider/humanSoundSculpture.scd
+ExecStart=/usr/local/bin/sclang -D supercollider/humanSoundSculpture.scd
 # Restart=on-failure
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

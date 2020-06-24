@@ -23,13 +23,11 @@ After=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=HSS_DIR
-# Start the wireless interface 'wlan0' if there is one.
-ExecStartPre=-/sbin/ip link set wlan0 up
 # Start the web server.
 ExecStart=/usr/local/bin/node server.js
 
 # Restart=on-failure
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 Also=hss-supercollider.service
