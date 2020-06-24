@@ -1,9 +1,0 @@
-# Human Sound Sculpture
-# PARAMETERS COMMON IN MULTIPLE FILES
-# First collumn: parameter name
-# Second collumn: parameter value
-# Note: parameter names must start with a double _
-# and the letters should be in capital.
-# End the file in an empty line.
-# Don't leave empty lines
-__STATIC_IP 192.168.10.2

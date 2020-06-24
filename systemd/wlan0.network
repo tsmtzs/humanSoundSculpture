@@ -1,0 +1,12 @@
+# ##################################################
+#		Human Sound Sculpture
+# 
+# Networkd configuration file.
+# Set static IP to the wifi network.
+# ##################################################
+[Match]
+Name=wlan0
+
+[Network]
+Address=HSS_IP/24
+DHCPServer=yes

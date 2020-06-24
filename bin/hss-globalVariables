@@ -1,0 +1,18 @@
+# ##################################################
+#		Human Sound Sculpture
+# 
+# Global variables of the piece
+#	HSS_DIR: absolute path of the humanSoundSculpture directory
+#	HSS_IP: web server's IP on the local network
+#	HSS_NETWORK: just the 3 leftmost bytes of HSS_IP
+#			ex. 192.168.10.2 ==> 192.168.10
+#			This is set with the scipts
+#			bin/replaceGlobalVar*.sh
+#	NODE_PORT: HTTP port number
+#
+# Each line should have only one name - value pair.
+# Lines starting with # are regarded as comments.
+# ##################################################
+HSS_DIR		/home/pi/Documents/myProjects/humanSoundSculpture
+HSS_IP		192.168.100.2
+NODE_PORT	3000
