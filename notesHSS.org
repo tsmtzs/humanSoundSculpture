@@ -2,7 +2,7 @@
 # 	Human Sound Sculpture
 
 * NOTES
-  /Human Sound Sculpture/ uses a web server to distibute
+  /Human Sound Sculpture/ uses a web server to distribute
   note events to /clients/.
   The web server is implemented in *node.js*.
   *SuperCollider* (=sclang=) is used to generate a random walk
@@ -15,7 +15,7 @@
 
 ** Running on Raspberry Pi 3b
    Rpi is used as a wifi hotspot. 
-   For this you need *hostapd* and *dhcpd* packages. Both programs are run
+   For this you need the *hostapd* and *dhcpd* packages. Both programs are run
    as systemd services. You should /enable/ them in order to start at boot.
    For this run
 		~sudo systemctl enable <service file>~
@@ -52,7 +52,7 @@
    In order to =start= or =enable= the process you must append the wlan interface after the
    at(@) symbol, in order to replace the ~%i~. For example, if your interface is =wlan0=
    enable with ~sudo systemctl enable hostapd@wlan0.service~.
-   The configuration file for you wifi interface (=wlan0= in our case) is save in =/etc/hostapd/=
+   The configuration file for you wifi interface (=wlan0= in our case) is saved in =/etc/hostapd/=
    It consists of the lines
 
       interface=wlan0

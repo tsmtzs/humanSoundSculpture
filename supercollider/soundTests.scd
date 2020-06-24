@@ -1,3 +1,9 @@
+// ////////////////////////////////////////////////////////////
+//				Human Sound Sculpture
+//
+// Use this file for sound tests or sound simulations.
+// ////////////////////////////////////////////////////////////
+
 (
 ~hss = (
 	notes: [ Rest, 11, 10, 1, 12, 4, 5, 2, 3, 7, 6, 9, 8 ],
@@ -5,7 +11,7 @@
 	durs: [ 1, 1/2 ] ++ [ 1, 2/3, 1, 3/4, 1, 5/6 ].mirror,
 
 	ampMul: 2.5,
-	durMul: 20,
+	durMul: 26,
 	deltaMul: { [ 0.1.rrand(0.2), 0.55.rrand(0.85), 1.0.rrand(1.1) ].wchoose([0.05, 0.6, 0.35]) },
 
 	edgeFunc: {| ev, i |
@@ -46,7 +52,7 @@ transitionProbs =  normalizeRows.( ~hss.paley13.value );
 startVertex = 13.rand;
 paleyStream = PGraphWalk( transitionProbs, (..12), startVertex ).asStream;
 
-Penvir(
+~pattern = Penvir(
 	~hss,
 	Pbind(
 		\instrument, 'sync2',			// or \sync2
@@ -60,7 +66,7 @@ Penvir(
 		\amp, Pfunc {| ev |
 			~amps[ ev.paley ]  * ~ampMul
 		},
-		\pan, 1.0.rand2,
+		\pan, Pfunc {1.0.rand2},
 		\octave, Pfunc {| ev |
 			var vertex, args;
 			vertex = ev.paley / 12;
@@ -74,14 +80,23 @@ Penvir(
 		},
 		\delta, Pkey(\dur) * Pfunc { |ev| ~deltaMul.value.debug("DeltaMul inside Penvir") }
 	)
-).play
+)
 )
 
+~pattern.play
+
 ~hss.push;
-~deltaMul = { [ 0.1.rrand(0.4), 0.65.rrand(0.8), 0.8.rrand(1.05) ].wchoose([0.15, 0.5, 0.35]) };
+~deltaMul = { [ 0.1.rrand(0.4), 0.65.rrand(0.8), 0.8.rrand(1.05) ].wchoose([0.25, 0.5, 0.25]) };
 ~deltaMul = {0.1.rrand(0.2)};
-~ampMul = ~amps.maxItem.reciprocal * 0.7;
-~durMul = 27;
+~ampMul = ~amps.maxItem.reciprocal * 0.9;
+~durMul = 22;
 ~minOctave = 6;
 ~maxOctave = 7;
 currentEnvironment.pop;
+
+// Record
+(
+var path = "simulation.aiff";
+
+~pattern.record(path);
+)

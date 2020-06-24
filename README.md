@@ -1,4 +1,5 @@
 # *Human Sound Sculpture*
+<p style="text-align: right;">To Kyriakos Kolesis</p>
 
 ## Overview
     Νύχτα.
@@ -10,16 +11,16 @@
     Ούτε πολύ κοντά, ούτε μακριά.
 
     Σταματημένος ο Χρόνος.
-*Human Sound Sculpture* is a piece for performers and algorithmic sound. It should be played outdoors in places like city parks, town squares, etc. This place must be quiet enought so that the overall amplitude of the piece stays in relative low levels and the frozen atmosphere is not destroyed. The ambient soundscape should be regarded as part of the piece.
+*Human Sound Sculpture* is a piece for performers and algorithmic sound. It should be played outdoors in places like city parks, town squares, etc. This place must be quiet enough so that the overall amplitude of the piece stays in relative low levels and the frozen atmosphere is not destroyed. The ambient soundscape should be regarded as part of the piece.
 
 The performance simply starts and lasts as long as the performers have decided. Similarly, the performance simply stops and the performers are leaving silently taking distinct paths.
 
 ## Technicalities
-Each performer of *Human Sound Sculpture* carries a smart phone. This device is used as a loudspeaker and should be as less visible as possible. The device is connected to a local network and, using the browser, each performer opens one of the two web pages of the piece. She stays connected to the same web page until performace ends. The step of connecting to the network and loading the web page must be done before performance starts and is not part of the piece.
+Each performer of *Human Sound Sculpture* carries a smart phone. This device is used as a loudspeaker and should be as less visible as possible. The device is connected to a local network and, using the browser, each performer opens one of the two web pages of the piece. She stays connected to the same web page until performance ends. The step of connecting to the network and loading the web page must be done before performance starts and is not part of the piece.
 
 The two web pages that a performer can connect are tagged as *player* and *conductor*. The first is the default one that one can see when connects to the local web server. For the second, the performer must add the word *conductor* to the address. Each performance has at most one *conductor*.
 
-The *conductor* page has a button that is used to start and end the performance. Specifically, by pressing the button, the *conductor* starts and stops the generation of sound events. If there is no *conductor* this task is handled by a person who is not part of the performace. She can start/kill the web server or start/stop a SuperCollider *EventStreamPlayer*.
+The *conductor* page has a button that is used to start and end the performance. Specifically, by pressing the button, the *conductor* starts and stops the generation of sound events. If there is no *conductor* this task is handled by a person who is not part of the performance. She can start/kill the web server or start/stop a SuperCollider *EventStreamPlayer*.
 
 ### Web Server
 The web server is written in [node.js](https://nodejs.org/en/). It receives OSC messages from SuperCollider and distributes them to web clients using web sockets. Each OSC message has one of the forms:
