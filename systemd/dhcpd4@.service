@@ -2,16 +2,16 @@
 # the 'dhcpd' package of the Arch Linux distribution.
 [Unit]
 Description=IPv4 DHCP server on %I
-After=network.target network-online.target
-Wants=network-online.target
+Wants=network.target
+After=network.target 
+After=-hostapd-wlan.service
 
 [Service]
 Type=forking
 # Add IP to interface wlan0
-ExecStartPre=-/sbin/ip addr add HSS_IP/24 dev wlan0
-ExecStart=/usr/sbin/dhcpd -4 -q -cf /etc/dhcp/dhcpd.conf -pf /run/dhcpd4/dhcpd.pid %I
-RuntimeDirectory=dhcpd4
-PIDFile=/run/dhcpd4/dhcpd.pid
+ExecStartPre=-/sbin/ip addr add HSS_IP/24 dev %I
+ExecStart=/usr/sbin/dhcpd -4 -q -cf /etc/dhcp/dhcpd.conf -pf /run/dhcpd/dhcpd.pid %I
+PIDFile=/run/dhcpd/dhcpd.pid
 User=root
 ProtectSystem=full
 ProtectHome=on

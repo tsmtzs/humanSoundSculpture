@@ -4,7 +4,7 @@
 # A systemd service file for starting SuperCollider
 # Save this file under ~/.config/systemd/user.
 #		see: man systemd.unit for paths
-# CAUTION: Write the appropriate path in the fields
+# CAUTION: Write the appropriate paths in the fields
 # 'EnvironmentFile' and 'WorkingDirectory'.
 # ##################################################
 

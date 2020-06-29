@@ -13,6 +13,6 @@
 # Each line should have only one name - value pair.
 # Lines starting with # are regarded as comments.
 # ##################################################
-HSS_DIR		/home/pi/Documents/myProjects/humanSoundSculpture
+HSS_DIR		/home/pi/myProjects/humanSoundSculpture
 HSS_IP		192.168.100.2
 NODE_PORT	3000
