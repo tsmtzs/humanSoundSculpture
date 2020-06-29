@@ -9,4 +9,4 @@ Name=wlan0
 
 [Network]
 Address=HSS_IP/24
-DHCPServer=yes
+# DHCPServer=yes
