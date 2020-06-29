@@ -11,7 +11,7 @@ Install root CA certificate with
 mkcert -install
 ```
 
-Copy `rootCA.pem` from `mkcert CAROOT` directory to `public`.
+Copy `rootCA.pem` from `mkcert -CAROOT` directory to `public`.
 
 ## On mobile devices
 Direct to `https://HSS_IP:NODE_PORT/rootCA.pem` and install certificate.
