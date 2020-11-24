@@ -10,7 +10,7 @@
 
 [Unit]
 Description=Run SuperCollider for the piece Human Sound Sculpture
-Documentation=file:///./README.md
+Documentation=file:./README.md
 Wants=hss-webServer.service
 After=network-online.target
 
