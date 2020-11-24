@@ -2,10 +2,12 @@
 #		Human Sound Sculpture
 # 
 # A systemd service file for starting SuperCollider
-# Save this file under ~/.config/systemd/user.
+# Save this file under /lib/systemd/system.
 #		see: man systemd.unit for paths
-# CAUTION: Write the appropriate paths in the fields
-# 'EnvironmentFile' and 'WorkingDirectory'.
+#
+# RaspberryPi note: For some reason, user systemd
+#	services don't start. We get the message:
+#		Failed to connect to bus: No such file or directory
 # ##################################################
 
 [Unit]
@@ -17,11 +19,18 @@ After=network-online.target
 [Service]
 Environment=QT_QPA_PLATFORM=offscreen DISPLAY=:0.0
 Type=simple
-User=pi
-WorkingDirectory=HSS_DIR
+DynamicUser=true
+User=hss
 # Start supercollider
-ExecStart=/usr/local/bin/sclang -D supercollider/humanSoundSculpture.scd
+ExecStart=/usr/local/bin/sclang -D /home/pi/humanSoundSculpture/supercollider/humanSoundSculpture.scd
 # Restart=on-failure
+ProtectSystem=strict
+ProtectHome=read-only
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+KeyringMode=private
 
 [Install]
 WantedBy=default.target
