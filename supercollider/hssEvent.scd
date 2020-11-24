@@ -73,6 +73,7 @@
 			\octave, Pfunc { |event|
 				var vertex, args;
 				vertex = event.paley / 12;
+				// You need sc3-plugins for the method 'betarand'
 				ev.minOctave.(event)
 				.betarand(
 					ev.maxOctave.(event),
