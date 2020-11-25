@@ -20,15 +20,10 @@ Event.addEventType(\sendOsc, {
 	~address.sendMsg("/note", ~freq.(), ~amp, ~dur);
 });
 
-// Set ip using a project global variable.
-ip = "HSS_IP";							// HSS _IP
-
-// Check for logs using systemd's 'journalctl'
-//		journalctl --unit hss-supercollider --follow
-// ip.postln;
-
-// NetAddr: the address of the web server
-hss.init(NetAddr(ip, 57121));
+// NetAddr: the address of the web server.
+// The loopback address is used, since
+// the server runs on the same machine as SuperCollider.
+hss.init(NetAddr("127.0.0.1", 57121));
 // Set values
 hss.ampMul = hss.amps.maxItem.reciprocal * 0.9;
 
