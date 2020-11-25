@@ -1,6 +1,6 @@
 # ##################################################
 #		Human Sound Sculpture
-# 
+#
 # A systemd service file for starting the web server
 # of the piece.
 # Save this file under /usr/lib/systemd/system.
@@ -12,8 +12,7 @@
 
 [Unit]
 Description=Web server for the piece Human Sound Sculpture
-Documentation=file:./README.md
-# Requires=hss-supercollider.service
+Documentation=file:/README.md
 After=network-online.target
 
 [Service]
@@ -36,4 +35,3 @@ KeyringMode=private
 
 [Install]
 WantedBy=default.target
-Also=hss-supercollider.service
