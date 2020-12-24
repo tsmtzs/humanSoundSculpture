@@ -6,8 +6,8 @@
 # names to values.
 # Arguments:
 #	1st arg: base directory
-#	2nd arg: A file with pairs parameter name - value.
-#		 Pairs are one per line.
+#	2nd arg: A file with pairs of the form parameter name - value.
+#		 Pairs are written one per line.
 #		 Lines that start with a # are not processed.
 # ################################################## 
 
@@ -26,19 +26,20 @@ do
 	# Save the left most three bytes of IP
 	# to the global variable HSS_NETWORK
 	if [[ "$parName" == "HSS_IP" ]]; then
+	    # Regular expression comparison:
 	    if [[ $parVal =~ $ipExpr ]]; then
 		HSS_NETWORK="${BASH_REMATCH[0]}"
 		# Replace HSS_NETWORK
 		# ONLY in systemd/dhcpd.conf
-		sed -i -e "s|HSS_NETWORK|$HSS_NETWORK|g" $1/conf/dhcpd.conf
+		sed -i -e "s|\$HSS_NETWORK|$HSS_NETWORK|g" $1/conf/dhcpd.conf
 	    fi
 	fi
 
 	# Search and change common parameters in all files
 	# except those in node_modules, bin, .git and the file systemd/dhcpd.conf
-	# if file {} is a regular file the substitute parName with parVal
+	# if file {} is a regular file, then substitute parName with parVal
 	find $1 -type d \( -path ${1}/node_modules -o -path ${1}/bin -o -path ${1}/.git -o -path ${1}/conf \) \
 	     -prune  -o \
-	     -exec test -f {} \; -exec sed -i -e "s|$parName|$parVal|g" {} \;
+	     -exec test -f {} \; -exec sed -i -e "s|\$$parName|$parVal|g" {} \;
     fi
 done < $2
