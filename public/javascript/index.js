@@ -1,8 +1,9 @@
 // ////////////////////////////////////////////////////////////
 //		Human Sound Sculpture
+//				by Tassos Tsesmetzis
 //
-// Web client javascript for 'index.html'.
-// Register the ServiceWorker
+// Web client JavaScript for 'index.html'.
+// Register the ServiceWorker.
 // ////////////////////////////////////////////////////////////
 // from https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/register
 if ('serviceWorker' in navigator) {
