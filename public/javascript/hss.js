@@ -30,7 +30,7 @@ const textMsgMaybe = Maybe.of(document.getElementById('textMsg'));
 // For each session they are set in server.js with a 'sed' command.
 // After perfomance, they are unset in bin/setEnvirParNames.sh'
 // when the hss-webServer.service stops.
-const socket = new WebSocket('wss://192.168.10.2:3000');
+const socket = new WebSocket('wss://$HSS_IP:$HSS_HTTP_PORT');
 
 // ////////////////////////////////////////////////////////////
 // Functions

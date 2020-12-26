@@ -6,8 +6,21 @@
 // ServiceWorker.
 // ////////////////////////////////////////////////////////////
 const cacheName = 'hss-v1';
+const interlayStr = '/views';
+const validHtmlPaths = ['conductor', 'player', 'description'];
+//
+const isAcceptedHtmlReq = validPaths => req => validPaths.some(elem => req.url.endsWith(elem));
+const interlayStrToURL = interString => url => {
+    const origin = url.origin;
+    const pathname = url.pathname;
 
-// Worker INSTALL event
+    // Return a String object.
+    return origin + interString + pathname + '.html';
+};
+//
+const isHtmlReq = isAcceptedHtmlReq(validHtmlPaths);
+const interlayToURL = interlayStrToURL(interlayStr);
+
 // adapted from
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 self.addEventListener('install', event => {
@@ -22,28 +35,30 @@ self.addEventListener('install', event => {
 		    '/description',
 		    '/hss.webmanifest',
     	    	    '/styles.css',
+		    '/views/index.html',
+		    '/views/conductor.html',
+		    '/views/player.html',
+		    '/views/description.html',
     	    	    '/javascript/index.js',
 		    '/javascript/functors.mjs',
 		    '/javascript/sound.mjs',
 		    '/javascript/hss.js',
 		    '/icons/hssIcon_192x192.png',
-		    '/icons/hssIcon_513x513.png'
+		    '/icons/hssIcon_512x512.png'
     	    	]);
     	    })
 	    .catch(console.log)
     );
 });
 
-// Worker FETCH event
 self.addEventListener('fetch', event => {
+    // Check if request points to '/conductor', '/player' or '/description'.
+    // If yes, send the corresponding html file from cache.
+    const request = isHtmlReq(event.request) ? new Request(interlayToURL(new URL(event.request.url))) : event.request;
+
     event.respondWith(
-	caches.match(event.request)
-	    .then(response => { return response || fetch(event.request); }).then(resp => {
-		return caches.open(cacheName).then(cache => {
-		    cache.put(event.request, resp.clone());
-		    return resp;
-		});
-	    })
+	caches.match(request)
+	    .then(response => response || fetch(event.request))
 	    .catch(console.log)
     );
 });

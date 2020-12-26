@@ -19,7 +19,7 @@ const credentials = {
     cert: fs.readFileSync('./certs/hss-crt.pem', 'utf8')
 };
 // The IP of the server
-const ip = "192.168.10.2";
+const ip = "$HSS_IP";
 
 // ////////////////////////////////////////////////////////////
 // Create the server.
@@ -38,7 +38,7 @@ const oscPath = '/action';
 // WebSockets
 // HSS_WSS implicitly loads the 'ws' module.
 const HSS_WSS = require(__dirname + '/webServerJS/hss_wss.js').HSS_WSS;
-const webServerPort = process.env.HTTP_PORT || 3000;
+const webServerPort = process.env.HTTP_PORT || $HSS_HTTP_PORT;
 const wss = new HSS_WSS({ server: server, clientTracking: true });
 
 // ////////////////////////////////////////////////////////////
@@ -113,22 +113,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ////////////////////////////////////////////////////////////
 // Send to performers the basic web page of the piece.
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname,'views/index.html'));
+    res.sendFile(path.join(__dirname,'public/views/index.html'));
 });
 
 // Send the 'conductor' web page.
 app.get('/conductor', (req, res) => {
-    res.sendFile(path.join(__dirname,'views/conductor.html'));
+    res.sendFile(path.join(__dirname,'public/views/conductor.html'));
 });
 
 // Send the 'player' web page.
 app.get('/player', (req, res) => {
-    res.sendFile(path.join(__dirname,'views/player.html'));
+    res.sendFile(path.join(__dirname,'public/views/player.html'));
 });
 
 // Send the 'description' web page.
 app.get('/description', (req, res) => {
-    res.sendFile(path.join(__dirname,'views/description.html'));
+    res.sendFile(path.join(__dirname,'public/views/description.html'));
 });
 
 app.use(appErrorListener);
