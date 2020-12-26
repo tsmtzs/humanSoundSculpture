@@ -8,7 +8,7 @@
 #			ex. 192.168.10.2 ==> 192.168.10
 #			This is set with the scripts
 #			bin/replaceGlobalVar*.sh
-#	NODE_PORT: HTTP port number
+#	HSS_HTTP_PORT: HTTP port number
 #
 # Each line should have only one name - value pair.
 # Lines starting with # are regarded as comments.
@@ -17,4 +17,4 @@
 # ##################################################
 HSS_DIR		/home/pi/myProjects/humanSoundSculpture
 HSS_IP		192.168.10.2
-NODE_PORT	3000
+HSS_HTTP_PORT	3000
