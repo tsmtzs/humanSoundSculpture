@@ -5,7 +5,7 @@
 # A help script to generate the icons for the
 # webmanifest file.
 #
-# Discussion:	This programme is used to resize
+# Discussion:	This program is used to resize
 #		a given image 'name.ext' to size NxN.
 #		The output picture is saved as
 #		'name_NxN.ext' under the current working

@@ -6,8 +6,8 @@
     "background_color": "#293f50",
     "icons": [
 	{
-	    "src": "/icons/hssIcon_513x513.png",
-	    "sizes": "513x513",
+	    "src": "/icons/hssIcon_512x512.png",
+	    "sizes": "512x512",
 	    "type": "image/png"
 	},
 	{

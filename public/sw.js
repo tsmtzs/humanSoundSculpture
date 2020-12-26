@@ -1,13 +1,14 @@
 // ////////////////////////////////////////////////////////////
 //		Human Sound Sculpture
+//				by Tassos Tsesmetzis
 //
 // Web client javascript.
-// ServiceWorker
+// ServiceWorker.
 // ////////////////////////////////////////////////////////////
-const cacheName = 'v1';
+const cacheName = 'hss-v1';
 const interlayStr = '/views';
 const validHtmlPaths = ['conductor', 'player', 'description'];
-// 
+//
 const isAcceptedHtmlReq = validPaths => req => validPaths.some(elem => req.url.endsWith(elem));
 const interlayStrToURL = interString => url => {
     const origin = url.origin;
@@ -28,20 +29,22 @@ self.addEventListener('install', event => {
     	    .open(cacheName)
     	    .then(cache => {
     	    	return cache.addAll([
-    	    	    './',
-		    './hss.webmanifest',
-    	    	    './views/index.html',
-    	    	    './views/conductor.html',
-    	    	    './views/player.html',
-    	    	    './views/description.html',
-    	    	    './styles.css',
-    	    	    './javascript/index.js',
-		    './javascript/functors.mjs',
-		    './javascript/sound.mjs',
-		    './javascript/hss.js',
-		    './javascript/hnl.mobileConsole.js',
-		    './icons/hssIcon_192x192.png',
-		    './icons/hssIcon_513x513.png'
+    	    	    '/',
+		    '/conductor',
+		    '/player',
+		    '/description',
+		    '/hss.webmanifest',
+    	    	    '/styles.css',
+		    '/views/index.html',
+		    '/views/conductor.html',
+		    '/views/player.html',
+		    '/views/description.html',
+    	    	    '/javascript/index.js',
+		    '/javascript/functors.mjs',
+		    '/javascript/sound.mjs',
+		    '/javascript/hss.js',
+		    '/icons/hssIcon_192x192.png',
+		    '/icons/hssIcon_512x512.png'
     	    	]);
     	    })
 	    .catch(console.log)
@@ -57,5 +60,16 @@ self.addEventListener('fetch', event => {
 	caches.match(request)
 	    .then(response => response || fetch(event.request))
 	    .catch(console.log)
+    );
+});
+
+// Worker ACTIVATE event
+self.addEventListener('activate', event => {
+    event.waitUntil(
+	caches.keys().then(keyList => {
+	    return Promise.all(keyList.map(key => {
+		if (key !== cacheName) return caches.delete(key);
+	    }));
+	})
     );
 });
