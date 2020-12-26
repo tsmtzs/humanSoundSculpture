@@ -14,7 +14,7 @@
 #	>$1 - Image file names under current working
 #	     directory.
 #
-# Surely, there are neater ways to do the same thing
+# Surely, there are neater ways to do this
 # in bash. (jq??)
 # ##################################################
 

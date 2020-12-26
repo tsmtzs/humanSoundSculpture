@@ -1,9 +1,10 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 % Human Sound Sculpture
+% by Tassos Tsesmetzis
 % 
 % This XeLaTex file produces an icon for the piece.
 % Convert the output pdf file to png:
-%       pdftoppm -r 720 -png hssIcon.pdf hssIcon
+% pdftoppm -f <first-page> -l <last-page> -r 720 -png hssIcon.pdf hssIcon
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \documentclass[12pt,a4page]{article}
 \usepackage{fontspec}
@@ -15,20 +16,31 @@
 \setmainfont[Mapping=tex-text]{Linux Biolinum O}
 
 % Package geometry. Set text area dimensions.
-\usepackage{geometry}
-\geometry{paperwidth=3.5cm,paperheight=3.5cm,lines=3,ignoreall,hmargin=5pt,vmargin=16pt,centering}
+\usepackage[paperwidth=3.5cm,paperheight=3.5cm,margin={0.1cm,0.1cm},ignoreall,centering]{geometry}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
 
 \pagestyle{empty}
 
-\linespread{1.5}
-
+% Background color
 \definecolor{background}{HTML}{293F50}
+
+% Tikz background rectangle side length
+\def\outerSide{3.3}
+% Center rectangle side length
+\def\centerDeviation{1}
+
 \begin{document}
-\bf
 \pagecolor{background}
-\color{darkgray!35}
-\noindent
-\makebox[\linewidth][s]{H U M A N}\\
-\makebox[\linewidth][s]{S O U N D}\\
-\makebox[\linewidth][s]{S C U L P T U R E}
+\centering
+\begin{tikzpicture}
+  \coordinate (center) at ($0.5*(\paperwidth,\paperheight)$);
+  \coordinate (deviation) at (\centerDeviation,\centerDeviation);
+  % Background.
+  \fill [color=background] (0,0) rectangle (\outerSide,\outerSide);
+  %
+  \fill [color=gray!35, rounded corners=2.4cm]
+  ($(center) - (deviation)$) rectangle ($(center) + (deviation)$);
+\end{tikzpicture}
 \end{document}
