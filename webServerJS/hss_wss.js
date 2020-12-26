@@ -3,8 +3,8 @@
 //
 // This node.js module defines the object HSS_WSS.
 // HSS_WSS requires the package 'ws'.
-// It is an extension of 'ws''s WebScocket.Server object.
-// which defines additional functionality specific to the piece.
+// It is an extension of 'ws''s WebSocket.Server object.
+// Defines additional functionality specific to the piece.
 // ////////////////////////////////////////////////////////////
 const WebSocket = require('ws');
 

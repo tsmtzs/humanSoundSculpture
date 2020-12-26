@@ -1,9 +1,11 @@
 // ////////////////////////////////////////////////////////////
 //		Human Sound Sculpture
 //
-// This file sets the web server of the piece
+// This file is responsible for the web server of the piece.
+// Can be started with the systemd service
+//	hss-web-server.service
 // Run
-//	journalctl -u hss-webServer -f
+//	journalctl -u hss-web-server -f
 // in a terminal to see log messages.
 // ////////////////////////////////////////////////////////////
 const express = require('express');
@@ -11,33 +13,43 @@ const app = express();
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+// TLS credentials.
 const credentials = {
     key: fs.readFileSync('./certs/hss-key.pem', 'utf8'),
     cert: fs.readFileSync('./certs/hss-crt.pem', 'utf8')
 };
-// Create the server:
+// The IP of the server
+const ip = "$HSS_IP";
+
+// ////////////////////////////////////////////////////////////
+// Create the server.
 const server = https.createServer(credentials, app);
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
+
+// ////////////////////////////////////////////////////////////
 // OSC communication with SuperCollider
 const osc = require('node-osc');
 const oscServer = new osc.Server(57121, '0.0.0.0');
-const ip = 'HSS_IP';		// HSS _IP
 const sclang = new osc.Client(ip, 57120);
 const oscPath = '/action';
-// web sockets
+
+// ////////////////////////////////////////////////////////////
+// WebSockets
 // HSS_WSS implicitly loads the 'ws' module.
 const HSS_WSS = require(__dirname + '/webServerJS/hss_wss.js').HSS_WSS;
-const webServerPort = process.env.HTTP_PORT || 443;
+const webServerPort = process.env.HTTP_PORT || $HSS_HTTP_PORT;
 const wss = new HSS_WSS({ server: server, clientTracking: true });
+
 // ////////////////////////////////////////////////////////////
-// Event listeners:
+// Event listeners.
 // ////////////////////////////////////////////////////////////
 // error handling - from https://expressjs.com/en/guide/error-handling.html
 const appErrorListener = (err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Oops! Something went wrong.');
 };
+
 // OSC messages: SuperCollider => web server
 const oscMsgListener = msgHandler => msg => {
     const msgObj = { type: msg[0] };
@@ -47,9 +59,11 @@ const oscMsgListener = msgHandler => msg => {
     msgHandler[msgObj.type](JSON.stringify(msgObj), wss);
     console.log('Recieved SC message:\n', msgObj);
 };
-// WebSocket error listener:
+
+// WebSocket error listener.
 const wsErrorListener = error => console.log("Something went wrong in WebSockets", error.stack);
-// WebSocket message listener:
+
+// WebSocket message listener.
 const wsMsgListener = (sclang, oscPath) => msg => {
     console.log('Client message: ', msg);
 
@@ -65,12 +79,13 @@ const wsMsgListener = (sclang, oscPath) => msg => {
 	    console.log('Script killHSS.sh ecexuted');
 	});
 	// return
-	console.log('PC Shutdown');
+	console.log('PC is going to sleep!');
     } else {
 	sclang.send(oscPath, msg);
     }
 };
-// WebSocket listener on 'connection' event:
+
+// WebSocket listener on 'connection' event.
 const wsConnectionListener = (errorListener, msgListener) => ws => {
     ws.on('message', msgListener);
 
@@ -78,6 +93,7 @@ const wsConnectionListener = (errorListener, msgListener) => ws => {
     ws.onerror = errorListener;
 
 };
+
 // ////////////////////////////////////////////////////////////
 // Function 'oscMessageHandler' return an object;
 // This is used to send data to clients
@@ -95,22 +111,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ////////////////////////////////////////////////////////////
 // Respond to incoming HTTP messages.
 // ////////////////////////////////////////////////////////////
-// Send to performers the basic web page of the piece:
+// Send to performers the basic web page of the piece.
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname,'public/views/index.html'));
 });
 
-// Send the 'conductor' web page:
+// Send the 'conductor' web page.
 app.get('/conductor', (req, res) => {
     res.sendFile(path.join(__dirname,'public/views/conductor.html'));
 });
 
-// Send the 'player' web page:
+// Send the 'player' web page.
 app.get('/player', (req, res) => {
     res.sendFile(path.join(__dirname,'public/views/player.html'));
 });
 
-// Send the 'description' web page:
+// Send the 'description' web page.
 app.get('/description', (req, res) => {
     res.sendFile(path.join(__dirname,'public/views/description.html'));
 });
