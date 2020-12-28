@@ -95,7 +95,7 @@ const wsConnectionListener = (errorListener, msgListener) => ws => {
 };
 
 // ////////////////////////////////////////////////////////////
-// Function 'oscMessageHandler' return an object;
+// Function 'oscMessageHandler' returns an object.
 // This is used to send data to clients
 // for each receiving OSC message.
 // ////////////////////////////////////////////////////////////
