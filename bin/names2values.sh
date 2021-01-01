@@ -9,7 +9,7 @@
 #	2nd arg: A file with pairs of the form parameter name - value.
 #		 Pairs are written one per line.
 #		 Lines that start with a # are not processed.
-# ################################################## 
+# ##################################################
 
 # A regular expression pattern that
 # matches the first three leftmost
@@ -19,11 +19,11 @@ ipExpr="([0-9]{1,3}\.){3}"
 # For each line of the input file, read the 1st and 2nd 'words'.
 while read parName parVal
 do
-    # Assume comments start with #. 
+    # Assume comments start with #.
     # Don't use these lines
     if [ "$parName" != "#" ]
     then
-	# Save the left most three bytes of IP
+	# Save the leftmost three bytes of IP
 	# to the global variable HSS_NETWORK
 	if [[ "$parName" == "HSS_IP" ]]; then
 	    # Regular expression comparison:

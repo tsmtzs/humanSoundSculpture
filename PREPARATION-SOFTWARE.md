@@ -1,8 +1,8 @@
 # Preparing a performance
-*Human Sound Sculpture* depends on a local WIFI TLS network. Performers use
-their smartphone to connect to this and visit the website of the piece. A
+*Human Sound Sculpture* depends on a local WIFI TLS network. Performers
+connect with their smartphone and visit the website of the piece. A
 dedicated computer assigns IP addresses to clients, runs the web server and
-generates note events. All software configuration of this work should be
+generates note events. All software configuration should be
 done on this computer. We have used the `Raspberry Pi model B+` single board
 computer with `Raspberry Pi OS Lite` operating system. In the following sections
 all commands assume the `Raspberry Pi OS`.
@@ -10,7 +10,16 @@ all commands assume the `Raspberry Pi OS`.
 **Table of Contents**
 
 - [Required software](#required-software)
-- [Configuration](#configuration)
+- [Branch off `master`](#branch-off-master)
+- [Global variables](#global-variables)
+- [Network configuration](#network-configuration)
+- [DHCP server configuration](#dhcp-server-configuration)
+- [`Hostapd` configuration](#hostapd-configuration)
+- [TLS certificate](#tls-certificate)
+- [`SuperCollider` configuration](#supercollider-configuration)
+- [Web server configuration](#web-server-configuration)
+- [Putting it all together](#putting-it-all-together)
+- [Troubleshooting](#troubleshooting)
 
 ## Required software
 1. `Linux`
@@ -24,7 +33,7 @@ all commands assume the `Raspberry Pi OS`.
    ```
 2. [`systemd`](https://systemd.io/)
 
-	`systemd` is a service manager for `Linux`. Normally, this comes by default with
+	`systemd` is a service manager for `Linux`. Normally, this comes with
 	the operating system.
 3. [`bash`](https://www.gnu.org/software/bash/)
 
@@ -68,19 +77,27 @@ all commands assume the `Raspberry Pi OS`.
 9. [`mkcert`](https://github.com/FiloSottile/mkcert)
 
 	The website of the piece is served on a local TLS network. You can create a TLS certificate
-	with the program `mkcert`. To install it follow the directions in [here](https://github.com/FiloSottile/mkcert#installation).
-10. (*optional*) [`XeTeX`](https://tug.org/xetex/)
+	with the program `mkcert`. To install it follow the directions found [here](https://github.com/FiloSottile/mkcert#installation).
 
-	`XeTeX` is a `TeX` derivative. It used to produce the `PWA` [icon](public/icons/hssIcon_192x192.png)
+10. [`git`](https://git-scm.com/)
+
+	A new `git branch` is created for every performance or test of *Human Sound Sculpture*. Install `git` by running
+
+	```bash
+	sudo apt-get install git
+	```
+11. (*optional*) [`XeTeX`](https://tug.org/xetex/)
+
+	`XeTeX` is a `TeX` derivative. It is used to produce the `PWA` [icon](public/icons/hssIcon_192x192.png)
 	of the piece. If you would like to modify this picture, you can install it with
 
 	```bash
 	sudo apt-get install texlive
 	```
-11. (*optional*) [`tikz`](https://github.com/pgf-tikz/pgf)
+12. (*optional*) [`tikz`](https://github.com/pgf-tikz/pgf)
 
 	This is a `TeX` package for creating graphics. It is part of the `texlive` distribution.
-12. (*optional*) [`ffmpeg`](https://ffmpeg.org/) version `4.3.1`
+13. (*optional*) [`ffmpeg`](https://ffmpeg.org/) version `4.3.1`
 
 	`ffmpeg` is a program for handling multimedia files. It is used in the `bash` script
 	[`multiresize`](bin/multiresize.sh) to resize a given picture file. Will be usefull if
@@ -90,4 +107,72 @@ all commands assume the `Raspberry Pi OS`.
 	sudo apt-get install ffmpeg
 	```
 
-## First steps
+## Branch off `master`
+At this step you have installed all the necessary software. Clone the repository and change directory to
+`humanSoundSculpture`.
+
+```bash
+git clone ?????
+cd humanSoundSculpture
+```
+
+Make sure you 're on the `master` branch by running
+
+```bash
+git branch
+```
+If this is so, create a new branch on top. Use an appropriate name.
+Something like `test` or `test@raspberry` or `performance@venus` might be handy.
+
+```bash
+git checkout -b performance@venus
+```
+
+## Global variables
+The runtime environment of the piece depends on the following variables:
+- `HSS_DIR`: An absolute path. Points to the `humanSoundSculpture` directory.
+- `HSS_IP`: An IPv4 address. Web server's IP on the local network.
+- `HSS_NETWORK`: The network prefix of the local wifi network, i.e. the three
+		leftmost bytes of the IP (assuming an IPv4 24 bit netmask).
+- `HSS_HTTP_PORT`: An positive integer. The `HTTP` port number.
+
+Set their values by editing the file [hss-globalVariables](bin/hss-globalVariables).
+
+Global variables are scattered accross several files.
+
+*Note*: Global variable names are prepended by a `$` sign. To find all the occurances of a
+variable use `grep`. E.x. `grep -r '$HSS_IP'`.
+
+After editing
+[hss-globalVariables](bin/hss-globalVariables), use the script [`names2values`](bin/names2values.sh)
+to replace each occurance of a variable with it's value.
+
+```bash
+# names2values accepts 2 arguments.
+# 1st arg: a directory. The script will replace variables
+#		recursively under this directory.
+# 2nd arg: a path to a text file. It collects pairs of the form (variable name) - value.
+#
+# We run names2values inside humanSoundSculpture passing the file bin/hss-globalVariables
+./bin/names2values.sh . bin/hss-globalVariables
+```
+To revert to variable names, use the script [values2names](bin/values2names). You should not
+make any changes to global variable values in order for this to work.
+
+```bash
+# values2names accepts the same arguments as names2values.
+./bin/values2names.sh . bin/hss-globalVariables
+```
+
+## Network configuration
+
+
+## DHCP server configuration
+
+## `Hostapd` configuration
+
+## TLS certificate
+
+## `SuperCollider` configuration
+
+## Web server configuration
