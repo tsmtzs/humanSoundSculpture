@@ -259,14 +259,44 @@ Use
 ```bash
 which dhcpd
 ```
-to find the location of `dhcpd`.
-
-Start the `dhcpd4@` service by passing the wifi interface device name
+to find the location of `dhcpd`. Save this under `/lib/systemd/system/`
 ```bash
+sudo cp systemd/dhcpd4@.service /lib/systemd/system
+```
+
+Reload the `systemd` configuration and start the `dhcpd4@` service by passing the wifi
+interface device name
+```bash
+sudo systemctl daemon-reload
 sudo systemctl start dhcpd4@wlan0.service
 ```
 ## `Hostapd` configuration
+The `systemd` service file [`hostapd@.service`](systemd/hostapd@.service) handles the `hostapd`
+process. The command
+```bash
+which hostapd
+```
+outputs the location of the `hostapd` executable. Make changes, if needed, in the `ExecStart` option
+of [`hostapd@.service`](systemd/hostapd@.service) (line 20). Copy this file to `/lib/systemd/system`
+and reload the `systemd` configuration
+```bash
+sudo cp systemd/hostapd@.service /lib/systemd/system/
+sudo systemctl daemon-reload
+```
 
+`Hostapd` configuration is bound to the wifi interface device `wlan0`. Rename the file
+[`hostapd-wlan0.conf`](conf/hostapd-wlan0.conf) by replacing the device name. Next, open the file
+and set the `interface` option to `wlan0` (line 11). The name for our wifi network is set in
+line 17 with the `ssid` option. Our network will be named `pi`. You might want to set the option
+`country_code` in line 9. Save your changes and copy this file to `/etc/hostapd/`
+```bash
+sudo cp conf/hostapd-wlan0.conf /etc/hostapd/
+```
+
+Now, start the `hostapd@` service, passing the wifi interface name
+```bash
+sudo systemctl start hostapd@wlan0.service
+```
 ## TLS certificate
 
 ## `SuperCollider` configuration
