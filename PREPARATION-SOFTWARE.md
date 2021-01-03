@@ -203,13 +203,17 @@ network is done in the file [`10-wlan0.network`](systemd/10-wlan0.network). If t
 interface device name is not `wlan0`, you have to rename the file. Open
 [`10-wlan0.network`](systemd/10-wlan0.network) and edit, if needed, line 10:
 ```
-# 10-wlan0.ntework
+# 10-wlan0.network
 Name=wlan0
 ```
 
-After editing, move [`10-wlan0.network`](systemd/10-wlan0.network) under
+After editing, copy [`10-wlan0.network`](systemd/10-wlan0.network) to
 `/usr/lib/systemd/network` (see the man pages for `systemd.network` and `systemd-networkd`
 for other paths).
+
+```bash
+sudo cp systemd/10-wlan0.network /usr/lib/systemd/network/
+```
 
 Reload the `systemd` configuration by
 ```bash
@@ -226,7 +230,41 @@ ip addr show wlan0
 ```
 
 ## DHCP server configuration
+The ISC DHCP server is configured with the file `dhcpd.conf`. This should be located under
+`/etc/` or `/etc/dhcp/`. For our purposes, assume it under `/etc/dhcp/`. Start by renaming it
+```bash
+sudo mv /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.original
+```
 
+In place of the original configuration file we will use [`dhcpd.conf`](conf/dhcpd.conf). We will
+edit the MAC address of the wifi interface. This is a series of hexadecimal bytes
+separated by colons. You can find it by inspecting the output of
+
+```bash
+ip link show wlan0
+```
+
+The MAC adddress is on the second line, on the right of `link/ether`. Add it in line 30 of
+[`dhcpd.conf`](conf/dhcpd.conf).
+
+Copy this file under `/etc/dhcp/`
+```bash
+sudo cp conf/dhcpd.conf /etc/dhcp/
+```
+
+The DHCP server process will be handled by a `systemd` service. Open the file
+[`dhcpd4@.service`](systemd/dhcpd4@.service). Make sure that the `ExecStart` option holds
+the correct paths for the `dhcpd` executable and the `dhcpd.conf` file.
+Use
+```bash
+which dhcpd
+```
+to find the location of `dhcpd`.
+
+Start the `dhcpd4@` service by passing the wifi interface device name
+```bash
+sudo systemctl start dhcpd4@wlan0.service
+```
 ## `Hostapd` configuration
 
 ## TLS certificate
