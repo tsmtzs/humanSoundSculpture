@@ -37,7 +37,7 @@ all commands assume the `Raspberry Pi OS`.
 	the operating system.
 3. [`bash`](https://www.gnu.org/software/bash/)
 
-	The configuration for *Human Sound Sculpture* is done with the `bash` shell.
+	The configuration for *Human Sound Sculpture* is done within the `bash` shell.
 	It should come with the operating system.
 4. [`sed`](https://www.gnu.org/software/sed/)
 
@@ -108,7 +108,15 @@ all commands assume the `Raspberry Pi OS`.
 	```
 
 ## Branch off `master`
-At this step you have installed all the necessary software. Clone the repository and change directory to
+At this step you have installed all the necessary software. Open a `bash` terminal and change
+directory to an appropriate place.
+
+```bash
+# Change to user's home directory
+cd
+```
+
+Clone the repository and change directory to
 `humanSoundSculpture`.
 
 ```bash
@@ -134,7 +142,7 @@ The runtime environment of the piece depends on the following variables:
 - `HSS_IP`: An IPv4 address. Web server's IP on the local network.
 - `HSS_NETWORK`: The network prefix of the local wifi network, i.e. the three
 		leftmost bytes of the IP (assuming an IPv4 24 bit netmask).
-- `HSS_HTTP_PORT`: An positive integer. The `HTTP` port number.
+- `HSS_HTTP_PORT`: A positive integer. The `HTTP` port number.
 
 Set their values by editing the file [hss-globalVariables](bin/hss-globalVariables).
 
@@ -142,6 +150,14 @@ Global variables are scattered accross several files.
 
 *Note*: Global variable names are prepended by a `$` sign. To find all the occurances of a
 variable use `grep`. E.x. `grep -r '$HSS_IP'`.
+
+For this guide we will use
+```
+# bin/hss-globalVariables
+HSS_DIR			/home/pi/humanSoundSculpture
+HSS_IP			192.168.100.1
+HSS_HTTP_PORT	3000
+```
 
 After editing
 [hss-globalVariables](bin/hss-globalVariables), use the script [`names2values`](bin/names2values.sh)
@@ -165,7 +181,49 @@ make any changes to global variable values in order for this to work.
 ```
 
 ## Network configuration
+First, find out the name of the wifi interface device name.
 
+```bash
+ip link show
+```
+
+Normally, the name should start with a `w`. For this guide we will assume
+that the device name is `wlan0`. Bring the interface up by running
+
+```bash
+sudo ip link set wlan0 up
+```
+
+Now we will assign a static IP to `wlan0`. The IP is the value of the `HSS_IP`
+global variable, set in [`hss-globalVariables`](bin/hss-globalVariables). In this case,
+it is `192.168.100.1`.
+
+We will use the `systemd` service `systemd-networkd`. The configuration for our local
+network is done in the file [`10-wlan0.network`](systemd/10-wlan0.network). If the wifi
+interface device name is not `wlan0`, you have to rename the file. Open
+[`10-wlan0.network`](systemd/10-wlan0.network) and edit, if needed, line 10:
+```
+# 10-wlan0.ntework
+Name=wlan0
+```
+
+After editing, move [`10-wlan0.network`](systemd/10-wlan0.network) under
+`/usr/lib/systemd/network` (see the man pages for `systemd.network` and `systemd-networkd`
+for other paths).
+
+Reload the `systemd` configuration by
+```bash
+sudo systemctl daemon-reload
+```
+and start the `systemd-networkd` service.
+```bash
+sudo systemctl start systemd-networkd
+```
+
+Check if the wireless interface is assigned the IP
+```bash
+ip addr show wlan0
+```
 
 ## DHCP server configuration
 
