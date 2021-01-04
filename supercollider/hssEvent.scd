@@ -11,7 +11,7 @@
 	ampMul: 1.0,
 	durMul: 21,
 	deltaMul: { [0.1.rrand(0.4), 0.65.rrand(0.8), 0.8.rrand(1.05)].wchoose([0.25, 0.5, 0.25]) },
-	
+
 	minOctave: { |ev, aServer, aFloat|	// aFloat \in [-1.0, 1.0]
 		6
 	},
@@ -22,7 +22,7 @@
 	// Given a matrix, this function returns
 	// a stochastic matrix
 	normalizeRows: { |ev, anArray2D|
-		anArray2D.collect { |row| row.normalizeSum } 
+		anArray2D.collect { |row| row.normalizeSum }
 	},
 
 	// Returns the incidence matrix of a Paley graph

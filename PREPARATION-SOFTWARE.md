@@ -72,8 +72,19 @@ all commands assume the `Raspberry Pi OS`.
 
 	`SuperCollider` is an audio programming language. Follow
 	[this](https://github.com/supercollider/supercollider/blob/develop/README_RASPBERRY_PI.md)
-	guide to install it on your system. *Human Sound Sculpture* utilizes only the `sclang`
+	guide to install it on `Raspberry Pi`. *Human Sound Sculpture* utilizes only the `sclang`
 	`SuperCollider` language program.
+
+	The `SimpleNumber` method `betarand` is used to calculate some probabilities. It is an extension of the class
+	found in `sc3-plugins`.  Install the plugins by following [this](https://supercollider.github.io/sc3-plugins/) guide.
+	Alternatively, you could download only the file
+	[ProbabilityDistributions.sc](https://github.com/supercollider/sc3-plugins/blob/dd092a20cb66fc976d47ad402be601985cb8bf84/source/LoopBufUGens/sc/classes/LJP%20Classes/ProbabilityDistributions.sc)
+	inside the `SuperCollider` user extension directory. This is, usually, `~/.local/share/SuperCollider/Extensions`. You can find it by calling
+	`Platform.userExtensionDir` from within `SuperCollider`.
+
+	The class `PGraphWalk` is a extension of the language. It can be found in the github repository [sc-tsmtzs](https://github.com/tsmtzs/sc-tsmtzs).
+	Clone the repository inside the `SuperCollider` user extension directory.
+
 9. [`mkcert`](https://github.com/FiloSottile/mkcert)
 
 	The website of the piece is served on a local TLS network. You can create a TLS certificate
@@ -312,7 +323,7 @@ where `<HSS_IP>` is `192.168.100.1` in our case. Now, install the root certifica
 mkcert -install
 ```
 
-Web clients must install the root certificate. This is the `rootCA.pem` file located under `mkcert -CAROOT`.
+Web clients should install the root certificate. This is the `rootCA.pem` file located under `mkcert -CAROOT`.
 Copy this file to `public/`.
 ```bash
 # First, change directory to humanSoundSculpture
@@ -323,5 +334,10 @@ cp $(mkcert -CAROOT)/rootCA.pem public/
 In most cases, clients should be able to install the certificate to their trust store by using the browser
 to navigate to `https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`.
 ## `SuperCollider` configuration
-
+The file [humanSoundSculpture.scd](supercollider/humanSoundSculpture.scd) generates the note
+sequence that is distributed among the performers. It is started with the `systemd` unit
+[`hss-supercollider.service`](systemd/hss-supercollider.service). Copy this file to `/lib/systemd/system/`.
+```bash
+sudo cp systemd/hss-supercollider.service /lib/systemd/system/
+```
 ## Web server configuration

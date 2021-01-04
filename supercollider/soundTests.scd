@@ -55,7 +55,7 @@ paleyStream = PGraphWalk( transitionProbs, (..12), startVertex ).asStream;
 ~pattern = Penvir(
 	~hss,
 	Pbind(
-		\instrument, 'sync2',			// or \sync2
+		\instrument, 'sync2',
 		\paley, Pfunc { paleyStream.next },
 		\note, Pfunc {| ev |
 			~notes[ ev.paley ]

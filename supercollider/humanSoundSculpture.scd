@@ -3,6 +3,10 @@
 //
 // Start the SuperCollider event stream, and send notes
 // to the web server.
+// If started as a systemd service,
+// run in bash
+//		 journalctl -u hss-supercollider -f
+// to see logs using journactl.
 // ////////////////////////////////////////////////////////////
 var hss, ip;
 
@@ -12,11 +16,8 @@ hss = "hssEvent.scd".loadRelative.at(0);
 // Send messages to NetAddr.
 Event.addEventType(\sendOsc, {
 	// Uncomment the next code line when debugging.
-	// Run in bash
-	//		 journalctl -u hss-supercollider -f
-	// to see logs using journactl.
-	[~freq.(), ~amp, ~dur].postln;
-	// 
+	// [~freq.(), ~amp, ~dur].postln;
+	//
 	~address.sendMsg("/note", ~freq.(), ~amp, ~dur);
 });
 
@@ -27,6 +28,7 @@ hss.init(NetAddr("127.0.0.1", 57121));
 // Set values
 hss.ampMul = hss.amps.maxItem.reciprocal * 0.9;
 
-// Uncomment the next code line if there is no conductor
+// Uncomment the next code lines if there is no conductor
 // among the performers.
-hss.play;
+// hss.play;
+// hss.stop;
