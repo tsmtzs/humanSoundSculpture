@@ -9,17 +9,17 @@ all commands assume the `Raspberry Pi OS`.
 
 **Table of Contents**
 
-- [Required software](#required-software)
-- [Branch off `master`](#branch-off-master)
-- [Global variables](#global-variables)
-- [Network configuration](#network-configuration)
-- [DHCP server configuration](#dhcp-server-configuration)
-- [`Hostapd` configuration](#hostapd-configuration)
-- [TLS certificate](#tls-certificate)
-- [`SuperCollider` configuration](#supercollider-configuration)
-- [Web server configuration](#web-server-configuration)
-- [Putting it all together](#putting-it-all-together)
-- [Troubleshooting](#troubleshooting)
+1. [Required software](#required-software)
+2. [Branch off `master`](#branch-off-master)
+3. [Global variables](#global-variables)
+4. [Network configuration](#network-configuration)
+5. [DHCP server configuration](#dhcp-server-configuration)
+6. [`Hostapd` configuration](#hostapd-configuration)
+7. [TLS certificate](#tls-certificate)
+8. [`SuperCollider` configuration](#supercollider-configuration)
+9. [Web server configuration](#web-server-configuration)
+10. [Putting it all together](#putting-it-all-together)
+11. [Troubleshooting](#troubleshooting)
 
 ## Required software
 1. `Linux`
@@ -167,7 +167,7 @@ For this guide we will use
 # bin/hss-globalVariables
 HSS_DIR			/home/pi/humanSoundSculpture
 HSS_IP			192.168.100.1
-HSS_HTTP_PORT	3000
+HSS_HTTP_PORT	$HSS_HTTP_PORT
 ```
 
 After editing
@@ -270,9 +270,9 @@ Use
 ```bash
 which dhcpd
 ```
-to find the location of `dhcpd`. Save this under `/lib/systemd/system/`
+to find the location of `dhcpd`. Save this under `/usr/lib/systemd/system/`
 ```bash
-sudo cp systemd/dhcpd4@.service /lib/systemd/system
+sudo cp systemd/dhcpd4@.service /usr/lib/systemd/system
 ```
 
 Reload the `systemd` configuration and start the `dhcpd4@` service by passing the wifi
@@ -288,10 +288,10 @@ process. The command
 which hostapd
 ```
 outputs the location of the `hostapd` executable. Make changes, if needed, in the `ExecStart` option
-of [`hostapd@.service`](systemd/hostapd@.service) (line 20). Copy this file to `/lib/systemd/system`
+of [`hostapd@.service`](systemd/hostapd@.service) (line 20). Copy this file to `/usr/lib/systemd/system`
 and reload the `systemd` configuration
 ```bash
-sudo cp systemd/hostapd@.service /lib/systemd/system/
+sudo cp systemd/hostapd@.service /usr/lib/systemd/system/
 sudo systemctl daemon-reload
 ```
 
@@ -336,8 +336,25 @@ to navigate to `https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`.
 ## `SuperCollider` configuration
 The file [humanSoundSculpture.scd](supercollider/humanSoundSculpture.scd) generates the note
 sequence that is distributed among the performers. It is started with the `systemd` unit
-[`hss-supercollider.service`](systemd/hss-supercollider.service). Copy this file to `/lib/systemd/system/`.
+[`hss-supercollider.service`](systemd/hss-supercollider.service). Copy this file to `/usr/lib/systemd/system/`.
 ```bash
-sudo cp systemd/hss-supercollider.service /lib/systemd/system/
+sudo cp systemd/hss-supercollider.service /usr/lib/systemd/system/
 ```
 ## Web server configuration
+We are going to use the TLS certificate `hss-crt.pem` and key `hss-key.pem`. These were generated with `mkcert` and
+are located under `certs`. Open the file [`server.js`](server.js). Lines 18-19, should read these files.
+
+[`Server.js`](server.js) listens to `WebSocket` messages from web clients. If the message is `shutdown` will
+call the `bash` script [`killHSS`](bin/killHSS.sh). This message is signaled by the *conductor* of the performance
+after double-clicking the `shutdown` button. The idea here is to be able to shutdown the computer (a `Raspberry Pi` in
+our case) withoud the need of a keyboard, a monitor or a person different than the performers.
+
+In line 13 of [`killHSS`](bin/killHSS.sh) calls we read `shutdown now;`.
+This line is commented by default. Uncomment it for a live performance.
+
+The `systemd` unit `hss-web-server.service` starts the web server process of the piece. Copy the file
+[`hss-web-server.service`](systemd/hss-web-server.service) to `/usr/lib/systemd/system`.
+```bash
+sudo cp systemd/hss-web-server.service /usr/lib/systemd/system/
+```
+## Putting it all together
