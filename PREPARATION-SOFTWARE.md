@@ -226,20 +226,6 @@ for other paths).
 sudo cp systemd/10-wlan0.network /usr/lib/systemd/network/
 ```
 
-Reload the `systemd` configuration by
-```bash
-sudo systemctl daemon-reload
-```
-and start the `systemd-networkd` service.
-```bash
-sudo systemctl start systemd-networkd
-```
-
-Check if the wireless interface is assigned the IP
-```bash
-ip addr show wlan0
-```
-
 ## DHCP server configuration
 The ISC DHCP server is configured with the file `dhcpd.conf`. This should be located under
 `/etc/` or `/etc/dhcp/`. For our purposes, assume it under `/etc/dhcp/`. Start by renaming it
@@ -275,12 +261,6 @@ to find the location of `dhcpd`. Save this under `/usr/lib/systemd/system/`
 sudo cp systemd/dhcpd4@.service /usr/lib/systemd/system
 ```
 
-Reload the `systemd` configuration and start the `dhcpd4@` service by passing the wifi
-interface device name
-```bash
-sudo systemctl daemon-reload
-sudo systemctl start dhcpd4@wlan0.service
-```
 ## `Hostapd` configuration
 The `systemd` service file [`hostapd@.service`](systemd/hostapd@.service) handles the `hostapd`
 process. The command
@@ -304,10 +284,6 @@ line 17 with the `ssid` option. Our network will be named `pi`. You might want t
 sudo cp conf/hostapd-wlan0.conf /etc/hostapd/
 ```
 
-Now, start the `hostapd@` service, passing the wifi interface name
-```bash
-sudo systemctl start hostapd@wlan0.service
-```
 ## TLS certificate
 Create the directory `certs` under `humanSoundSculpture` and change directory to it.
 ```bash
@@ -333,6 +309,7 @@ cp $(mkcert -CAROOT)/rootCA.pem public/
 ```
 In most cases, clients should be able to install the certificate to their trust store by using the browser
 to navigate to `https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`.
+
 ## `SuperCollider` configuration
 The file [humanSoundSculpture.scd](supercollider/humanSoundSculpture.scd) generates the note
 sequence that is distributed among the performers. It is started with the `systemd` unit
@@ -358,3 +335,31 @@ The `systemd` unit `hss-web-server.service` starts the web server process of the
 sudo cp systemd/hss-web-server.service /usr/lib/systemd/system/
 ```
 ## Putting it all together
+First reload the `systemd` configuration
+```bash
+sudo systemctl daemon-reload
+```
+Then start the `systemd` unit `systemd-networkd` to assign a static IP to the wifi interface device.
+```bash
+sudo systemctl start systemd-networkd.service
+```
+Check if the wireless interface is assigned the IP
+```bash
+ip addr show wlan0
+```
+Use the unit `hostapd@.service` to turn the network card into an access point. The unit `dhcpd4@.service`
+will start the DHCP server. Start both services by passing the wifi interface device name `wlan0`
+```bash
+sudo systemctl start hostapd@wlan0.service dhcpd4@wlan0.service
+```
+
+Now, start the web server process with the unit `hss-web-server.service` and `SuperCollider` with
+`hss-supercollider.service`.
+```bash
+sudo systemctl start hss-web-server.service hss-supercollider.service
+```
+
+> You can start all services with one command\
+> `sudo systemctl start systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server hss-supercollider`
+
+## Troubleshooting
