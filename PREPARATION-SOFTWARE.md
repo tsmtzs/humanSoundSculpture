@@ -298,7 +298,30 @@ Now, start the `hostapd@` service, passing the wifi interface name
 sudo systemctl start hostapd@wlan0.service
 ```
 ## TLS certificate
+Create the directory `certs` under `humanSoundSculpture` and change directory to it.
+```bash
+mkdir certs && cd certs
+```
+Inside `certs` we will save the certificates for *Human Sound Sculpture*. Run the command
+```bash
+mkcert -key-file hss-key.pem -cert-file hss-crt.pem localhost ::1 <HSS_IP>
+```
 
+where `<HSS_IP>` is `192.168.100.1` in our case. Now, install the root certificate with
+```bash
+mkcert -install
+```
+
+Web clients must install the root certificate. This is the `rootCA.pem` file located under `mkcert -CAROOT`.
+Copy this file to `public/`.
+```bash
+# First, change directory to humanSoundSculpture
+cd ..
+# Then copy root certificate
+cp $(mkcert -CAROOT)/rootCA.pem public/
+```
+In most cases, clients should be able to install the certificate to their trust store by using the browser
+to navigate to `https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`.
 ## `SuperCollider` configuration
 
 ## Web server configuration
