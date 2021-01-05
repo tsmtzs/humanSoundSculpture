@@ -99,7 +99,7 @@ the software components of the piece.
 
 ## Contribute
 This project is open to contribution. Please direct to [CONTRIBUTING](CONTRIBUTING.md) for more details.
-Some things that will like to see in our project can be found in [TODO](TODO.org).
+Some of the things that we will like to see in our project can be found in [TODO](TODO.org).
 - Report bugs and errors.
 - Suggest improvements and bug fixes.
 

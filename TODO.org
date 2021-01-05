@@ -5,6 +5,17 @@
 # TODO items.
 # ##################################################
 
+* ~SuperCollider~
+** TODO Eliminate the need for SuperCollider
+   This project uses ~SuperCollider~ to generate an infinite
+   sequence of note events. Parameters for these notes
+   (order, frequency, amplitude, duration) are generated
+   algorithmically by a random walk on a graph. The class
+   ~PGraphWalk~ is responsible for this. It relys on the
+   powerfull ~Pattern~ abstraction of ~SuperCollider~.
+   To eliminate the need for ~SuperCollider~ means to
+   accomplish the same functionality from within ~node.js~.
+
 * Web server
 * Web client
 ** TODO Make tests in various browsers
@@ -18,13 +29,3 @@
    - The service worker
    - The icons
    - The webmanifest file
-* ~SuperCollider~
-** TODO Eliminate the need for SuperCollider
-   This project uses ~SuperCollider~ to generate an infinite
-   sequence of note events. Parameters for these notes
-   (order, frequency, amplitude, duration) are generated
-   algorithmically by a random walk on a graph. The class
-   ~PGraphWalk~ is responsible for this. It relys on the
-   powerfull ~Pattern~ abstraction of ~SuperCollider~.
-   To eliminate the need for ~SuperCollider~ means to
-   accomplish the same functionality from within ~node.js~.
