@@ -1,27 +1,32 @@
-# Preparing a performance
+# Software setup
+**Table of Contents**
+
+- [Installing and configuring software](#installing-and-configuring-software)\
+	i. [Install the required software](#install-the-required-software)\
+	ii. [Clone the `humanSoundSculpture` repository](#clone-the-humansoundsculpture-repository)\
+	iii. [Work on a separate `git branch`](#work-on-a-separate-git-branch)\
+	iv. [Set global variables](#set-global-variables)\
+	v. [Generate a TLS certificate](#generate-a-tls-certificate)\
+	vi. [Configure the local wifi network](#configure-the-local-wifi-network)\
+	vii. [Configure the DHCP server](#configure-the-dhcp-server)\
+	viii. [Configure `hostapd`](#configure-hostapd)\
+	ix. [Configure `SuperCollider`](#configure-supercollider)\
+	x. [Configure the web server](#configure-the-web-server)
+- [Putting it all together](#putting-it-all-together)
+- [Troubleshooting](#troubleshooting)
+- [Preparing a performace](#preparing-a-performace)
+
+## Installing and configuring software
 *Human Sound Sculpture* depends on a local WIFI TLS network. Performers
-connect with their smartphone and visit the website of the piece. A
+connect with their smartphones and visit the website of the piece. A
 dedicated computer assigns IP addresses to clients, runs the web server and
 generates note events. All software configuration should be
 done on this computer. We have used the `Raspberry Pi model B+` single board
-computer with `Raspberry Pi OS Lite` operating system. In the following sections
-all commands assume the `Raspberry Pi OS`.
+computer with the `Raspberry Pi OS Lite` operating system. The following sections
+offer the details for each step of setting up the system.
+All commands assume the `Raspberry Pi OS`.
 
-**Table of Contents**
-
-1. [Required software](#required-software)
-2. [Branch off `master`](#branch-off-master)
-3. [Global variables](#global-variables)
-4. [Network configuration](#network-configuration)
-5. [DHCP server configuration](#dhcp-server-configuration)
-6. [`Hostapd` configuration](#hostapd-configuration)
-7. [TLS certificate](#tls-certificate)
-8. [`SuperCollider` configuration](#supercollider-configuration)
-9. [Web server configuration](#web-server-configuration)
-10. [Putting it all together](#putting-it-all-together)
-11. [Troubleshooting](#troubleshooting)
-
-## Required software
+### Install the required software
 1. `Linux`
 
    `Raspberry Pi OS` is a `Debian` based operating system. Before installing any
@@ -112,31 +117,33 @@ all commands assume the `Raspberry Pi OS`.
 
 	`ffmpeg` is a program for handling multimedia files. It is used in the `bash` script
 	[`multiresize`](bin/multiresize.sh) to resize a given picture file. Will be usefull if
-	you want to modify the `PWA` icon of the piece. Intall it with
+	you want to modify the `PWA` icon of the piece. Install it with
 
 	```bash
 	sudo apt-get install ffmpeg
 	```
 
-## Branch off `master`
+### Clone the `humanSoundSculpture` repository
 At this step you have installed all the necessary software. Open a `bash` terminal and change
 directory to an appropriate place.
 
 ```bash
-# Change to user's home directory
+## Change to user's home directory
 cd
 ```
 
-Clone the repository and change directory to
-`humanSoundSculpture`.
+Clone the repository `humanSoundSculpture`.
 
 ```bash
 git clone ?????
-cd humanSoundSculpture
 ```
 
+### Work on a separate `git branch`
+Change directory to `humanSoundSculpture`
+```bash
+cd humanSoundSculpture
+```
 Make sure you 're on the `master` branch by running
-
 ```bash
 git branch
 ```
@@ -147,7 +154,7 @@ Something like `test` or `test@raspberry` or `performance@venus` might be handy.
 git checkout -b performance@venus
 ```
 
-## Global variables
+### Set global variables
 The runtime environment of the piece depends on the following variables:
 - `HSS_DIR`: An absolute path. Points to the `humanSoundSculpture` directory.
 - `HSS_IP`: An IPv4 address. Web server's IP on the local network.
@@ -157,17 +164,15 @@ The runtime environment of the piece depends on the following variables:
 
 Set their values by editing the file [hss-globalVariables](bin/hss-globalVariables).
 
-Global variables are scattered accross several files.
-
-*Note*: Global variable names are prepended by a `$` sign. To find all the occurances of a
-variable use `grep`. E.x. `grep -r '$HSS_IP'`.
+Global variables are scattered accross several files. Variable names are prepended by a `$`
+sign. To find all the occurances of a variable use `grep`. E.x. `grep -r '$HSS_IP'`.
 
 For this guide we will use
 ```
-# bin/hss-globalVariables
+## bin/hss-globalVariables
 HSS_DIR			/home/pi/humanSoundSculpture
 HSS_IP			192.168.100.1
-HSS_HTTP_PORT	$HSS_HTTP_PORT
+HSS_HTTP_PORT	3000
 ```
 
 After editing
@@ -175,58 +180,81 @@ After editing
 to replace each occurance of a variable with it's value.
 
 ```bash
-# names2values accepts 2 arguments.
-# 1st arg: a directory. The script will replace variables
+## names2values accepts 2 arguments.
+## 1st arg: a directory. The script will replace variables
 #		recursively under this directory.
-# 2nd arg: a path to a text file. It collects pairs of the form (variable name) - value.
+## 2nd arg: a path to a text file. It collects pairs of the form (variable name) - value.
 #
-# We run names2values inside humanSoundSculpture passing the file bin/hss-globalVariables
+## We run names2values inside humanSoundSculpture passing the file bin/hss-globalVariables
 ./bin/names2values.sh . bin/hss-globalVariables
 ```
 To revert to variable names, use the script [values2names](bin/values2names). You should not
 make any changes to global variable values in order for this to work.
 
 ```bash
-# values2names accepts the same arguments as names2values.
+## values2names accepts the same arguments as names2values.
 ./bin/values2names.sh . bin/hss-globalVariables
 ```
 
-## Network configuration
-First, find out the name of the wifi interface device name.
+### Generate a TLS certificate
+Create the directory `certs` under `humanSoundSculpture` and change directory to it.
+```bash
+mkdir certs && cd certs
+```
+Inside `certs` you should save the certificates for *Human Sound Sculpture*. Run the command
+```bash
+mkcert -key-file hss-key.pem -cert-file hss-crt.pem localhost ::1 <HSS_IP>
+```
 
+where `<HSS_IP>` is `192.168.100.1` in our case. Now, install the root certificate with
+```bash
+mkcert -install
+```
+
+Web clients should, also, install the root certificate on their device. This is the `rootCA.pem` file
+located under `mkcert -CAROOT`. Copy this file to `public/`.
+```bash
+## First, change directory to humanSoundSculpture
+cd ..
+## Then copy root certificate
+cp $(mkcert -CAROOT)/rootCA.pem public/
+```
+In most cases, clients should be able to install the certificate to their trust store by using the browser
+to navigate to `https://192.168.100.1:3000/rootCA.pem` (in general to`https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`).
+
+### Configure the local wifi network
+First, find out the name of the wifi interface device name.
 ```bash
 ip link show
 ```
-
 Normally, the name should start with a `w`. For this guide we will assume
 that the device name is `wlan0`. Bring the interface up by running
-
 ```bash
 sudo ip link set wlan0 up
 ```
 
-Now we will assign a static IP to `wlan0`. The IP is the value of the `HSS_IP`
+Now assign a static IP to `wlan0`. This is the value of the `HSS_IP`
 global variable, set in [`hss-globalVariables`](bin/hss-globalVariables). In this case,
 it is `192.168.100.1`.
 
-We will use the `systemd` service `systemd-networkd`. The configuration for our local
-network is done in the file [`10-wlan0.network`](systemd/10-wlan0.network). If the wifi
-interface device name is not `wlan0`, you have to rename the file. Open
+We will use the `systemd` service `systemd-networkd`. The configuration options for the local
+network are found in the file [`10-wlan0.network`](systemd/10-wlan0.network). If the wifi
+interface device name is not `wlan0`, you have to rename this file. Open
 [`10-wlan0.network`](systemd/10-wlan0.network) and edit, if needed, line 10:
 ```
-# 10-wlan0.network
+## 10-wlan0.network
 Name=wlan0
 ```
 
 After editing, copy [`10-wlan0.network`](systemd/10-wlan0.network) to
-`/usr/lib/systemd/network` (see the man pages for `systemd.network` and `systemd-networkd`
+`/usr/lib/systemd/network/` (see the man pages for `systemd.network` and `systemd-networkd`
 for other paths).
 
 ```bash
 sudo cp systemd/10-wlan0.network /usr/lib/systemd/network/
 ```
 
-## DHCP server configuration
+### Configure the DHCP server
 The ISC DHCP server is configured with the file `dhcpd.conf`. This should be located under
 `/etc/` or `/etc/dhcp/`. For our purposes, assume it under `/etc/dhcp/`. Start by renaming it
 ```bash
@@ -256,84 +284,57 @@ Use
 ```bash
 which dhcpd
 ```
-to find the location of `dhcpd`. Save this under `/usr/lib/systemd/system/`
+to find the location of `dhcpd`. Copy this file to `/usr/lib/systemd/system/`
 ```bash
-sudo cp systemd/dhcpd4@.service /usr/lib/systemd/system
+sudo cp systemd/dhcpd4@.service /usr/lib/systemd/system/
 ```
 
-## `Hostapd` configuration
+### Configure `hostapd`
 The `systemd` service file [`hostapd@.service`](systemd/hostapd@.service) handles the `hostapd`
 process. The command
 ```bash
 which hostapd
 ```
 outputs the location of the `hostapd` executable. Make changes, if needed, in the `ExecStart` option
-of [`hostapd@.service`](systemd/hostapd@.service) (line 20). Copy this file to `/usr/lib/systemd/system`
-and reload the `systemd` configuration
+of [`hostapd@.service`](systemd/hostapd@.service) (line 20). Copy this file to `/usr/lib/systemd/system/`
 ```bash
 sudo cp systemd/hostapd@.service /usr/lib/systemd/system/
-sudo systemctl daemon-reload
 ```
 
 `Hostapd` configuration is bound to the wifi interface device `wlan0`. Rename the file
-[`hostapd-wlan0.conf`](conf/hostapd-wlan0.conf) by replacing the device name. Next, open the file
-and set the `interface` option to `wlan0` (line 11). The name for our wifi network is set in
+[`hostapd-wlan0.conf`](conf/hostapd-wlan0.conf) by replacing the device name, if this is different than `wlan0`.
+Next, open the file and set the `interface` option to `wlan0` (line 11). The name for our wifi network is set in
 line 17 with the `ssid` option. Our network will be named `pi`. You might want to set the option
 `country_code` in line 9. Save your changes and copy this file to `/etc/hostapd/`
 ```bash
 sudo cp conf/hostapd-wlan0.conf /etc/hostapd/
 ```
 
-## TLS certificate
-Create the directory `certs` under `humanSoundSculpture` and change directory to it.
-```bash
-mkdir certs && cd certs
-```
-Inside `certs` we will save the certificates for *Human Sound Sculpture*. Run the command
-```bash
-mkcert -key-file hss-key.pem -cert-file hss-crt.pem localhost ::1 <HSS_IP>
-```
-
-where `<HSS_IP>` is `192.168.100.1` in our case. Now, install the root certificate with
-```bash
-mkcert -install
-```
-
-Web clients should install the root certificate. This is the `rootCA.pem` file located under `mkcert -CAROOT`.
-Copy this file to `public/`.
-```bash
-# First, change directory to humanSoundSculpture
-cd ..
-# Then copy root certificate
-cp $(mkcert -CAROOT)/rootCA.pem public/
-```
-In most cases, clients should be able to install the certificate to their trust store by using the browser
-to navigate to `https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`.
-
-## `SuperCollider` configuration
+### Configure `SuperCollider`
 The file [humanSoundSculpture.scd](supercollider/humanSoundSculpture.scd) generates the note
 sequence that is distributed among the performers. It is started with the `systemd` unit
 [`hss-supercollider.service`](systemd/hss-supercollider.service). Copy this file to `/usr/lib/systemd/system/`.
 ```bash
 sudo cp systemd/hss-supercollider.service /usr/lib/systemd/system/
 ```
-## Web server configuration
-We are going to use the TLS certificate `hss-crt.pem` and key `hss-key.pem`. These were generated with `mkcert` and
+### Configure the web server
+We are going to use the TLS certificate `hss-crt.pem` and key `hss-key.pem`. They were generated with `mkcert` and
 are located under `certs`. Open the file [`server.js`](server.js). Lines 18-19, should read these files.
 
 [`Server.js`](server.js) listens to `WebSocket` messages from web clients. If the message is `shutdown` will
 call the `bash` script [`killHSS`](bin/killHSS.sh). This message is signaled by the *conductor* of the performance
-after double-clicking the `shutdown` button. The idea here is to be able to shutdown the computer (a `Raspberry Pi` in
-our case) withoud the need of a keyboard, a monitor or a person different than the performers.
+after double-clicking on the `shutdown` button. The idea here is to be able to shutdown the computer (a `Raspberry Pi` in
+our case) without the need of a keyboard, a monitor or a person different than the performers.
 
-In line 13 of [`killHSS`](bin/killHSS.sh) calls we read `shutdown now;`.
+In line 13 of [`killHSS`](bin/killHSS.sh) we read `shutdown now;`.
 This line is commented by default. Uncomment it for a live performance.
 
 The `systemd` unit `hss-web-server.service` starts the web server process of the piece. Copy the file
-[`hss-web-server.service`](systemd/hss-web-server.service) to `/usr/lib/systemd/system`.
+[`hss-web-server.service`](systemd/hss-web-server.service) to `/usr/lib/systemd/system/`.
 ```bash
 sudo cp systemd/hss-web-server.service /usr/lib/systemd/system/
 ```
+
 ## Putting it all together
 First reload the `systemd` configuration
 ```bash
@@ -359,7 +360,67 @@ Now, start the web server process with the unit `hss-web-server.service` and `Su
 sudo systemctl start hss-web-server.service hss-supercollider.service
 ```
 
-> You can start all services with one command\
+> You could start all services with one command\
 > `sudo systemctl start systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server hss-supercollider`
 
+By using the browser navigate to `https://192.168.100.1:3000`. Hopefully, you will see
+
+A `systemd` service is stopped with the command
+```bash
+sudo systemctl stop <unit-name>
+```
+To stop all the running processes of the piece call
+```bash
+sudo systemctl stop hss-supercollider hss-web-server hostapd@wlan0 dhcpd4@wlan0 systemd-networkd
+```
 ## Troubleshooting
+You can check the status of a `systemd` service by calling
+```bash
+sudo systemctl status <unit-name>
+```
+E.x. the output of `sudo systemctl status systemd-networkd` will print `Active: active (running)` if the process
+`systemd-networkd` is running, `Active: inactive (dead)` if the process is not running etc.
+
+If things go wrong, use `journalctl` to query `systemd` logs. Inspecting the output of`sudo journalctl -xe`
+or `sudo journalctl -u <unit-name> -r` might reveal usefull information about the unit `<unit-name>`.
+Also, might be usefull to start the services one by one and checking, in each step, the status of the
+most recently started service.
+
+You can see runtime messages about a service with the command
+```bash
+sudo journalctl -u <unit-name> -f
+```
+This approach was found usefull in inspecting `node.js` or `SuperCollider` messages. Use it in
+compination with log statements inside web server or `SuperCollider` files. Output from both services can be
+printed with
+```bash
+sudo journalctl -u hss-* -f
+```
+
+Sometimes an error may occur in a `systemd` unit file and not in the underlying process, and vice versa. With
+`systemd-networkd`, `dhcpd4@wlan0`, `hostapd@wlan0`running, you can start the web server process by calling
+`node server.js` (or `sudo node server.js` if the global variable `HSS_HTTP_PORT` is less than 1024).
+After any change in the `systemd` service files under `/usr/lib/systemd/system`, you should reload the configuration
+of the service manager with
+```bash
+sudo systemctl daemon-reload
+```
+
+We find it usefull to use `ssh` to connect to the *Human Sound Sculpture* computer from another machine. Use the
+browser to navigate to piece's website. Open multiple tabs. Test the buttons and sound. Use the browser's console.
+
+## Preparing a performance
+This step should be done after the necessary software is installed and configured properly, all `systemd` services
+are running without errors and you've made some tests with a bunch of smartphone devices. The only thing that has to
+be done is to make all `systemd` units start when the computer is turned on. Enable the services with the command
+```bash
+sudo systemctl enable systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server hss-supercollider
+```
+
+Uncomment line 13 of [`killHSS`](bin/killHSS.sh). This will enable the *conductor* to shutdown the computer by
+double-clicking on the `shutdown` button.
+
+To stop services from starting on computer boot, run
+```bash
+sudo systemctl disable systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server hss-supercollider
+```
