@@ -85,7 +85,7 @@ vertices of a Paley graph of order 13 is used to select the `freq`, `amp` and `d
 The `SuperCollider` script of the piece is started by a `systemd` service.
 
 ## Preparing a performance
-Please, read [preparation-software](PREPARATION-SOFTWARE.md) to find out the details of configuring
+Please, read [software-setup](SOFTWARE-SETUP.md) to find out the details of configuring
 the software components of the piece.
 
 ## Contribute
