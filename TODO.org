@@ -1,0 +1,30 @@
+# ##################################################
+#	Human Sound Sculpture
+#
+# In this file we collect a (largely incomplete) list of
+# TODO items.
+# ##################################################
+
+* Web server
+* Web client
+** TODO Make tests in various browsers
+** TODO Make tests is several devices
+** TODO Use responsive web design
+   Media queries can be used to adapt page content
+   to various screen sizes and devices.
+** TODO Make typography beautiful
+** TODO Make refinements in the PWA version
+   These include:
+   - The service worker
+   - The icons
+   - The webmanifest file
+* ~SuperCollider~
+** TODO Eliminate the need for SuperCollider
+   This project uses ~SuperCollider~ to generate an infinite
+   sequence of note events. Parameters for these notes
+   (order, frequency, amplitude, duration) are generated
+   algorithmically by a random walk on a graph. The class
+   ~PGraphWalk~ is responsible for this. It relys on the
+   powerfull ~Pattern~ abstraction of ~SuperCollider~.
+   To eliminate the need for ~SuperCollider~ means to
+   accomplish the same functionality from within ~node.js~.
