@@ -25,11 +25,8 @@ const textMsgMaybe = Maybe.of(document.getElementById('textMsg'));
 // Websockets
 // ////////////////////////////////////////////////////////////
 // Initialize WebSockets
-// 'hss_ip' and 'node_port' are
-// bash environment variables.
-// For each session they are set in server.js with a 'sed' command.
-// After perfomance, they are unset in bin/setEnvirParNames.sh'
-// when the hss-webServer.service stops.
+// 'HSS_IP' and 'HSS_HTTP_PORT' are
+// global variables.
 const socket = new WebSocket('wss://$HSS_IP:$HSS_HTTP_PORT');
 
 // ////////////////////////////////////////////////////////////

@@ -1,7 +1,4 @@
-<!-- <div style="width: 50%; text-align:center;"> -->
-# *Human Sound Sculpture*
-<p style="text-align: right; font-style:italic; font-size: smaller;">To Kyriakos K.</p>
-<!-- </div> -->
+# *Human Sound Sculpture* <p style="text-align: right; font-style:italic; font-size: small;">To Kyriakos K.</p>
 
 ## About
 *Human Sound Sculpture* is a piece of performance art for public space. It is based on the *text score*:
@@ -38,7 +35,7 @@ until performance ends. The steps of connecting to the network and loading the
 website must be done before performance starts and is not part of the piece.
 
 The website is not accessible throught the `Internet`. Rather, it is served on a local network.
-The web server process runs on a dedicated computer. A portable solution, like `Rasberry Pi`,
+The web server process runs on a dedicated computer. A portable solution, like a `Rasberry Pi`,
 is preferred since it can fit inside a bag or a pocket. This computer should host a `Linux` environment
 with the `systemd` service manager. Also, utilizes `hostapd` to enable the network interface card
 to act as an access point. `SuperCollider` is used to generate sound events. These are sent to the
@@ -47,7 +44,7 @@ web server and distributed to web clients.
 Four pages constitute the website of the piece. They are tagged as *index*, *description*,
 *player* and *conductor*. The first serves as a gateway to the rest. *Description* offers a brief
 description of the piece. The pages *conductor* and *player* are used in a performance. Each performer
-connects to one of them. She is tagged as *conductor* or *player*, respectively.
+connects to exactly one of them. She is tagged as *conductor* or *player*, respectively.
 Each performance has at most one *conductor*.
 
 The *conductor* is responsible for starting and ending the performance. Two buttons can be used for
@@ -74,17 +71,29 @@ We have used the libraries [`osc.js`](https://github.com/colinbdclark/osc.js/) f
 The web server process is started by a `systemd` service.
 
 ### Web Clients
-When a client receives an object `{ type: '/note', args: [freq, amp, dur] }`, it plays a synth with
-`freq`, `amp` and `dur` as arguments.
+In a performance clients should visit one of the pages *conductor* or *player*. In both cases receives
+`WebSocket` messages from the web server. Specifically, when a client receives an object
+`{ type: '/note', args: [freq, amp, dur] }`, it plays a synth with `freq`, `amp` and `dur` as arguments.
 
-### SuperCollider
+The *conductor* sends `WebSocket` messages to the web server. These are
+- `play`/`stop`: Send when the conductor presses the `play` button. These propagate to `SuperCollider` to
+	start/stop, the note generation event stream.
+- `shutdown`: Send when the `shutdown` button is pressed. It is used to poweroff the computer.
+### `SuperCollider`
 [`SuperCollider`](http://supercollider.github.io/) generates the sound events. A random walk on the
 vertices of a Paley graph of order 13 is used to select the `freq`, `amp` and `dur` for a sound
-`Event`, as well as the `delta` time between succesive `Events`.
+`Event`, as well as the `delta` time between succesive `Events`. Communicates with the web browser
+by interchanging `OSC` messages. These are
+- `action`: Takes one of the parameters `start`/`stop`. It is used to start/stop, respectively, the
+  `EventStreamPlayer` object that handles the note generation pattern. It propagates to web clients
+  with a `WebSocket` message.
+- `note`: This message is send to web server whenever a new note event is generated. It sends as
+  parameters the frequency, amplitude and duration of the new note. The web server will send this data
+  to a random client.
 
 The `SuperCollider` script of the piece is started by a `systemd` service.
 
-## Preparing a performance
+## Prepare a performance
 Please, read [software-setup](SOFTWARE-SETUP.md) to find out the details of configuring
 the software components of the piece.
 
@@ -93,5 +102,5 @@ the software components of the piece.
 - Suggest improvements and bug fixes.
 
 ## License
-*Human Sound Sculpture* is distributed under the terms of CC??? license, except the code which is
-distributed under the terms of MIT license.
+*Human Sound Sculpture* is distributed under the terms of the CC??? license, except the code which is
+distributed under the terms of the MIT license.
