@@ -1,8 +1,8 @@
 // ////////////////////////////////////////////////////////////
 //				Human Sound Sculpture
 //
-// Start the SuperCollider event stream, and send notes
-// to the web server.
+// Start the SuperCollider event stream, and send note events
+// to web server.
 // If started as a systemd service,
 // run in bash
 //		 journalctl -u hss-supercollider -f
