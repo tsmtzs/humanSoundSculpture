@@ -1,5 +1,6 @@
 # Contributing to *Human Sound Sculpture*
 To contribute to this project you can
+
 - *Report bugs or errors*\
   For this, please, open an issue.
 - *Suggest improvements or bug fixes*\

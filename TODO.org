@@ -5,6 +5,13 @@
 # TODO items.
 # ##################################################
 
+* TODO Add a domain name (?)
+  A domain name should ease the direction to the website of
+  /Human Sound Sculpture/. On the other hand, this might
+  add another level of complexity to the project (installing
+  a DNS server, configuring software, managing ~systemd~
+  services, having another process running).
+
 * ~SuperCollider~
 ** TODO Eliminate the need for SuperCollider
    This project uses ~SuperCollider~ to generate an infinite
@@ -16,7 +23,6 @@
    To eliminate the need for ~SuperCollider~ means to
    accomplish the same functionality from within ~node.js~.
 
-* Web server
 * Web client
 ** TODO Make tests in various browsers
 ** TODO Make tests is several devices
