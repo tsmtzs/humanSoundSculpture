@@ -94,14 +94,14 @@ by interchanging `OSC` messages. These are
 The `SuperCollider` script of the piece is started by a `systemd` service.
 
 ## Prepare a performance
-Please, read [software-setup](SOFTWARE-SETUP.md) to find out the details of configuring
-the software components of the piece.
+Direct to [software-setup](SOFTWARE-SETUP.md) to find out the details of configuring
+the software components of the piece. Other details for a perfomance can be found in
+[PREPARATION](PREPARATION.md). If you realized a public performance and you would like
+to mention it here, please, refer to [PERFOMANCES](PERFOMANCES.md).
 
 ## Contribute
 This project is open to contribution. Please direct to [CONTRIBUTING](CONTRIBUTING.md) for more details.
-Some of the things that we will like to see in our project can be found in [TODO](TODO.org).
-- Report bugs and errors.
-- Suggest improvements and bug fixes.
+Some of the things that we will like to do in our project can be found in [TODO](TODO.org).
 
 ## License
 *Human Sound Sculpture* is distributed under the terms of the CC??? license, except the code which is
