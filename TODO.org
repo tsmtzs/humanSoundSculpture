@@ -25,11 +25,26 @@
 
 * Web client
 ** TODO Make tests in various browsers
+   Currently, all the tests were made with
+   ~chrome~. Since the website of the piece
+   doesn't rely on newer APIs (except the
+   ~Web Audio API~ and ~WebSockets~) we expect
+   that recent versions of all the major browsers will support
+   the piece.
+
 ** TODO Make tests is several devices
+   ~Android~ devices worked for us. We suspect that
+   ~ios~ won't support /Human Sound Sculpture/
+   due to issues that have to do with security and ~WebSockets~.
+
 ** TODO Use responsive web design
    Media queries can be used to adapt page content
-   to various screen sizes and devices.
+   to various devices and screen sizes.
+
 ** TODO Make typography beautiful
+   Use a better layout of the elements on the page?
+   Use other fonts? Other sizes?
+
 ** TODO Make refinements in the PWA version
    These include:
    - The service worker

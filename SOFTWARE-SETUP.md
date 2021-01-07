@@ -23,8 +23,9 @@ dedicated computer assigns IP addresses to clients, runs the web server and
 generates note events. All software configuration should be
 done on this computer. We have used the `Raspberry Pi model B+` single board
 computer with the `Raspberry Pi OS Lite` operating system. The following sections
-offer the details for each step of setting up the system.
-All commands assume the `Raspberry Pi OS`.
+offer the details for each step of setting up the piece.
+All commands assume the `Raspberry Pi OS`. They should work on every `Debian` based
+`Linux` distribution.
 
 ### Install the required software
 1. `Linux`
@@ -51,7 +52,7 @@ All commands assume the `Raspberry Pi OS`.
 	[values2names](bin/values2names.sh).
 5. [`hostapd`](https://w1.fi/hostapd/)
 
-	This program is used to turn the wifi network interface card of the computer into
+	This program is used to turn the WIFI network interface card of the computer into
 	an access point. Install it with
 
 	```bash
@@ -75,13 +76,13 @@ All commands assume the `Raspberry Pi OS`.
 	```
 8. [`SuperCollider`](https://supercollider.github.io/) version ???
 
-	`SuperCollider` is an audio programming language. Follow
-	[this](https://github.com/supercollider/supercollider/blob/develop/README_RASPBERRY_PI.md)
+	`SuperCollider` is an audio programming language. Follow this
+	[raspberry-installation](https://github.com/supercollider/supercollider/blob/develop/README_RASPBERRY_PI.md)
 	guide to install it on `Raspberry Pi`. *Human Sound Sculpture* utilizes only the `sclang`
 	`SuperCollider` language program.
 
 	The `SimpleNumber` method `betarand` is used to calculate some probabilities. It is an extension of the class
-	found in `sc3-plugins`.  Install the plugins by following [this](https://supercollider.github.io/sc3-plugins/) guide.
+	found in `sc3-plugins`.  Install the plugins by following the [sc3plugin-installation](https://supercollider.github.io/sc3-plugins/) guide.
 	Alternatively, you could download only the file
 	[ProbabilityDistributions.sc](https://github.com/supercollider/sc3-plugins/blob/dd092a20cb66fc976d47ad402be601985cb8bf84/source/LoopBufUGens/sc/classes/LJP%20Classes/ProbabilityDistributions.sc)
 	inside the `SuperCollider` user extension directory. This is, usually, `~/.local/share/SuperCollider/Extensions`. You can find it by calling
@@ -93,7 +94,7 @@ All commands assume the `Raspberry Pi OS`.
 9. [`mkcert`](https://github.com/FiloSottile/mkcert)
 
 	The website of the piece is served on a local TLS network. You can create a TLS certificate
-	with the program `mkcert`. To install it follow the directions found [here](https://github.com/FiloSottile/mkcert#installation).
+	with the program `mkcert`. To install it follow the directions found in [mkcert-installation](https://github.com/FiloSottile/mkcert#installation).
 
 10. [`git`](https://git-scm.com/)
 
@@ -143,11 +144,12 @@ Change directory to `humanSoundSculpture`
 ```bash
 cd humanSoundSculpture
 ```
+For a performance you should create a new branch on top of `master`.
 Make sure you 're on the `master` branch by running
 ```bash
 git branch
 ```
-If this is so, create a new branch on top. Use an appropriate name.
+If this is so, create the new branch. Use an appropriate name.
 Something like `test` or `test@raspberry` or `performance@venus` might be handy.
 
 ```bash
@@ -158,7 +160,7 @@ git checkout -b performance@venus
 The runtime environment of the piece depends on the following variables:
 - `HSS_DIR`: An absolute path. Points to the `humanSoundSculpture` directory.
 - `HSS_IP`: An IPv4 address. Web server's IP on the local network.
-- `HSS_NETWORK`: The network prefix of the local wifi network, i.e. the three
+- `HSS_NETWORK`: The network prefix of the local WIFI network, i.e. the three
 		leftmost bytes of the IP (assuming an IPv4 24 bit netmask).
 - `HSS_HTTP_PORT`: A positive integer. The `HTTP` port number.
 
@@ -216,19 +218,19 @@ located under `mkcert -CAROOT`. Copy this file to `public/`.
 ```bash
 ## First, change directory to humanSoundSculpture
 cd ..
-## Then copy root certificate
+## Then copy the root certificate
 cp $(mkcert -CAROOT)/rootCA.pem public/
 ```
 In most cases, clients should be able to install the certificate to their trust store by using the browser
 to navigate to `https://192.168.100.1:3000/rootCA.pem` (in general to`https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`).
 
-### Configure the local wifi network
-First, find out the name of the wifi interface device name.
+### Configure the local WIFI network
+At first, find out the name of the WIFI interface device name.
 ```bash
 ip link show
 ```
 Normally, the name should start with a `w`. For this guide we will assume
-that the device name is `wlan0`. Bring the interface up by running
+that the device name is `wlan0`. Bring the interface up, if it is not, by running
 ```bash
 sudo ip link set wlan0 up
 ```
@@ -238,8 +240,8 @@ global variable, set in [`hss-globalVariables`](bin/hss-globalVariables). In thi
 it is `192.168.100.1`.
 
 We will use the `systemd` service `systemd-networkd`. The configuration options for the local
-network are found in the file [`10-wlan0.network`](systemd/10-wlan0.network). If the wifi
-interface device name is not `wlan0`, you have to rename this file. Open
+network are found in the file [`10-wlan0.network`](systemd/10-wlan0.network). If the WIFI
+interface device name is not `wlan0`, you should rename this file. Open
 [`10-wlan0.network`](systemd/10-wlan0.network) and edit, if needed, line 10:
 ```
 ## 10-wlan0.network
@@ -262,7 +264,7 @@ sudo mv /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.original
 ```
 
 In place of the original configuration file we will use [`dhcpd.conf`](conf/dhcpd.conf). We will
-edit the MAC address of the wifi interface. This is a series of hexadecimal bytes
+edit the MAC address of the WIFI interface. This is a series of hexadecimal bytes
 separated by colons. You can find it by inspecting the output of
 
 ```bash
@@ -301,9 +303,9 @@ of [`hostapd@.service`](systemd/hostapd@.service) (line 20). Copy this file to `
 sudo cp systemd/hostapd@.service /usr/lib/systemd/system/
 ```
 
-`Hostapd` configuration is bound to the wifi interface device `wlan0`. Rename the file
-[`hostapd-wlan0.conf`](conf/hostapd-wlan0.conf) by replacing the device name, if this is different than `wlan0`.
-Next, open the file and set the `interface` option to `wlan0` (line 11). The name for our wifi network is set in
+`Hostapd` configuration is bound to the WIFI interface device `wlan0`. For a different device name, rename the file
+[`hostapd-wlan0.conf`](conf/hostapd-wlan0.conf).
+Next, open the file and set the `interface` option to `wlan0` (line 11). The name for our WIFI network is set in
 line 17 with the `ssid` option. Our network will be named `pi`. You might want to set the option
 `country_code` in line 9. Save your changes and copy this file to `/etc/hostapd/`
 ```bash
@@ -311,7 +313,7 @@ sudo cp conf/hostapd-wlan0.conf /etc/hostapd/
 ```
 
 ### Configure `SuperCollider`
-The file [humanSoundSculpture.scd](supercollider/humanSoundSculpture.scd) generates the note
+The file [humanSoundSculpture.scd](supercollider/humanSoundSculpture.scd) is responsible for the note
 sequence that is distributed among the performers. It is started with the `systemd` unit
 [`hss-supercollider.service`](systemd/hss-supercollider.service). Copy this file to `/usr/lib/systemd/system/`.
 ```bash
@@ -340,7 +342,7 @@ First reload the `systemd` configuration
 ```bash
 sudo systemctl daemon-reload
 ```
-Then start the `systemd` unit `systemd-networkd` to assign a static IP to the wifi interface device.
+Then start the `systemd` unit `systemd-networkd` to assign a static IP to the WIFI interface device.
 ```bash
 sudo systemctl start systemd-networkd.service
 ```
@@ -349,7 +351,7 @@ Check if the wireless interface is assigned the IP
 ip addr show wlan0
 ```
 Use the unit `hostapd@.service` to turn the network card into an access point. The unit `dhcpd4@.service`
-will start the DHCP server. Start both services by passing the wifi interface device name `wlan0`
+will start the DHCP server. Start both services by passing the WIFI interface device name `wlan0`
 ```bash
 sudo systemctl start hostapd@wlan0.service dhcpd4@wlan0.service
 ```
@@ -363,18 +365,19 @@ sudo systemctl start hss-web-server.service hss-supercollider.service
 > You could start all services with one command\
 > `sudo systemctl start systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server hss-supercollider`
 
-By using the browser navigate to `https://192.168.100.1:3000`. Hopefully, you will see
+By using the browser navigate to `https://192.168.100.1:3000`. Hopefully, you will see the *index*
+page of *Human Sound Sculpture*.
 
 A `systemd` service is stopped with the command
 ```bash
 sudo systemctl stop <unit-name>
 ```
-To stop all the running processes of the piece call
+To stop all the running processes of the piece use the command
 ```bash
 sudo systemctl stop hss-supercollider hss-web-server hostapd@wlan0 dhcpd4@wlan0 systemd-networkd
 ```
 ## Troubleshooting
-You can check the status of a `systemd` service by calling
+You can check the status of a `systemd` service with
 ```bash
 sudo systemctl status <unit-name>
 ```
@@ -398,7 +401,7 @@ sudo journalctl -u hss-* -f
 ```
 
 Sometimes an error may occur in a `systemd` unit file and not in the underlying process, and vice versa. With
-`systemd-networkd`, `dhcpd4@wlan0`, `hostapd@wlan0`running, you can start the web server process by calling
+`systemd-networkd`, `dhcpd4@wlan0`, `hostapd@wlan0` running, you can start the web server process by calling
 `node server.js` (or `sudo node server.js` if the global variable `HSS_HTTP_PORT` is less than 1024).
 After any change in the `systemd` service files under `/usr/lib/systemd/system`, you should reload the configuration
 of the service manager with
@@ -424,3 +427,42 @@ To stop services from starting on computer boot, run
 ```bash
 sudo systemctl disable systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server hss-supercollider
 ```
+
+### After a performance
+Disable `systemd` services
+```bash
+sudo systemctl disable systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server hss-supercollider
+```
+Remove the relevant service files from `/usr/lib/systemd/system/`
+```bash
+cd /usr/lib/systemd/system/
+# We don't delete systemd-networkd
+sudo rm hostapd@wlan0.service dhcpd4@wlan0.service hss-*
+```
+and the `10-wlan0.network` file from `/usr/lib/systemd/network/`
+```bash
+sudo rm /usr/systemd/network/10-wlan0.network
+```
+
+Change directory to `humanSoundSculpture` and checkout the branch `performace@venus`
+```bash
+cd ~/humanSoundSculpture
+git checkout performance@venus
+```
+
+Commit any changes and checkout `master`
+```bash
+git commit -a -m "Performance end"
+git checkout master
+```
+
+Now delete the branch `performance@venus`
+```bash
+git branch -D performance@venus
+```
+
+Assist performers to 
+
+- delete the *Human Sound Sculpture* app,
+- delete the root certificate from their device trust store,
+- delete the bookmark of *Human Sound Sculpture* in their browser.

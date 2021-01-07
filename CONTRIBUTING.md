@@ -1,5 +1,5 @@
 # Contributing to *Human Sound Sculpture*
-To contribute to this project you can
+To contribute to this project you could
 
 - *Report bugs or errors*\
   For this, please, open an issue.
@@ -15,8 +15,11 @@ To contribute to this project you can
 	except from very simple issues.
 	We use one branch per bug/feature. To name these branches we follow the next scheme:
 	the string `topic/` is followed by a more specific description. E.x. to add some
-	`CSS` improvements we might name the new branch as `topic/css-enhancements`. `topic/`
-	branches should be merged only to `develop`. Commit messages start with a one line
+	`CSS` improvements we might name the new branch as `topic/css-enhancements`.
+	If you would like to add a performance in [PERFORMANCES](PERFORMANCES.md), please,
+	create a branch with the name `topic/addPerformance`. In this branch we commit
+	changes *only* to [PERFORMANCES](PERFORMANCES.md). `topic/`
+	branches should be merged to `develop`. Commit messages start with a one line
 	short description. We prefer to not end the first line of a commit message with
 	a period.
 

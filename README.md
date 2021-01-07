@@ -29,7 +29,7 @@ thoughts, dreams, memories and aspirations of the people that stand frozen in th
 
 ## Technicalities
 Each performer of *Human Sound Sculpture* carries a smartphone. This device is used as a loudspeaker
-and should be as less visible as possible. It is connected to a local wifi TLS network. Using
+and should be as less visible as possible. It is connected to a local WIFI TLS network. Using
 the browser, each performer loads the website of the piece. She stays connected
 until performance ends. The steps of connecting to the network and loading the
 website must be done before performance starts and is not part of the piece.
@@ -94,10 +94,10 @@ by interchanging `OSC` messages. These are
 The `SuperCollider` script of the piece is started by a `systemd` service.
 
 ## Prepare a performance
-Direct to [software-setup](SOFTWARE-SETUP.md) to find out the details of configuring
-the software components of the piece. Other details for a perfomance can be found in
+The document [software-setup](SOFTWARE-SETUP.md) describes the necessary steps required for configuring
+the software components of the piece. Other details about a perfomance can be found in
 [PREPARATION](PREPARATION.md). If you realized a public performance and you would like
-to mention it here, please, refer to [PERFOMANCES](PERFOMANCES.md).
+to mention it here, please, refer to [PERFORMANCES](PERFORMANCES.md).
 
 ## Contribute
 This project is open to contribution. Please direct to [CONTRIBUTING](CONTRIBUTING.md) for more details.
