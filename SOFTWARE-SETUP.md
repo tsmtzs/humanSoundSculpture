@@ -23,7 +23,7 @@ dedicated computer assigns IP addresses to clients, runs the web server and
 generates note events. All software configuration should be
 done on this computer. We have used the `Raspberry Pi model B+` single board
 computer with the `Raspberry Pi OS Lite` operating system. The following sections
-offer the details for each step of setting up the piece.
+offer the details for each step of setting up software.
 All commands assume the `Raspberry Pi OS`. They should work on every `Debian` based
 `Linux` distribution.
 
@@ -37,19 +37,27 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
    sudo apt-get update
    sudo apt-get upgrade
    ```
+
+   Required version: `Raspbian 10`
 2. [`systemd`](https://systemd.io/)
 
 	`systemd` is a service manager for `Linux`. Normally, this comes with
 	the operating system.
+
+	Required version: `241`
 3. [`bash`](https://www.gnu.org/software/bash/)
 
 	The configuration for *Human Sound Sculpture* is done within the `bash` shell.
 	It should come with the operating system.
+
+	Required version: `5.0.3`
 4. [`sed`](https://www.gnu.org/software/sed/)
 
 	`sed` is a command line stream editor. Should be available with the operating
 	system. It is used in the scripts [names2values](bin/names2values.sh) and
 	[values2names](bin/values2names.sh).
+
+	Required version: `4.7`
 5. [`hostapd`](https://w1.fi/hostapd/)
 
 	This program is used to turn the WIFI network interface card of the computer into
@@ -58,6 +66,8 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	```bash
 	sudo apt-get install hostapd
 	```
+
+	Required version: `2.8-devel`
 6. [`dhcpd`](https://www.isc.org/dhcp/) version `4.4.2`
 
 	This the ISC DHCP server. It is used to assign IP addresses to web clients. Install it with
@@ -66,6 +76,8 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	```bash
 	sudo apt-get install isc-dhcp-server
 	```
+
+	Required version: `4.4.1`
 7. [`node.js`](https://nodejs.org/) version ???
 
 	`node.js` is a `JavaScript` runtime environment. The web server for *Human Sound Sculpture* is
@@ -74,6 +86,8 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	```bash
 	sudo apt-get install nodejs
 	```
+
+	Required version: `10.21.0`
 8. [`SuperCollider`](https://supercollider.github.io/) version ???
 
 	`SuperCollider` is an audio programming language. Follow this
@@ -91,11 +105,35 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	The class `PGraphWalk` is a extension of the language. It can be found in the github repository [sc-tsmtzs](https://github.com/tsmtzs/sc-tsmtzs).
 	Clone the repository inside the `SuperCollider` user extension directory.
 
+	Required version: `sclang 3.10.0`
 9. [`mkcert`](https://github.com/FiloSottile/mkcert)
 
 	The website of the piece is served on a local TLS network. You can create a TLS certificate
 	with the program `mkcert`. To install it follow the directions found in [mkcert-installation](https://github.com/FiloSottile/mkcert#installation).
 
+	Another way, although not recommended (read *use at your own risk*), to install `mkcert` is to download the binaries:
+
+		1. Find the `CPU` architecture
+		```bash
+		dpkg --print-architecture
+		```
+
+		This will print, probably, `armhf` on `Raspberry Pi 3`.
+		2. Change directory to `/usr/bin/`
+		```bash
+		cd /usr/bin
+		```
+		3. Direct to [mkcert pre-build binaries](https://github.com/FiloSottile/mkcert/releases) and download the
+		one that matches the output of `dpkg`. We will download the file `mkcert-v1.4.3-linux-arm`
+		```bash
+		sudo wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-linux-arm
+		```
+		4. Rename the binary file as `mkcert`
+		```bash
+		sudo mv mkcert-v1.4.3-linux-arm mkcert
+		```
+
+	Required version: `1.4.3`
 10. [`git`](https://git-scm.com/)
 
 	A new `git branch` is created for every performance or test of *Human Sound Sculpture*. Install `git` by running
@@ -103,6 +141,8 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	```bash
 	sudo apt-get install git
 	```
+
+	Required version: `2.20.1`
 11. (*optional*) [`XeTeX`](https://tug.org/xetex/)
 
 	`XeTeX` is a `TeX` derivative. It is used to produce the `PWA` [icon](public/icons/hssIcon_192x192.png)
@@ -461,7 +501,7 @@ Now delete the branch `performance@venus`
 git branch -D performance@venus
 ```
 
-Assist performers to 
+Assist performers to
 
 - delete the *Human Sound Sculpture* app,
 - delete the root certificate from their device trust store,
