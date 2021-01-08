@@ -20,14 +20,14 @@
 
 [Unit]
 Description=Run SuperCollider for the piece Human Sound Sculpture
-Documentation=file:/home/pi/humanSoundSculpture/README.md
+Documentation=file:$HSS_DIR/README.md
 After=network-online.target
 
 [Service]
 Environment=QT_QPA_PLATFORM=offscreen DISPLAY=:0.0
 Type=simple
 # Start supercollider
-ExecStart=/usr/bin/sclang -D /home/pi/humanSoundSculpture/supercollider/humanSoundSculpture.scd
+ExecStart=/usr/bin/sclang -D $HSS_DIR/supercollider/humanSoundSculpture.scd
 Restart=on-failure
 
 [Install]
