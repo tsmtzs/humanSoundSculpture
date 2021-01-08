@@ -132,6 +132,10 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 		```bash
 		sudo mv mkcert-v1.4.3-linux-arm mkcert
 		```
+		5. Change `mkcert`'s mode
+		```bash
+		sudo chmod a=rx mkcert
+		```
 
 	Required version: `1.4.3`
 10. [`git`](https://git-scm.com/)
@@ -179,11 +183,19 @@ Clone the repository `humanSoundSculpture`.
 git clone ?????
 ```
 
-### Work on a separate `git branch`
-Change directory to `humanSoundSculpture`
+### Install `node` packages
+First, change directory to `humanSoundSculpture`
 ```bash
 cd humanSoundSculpture
 ```
+
+Install the required packages with
+
+```bash
+npm install
+```
+
+### Work on a separate `git branch`
 For a performance you should create a new branch on top of `master`.
 Make sure you 're on the `master` branch by running
 ```bash
@@ -207,14 +219,14 @@ The runtime environment of the piece depends on the following variables:
 Set their values by editing the file [hss-globalVariables](bin/hss-globalVariables).
 
 Global variables are scattered accross several files. Variable names are prepended by a `$`
-sign. To find all the occurances of a variable use `grep`. E.x. `grep -r '$HSS_IP'`.
+sign. To find all the occurances of a variable use `grep`. E.x. `grep -r '192.168.100.1'`.
 
 For this guide we will use
 ```
 ## bin/hss-globalVariables
 HSS_DIR			/home/pi/humanSoundSculpture
 HSS_IP			192.168.100.1
-HSS_HTTP_PORT	3000
+HSS_HTTP_PORT		3000
 ```
 
 After editing
@@ -289,11 +301,11 @@ Name=wlan0
 ```
 
 After editing, copy [`10-wlan0.network`](systemd/10-wlan0.network) to
-`/usr/lib/systemd/network/` (see the man pages for `systemd.network` and `systemd-networkd`
+`/lib/systemd/network/` (see the man pages for `systemd.network` and `systemd-networkd`
 for other paths).
 
 ```bash
-sudo cp systemd/10-wlan0.network /usr/lib/systemd/network/
+sudo cp systemd/10-wlan0.network /lib/systemd/network/
 ```
 
 ### Configure the DHCP server
@@ -326,9 +338,9 @@ Use
 ```bash
 which dhcpd
 ```
-to find the location of `dhcpd`. Copy this file to `/usr/lib/systemd/system/`
+to find the location of `dhcpd`. Copy this file to `/lib/systemd/system/`
 ```bash
-sudo cp systemd/dhcpd4@.service /usr/lib/systemd/system/
+sudo cp systemd/dhcpd4@.service /lib/systemd/system/
 ```
 
 ### Configure `hostapd`
@@ -338,9 +350,9 @@ process. The command
 which hostapd
 ```
 outputs the location of the `hostapd` executable. Make changes, if needed, in the `ExecStart` option
-of [`hostapd@.service`](systemd/hostapd@.service) (line 20). Copy this file to `/usr/lib/systemd/system/`
+of [`hostapd@.service`](systemd/hostapd@.service) (line 20). Copy this file to `/lib/systemd/system/`
 ```bash
-sudo cp systemd/hostapd@.service /usr/lib/systemd/system/
+sudo cp systemd/hostapd@.service /lib/systemd/system/
 ```
 
 `Hostapd` configuration is bound to the WIFI interface device `wlan0`. For a different device name, rename the file
@@ -355,9 +367,9 @@ sudo cp conf/hostapd-wlan0.conf /etc/hostapd/
 ### Configure `SuperCollider`
 The file [humanSoundSculpture.scd](supercollider/humanSoundSculpture.scd) is responsible for the note
 sequence that is distributed among the performers. It is started with the `systemd` unit
-[`hss-supercollider.service`](systemd/hss-supercollider.service). Copy this file to `/usr/lib/systemd/system/`.
+[`hss-supercollider.service`](systemd/hss-supercollider.service). Copy this file to `/lib/systemd/system/`.
 ```bash
-sudo cp systemd/hss-supercollider.service /usr/lib/systemd/system/
+sudo cp systemd/hss-supercollider.service /lib/systemd/system/
 ```
 ### Configure the web server
 We are going to use the TLS certificate `hss-crt.pem` and key `hss-key.pem`. They were generated with `mkcert` and
@@ -372,9 +384,9 @@ In line 13 of [`killHSS`](bin/killHSS.sh) we read `shutdown now;`.
 This line is commented by default. Uncomment it for a live performance.
 
 The `systemd` unit `hss-web-server.service` starts the web server process of the piece. Copy the file
-[`hss-web-server.service`](systemd/hss-web-server.service) to `/usr/lib/systemd/system/`.
+[`hss-web-server.service`](systemd/hss-web-server.service) to `/lib/systemd/system/`.
 ```bash
-sudo cp systemd/hss-web-server.service /usr/lib/systemd/system/
+sudo cp systemd/hss-web-server.service /lib/systemd/system/
 ```
 
 ## Putting it all together
@@ -386,14 +398,14 @@ Then start the `systemd` unit `systemd-networkd` to assign a static IP to the WI
 ```bash
 sudo systemctl start systemd-networkd.service
 ```
-Check if the wireless interface is assigned the IP
-```bash
-ip addr show wlan0
-```
 Use the unit `hostapd@.service` to turn the network card into an access point. The unit `dhcpd4@.service`
 will start the DHCP server. Start both services by passing the WIFI interface device name `wlan0`
 ```bash
 sudo systemctl start hostapd@wlan0.service dhcpd4@wlan0.service
+```
+Check if the wireless interface is assigned the IP
+```bash
+ip addr show wlan0
 ```
 
 Now, start the web server process with the unit `hss-web-server.service` and `SuperCollider` with
