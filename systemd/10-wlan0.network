@@ -1,0 +1,14 @@
+# ##################################################
+#		Human Sound Sculpture
+# 
+# Networkd configuration file.
+# Set static IP to the wifi network.
+#
+# Save this file under /usr/lib/systemd/network
+# ##################################################
+[Match]
+Name=wlan0
+
+[Network]
+Address=192.168.100.1/24
+# DHCPServer=yes

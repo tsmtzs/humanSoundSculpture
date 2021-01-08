@@ -27,7 +27,7 @@ const textMsgMaybe = Maybe.of(document.getElementById('textMsg'));
 // Initialize WebSockets
 // 'HSS_IP' and 'HSS_HTTP_PORT' are
 // global variables.
-const socket = new WebSocket('wss://$HSS_IP:$HSS_HTTP_PORT');
+const socket = new WebSocket('wss://192.168.100.1:3000');
 
 // ////////////////////////////////////////////////////////////
 // Functions
