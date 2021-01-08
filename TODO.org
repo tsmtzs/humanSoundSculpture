@@ -1,0 +1,52 @@
+# ##################################################
+#	Human Sound Sculpture
+#
+# In this file we collect a (largely incomplete) list of
+# TODO items.
+# ##################################################
+
+* TODO Add a domain name (?)
+  A domain name should ease the direction to the website of
+  /Human Sound Sculpture/. On the other hand, this might
+  add another level of complexity to the project (installing
+  a DNS server, configuring software, managing ~systemd~
+  services, having another process running).
+
+* ~SuperCollider~
+** TODO Eliminate the need for SuperCollider
+   This project uses ~SuperCollider~ to generate an infinite
+   sequence of note events. Parameters for these notes
+   (order, frequency, amplitude, duration) are generated
+   algorithmically by a random walk on a graph. The class
+   ~PGraphWalk~ is responsible for this. It relys on the
+   powerfull ~Pattern~ abstraction of ~SuperCollider~.
+   To eliminate the need for ~SuperCollider~ means to
+   accomplish the same functionality from within ~node.js~.
+
+* Web client
+** TODO Make tests in various browsers
+   Currently, all the tests were made with
+   ~chrome~. Since the website of the piece
+   doesn't rely on newer APIs (except the
+   ~Web Audio API~ and ~WebSockets~) we expect
+   that recent versions of all the major browsers will support
+   the piece.
+
+** TODO Make tests is several devices
+   ~Android~ devices worked for us. We suspect that
+   ~ios~ won't support /Human Sound Sculpture/
+   due to issues that have to do with security and ~WebSockets~.
+
+** TODO Use responsive web design
+   Media queries can be used to adapt page content
+   to various devices and screen sizes.
+
+** TODO Make typography beautiful
+   Use a better layout of the elements on the page?
+   Use other fonts? Other sizes?
+
+** TODO Make refinements in the PWA version
+   These include:
+   - The service worker
+   - The icons
+   - The webmanifest file
