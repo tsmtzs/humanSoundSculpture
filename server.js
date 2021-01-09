@@ -19,7 +19,7 @@ const credentials = {
     cert: fs.readFileSync('./certs/hss-crt.pem', 'utf8')
 };
 // The IP of the server
-const ip = "$HSS_IP";
+const ip = "192.168.100.1";
 
 // ////////////////////////////////////////////////////////////
 // Create the server.
@@ -38,7 +38,7 @@ const oscPath = '/action';
 // WebSockets
 // HSS_WSS implicitly loads the 'ws' module.
 const HSS_WSS = require(__dirname + '/webServerJS/hss_wss.js').HSS_WSS;
-const webServerPort = process.env.HTTP_PORT || $HSS_HTTP_PORT;
+const webServerPort = process.env.HTTP_PORT || 3000;
 const wss = new HSS_WSS({ server: server, clientTracking: true });
 
 // ////////////////////////////////////////////////////////////

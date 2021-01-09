@@ -219,14 +219,14 @@ The runtime environment of the piece depends on the following variables:
 Set their values by editing the file [hss-globalVariables](bin/hss-globalVariables).
 
 Global variables are scattered accross several files. Variable names are prepended by a `$`
-sign. To find all the occurances of a variable use `grep`. E.x. `grep -r '$HSS_IP'`.
+sign. To find all the occurances of a variable use `grep`. E.x. `grep -r '192.168.100.1'`.
 
 For this guide we will use
 ```
 ## bin/hss-globalVariables
-HSS_DIR			$HSS_DIR
-HSS_IP			$HSS_IP
-HSS_HTTP_PORT		$HSS_HTTP_PORT
+HSS_DIR			/home/pi/humanSoundSculpture
+HSS_IP			192.168.100.1
+HSS_HTTP_PORT		3000
 ```
 
 After editing
@@ -242,7 +242,7 @@ to replace each occurance of a variable with it's value.
 ## We run names2values inside humanSoundSculpture passing the file bin/hss-globalVariables
 ./bin/names2values.sh . bin/hss-globalVariables
 ```
-To revert to variable names, use the script [values2names](bin/values2names). You should not
+To revert, latter, to variable names, use the script [values2names](bin/values2names). You should not
 make any changes to global variable values in order for this to work.
 
 ```bash
@@ -260,7 +260,7 @@ Inside `certs` you should save the certificates for *Human Sound Sculpture*. Run
 mkcert -key-file hss-key.pem -cert-file hss-crt.pem localhost ::1 <HSS_IP>
 ```
 
-where `<HSS_IP>` is `$HSS_IP` in our case. Now, install the root certificate with
+where `<HSS_IP>` is `192.168.100.1` in our case. Now, install the root certificate with
 ```bash
 mkcert -install
 ```
@@ -274,7 +274,7 @@ cd ..
 cp $(mkcert -CAROOT)/rootCA.pem public/
 ```
 In most cases, clients should be able to install the certificate to their trust store by using the browser
-to navigate to `https://$HSS_IP:$HSS_HTTP_PORT/rootCA.pem` (in general to`https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`).
+to navigate to `https://192.168.100.1:3000/rootCA.pem` (in general to`https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`).
 
 ### Configure the local WIFI network
 At first, find out the name of the WIFI interface device name.
@@ -289,7 +289,7 @@ sudo ip link set wlan0 up
 
 Now assign a static IP to `wlan0`. This is the value of the `HSS_IP`
 global variable, set in [`hss-globalVariables`](bin/hss-globalVariables). In this case,
-it is `$HSS_IP`.
+it is `192.168.100.1`.
 
 We will use the `systemd` service `systemd-networkd`. The configuration options for the local
 network are found in the file [`10-wlan0.network`](systemd/10-wlan0.network). If the WIFI
@@ -401,7 +401,8 @@ sudo systemctl start systemd-networkd.service
 Use the unit `hostapd@.service` to turn the network card into an access point. The unit `dhcpd4@.service`
 will start the DHCP server. Start both services by passing the WIFI interface device name `wlan0`
 ```bash
-sudo systemctl start hostapd@wlan0.service dhcpd4@wlan0.service
+sudo systemctl start hostapd@wlan0.service
+sudo systemctl start dhcpd4@wlan0.service
 ```
 Check if the wireless interface is assigned the IP
 ```bash
@@ -411,13 +412,11 @@ ip addr show wlan0
 Now, start the web server process with the unit `hss-web-server.service` and `SuperCollider` with
 `hss-supercollider.service`.
 ```bash
-sudo systemctl start hss-web-server.service hss-supercollider.service
+sudo systemctl start hss-web-server.service
+sudo systemctl start hss-supercollider.service
 ```
 
-> You could start all services with one command\
-> `sudo systemctl start systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server hss-supercollider`
-
-By using the browser navigate to `https://$HSS_IP:$HSS_HTTP_PORT`. Hopefully, you will see the *index*
+By using the browser navigate to `https://192.168.100.1:3000`. Hopefully, you will see the *index*
 page of *Human Sound Sculpture*.
 
 A `systemd` service is stopped with the command
@@ -485,15 +484,37 @@ Disable `systemd` services
 ```bash
 sudo systemctl disable systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server hss-supercollider
 ```
-Remove the relevant service files from `/usr/lib/systemd/system/`
+Remove the relevant service files from `/lib/systemd/system/`
 ```bash
-cd /usr/lib/systemd/system/
+cd /lib/systemd/system/
 # We don't delete systemd-networkd
 sudo rm hostapd@wlan0.service dhcpd4@wlan0.service hss-*
 ```
-and the `10-wlan0.network` file from `/usr/lib/systemd/network/`
+and the `10-wlan0.network` file from `/lib/systemd/network/`
 ```bash
-sudo rm /usr/systemd/network/10-wlan0.network
+sudo rm /systemd/network/10-wlan0.network
+```
+
+Delete the `dhcp.conf` file inside `/etc/dhcp/`
+```bash
+sudo rm /etc/dhcp/dhcp.conf
+```
+
+and rename the original `conf` file.
+
+```bash
+sudo mv /etc/dhcp/dhcp.conf.original /etc/dhcp/dhcp.conf
+```
+
+Delete `/etc/hostapd/hostapd-wlan0.conf`
+
+```bash
+sudo rm /etc/hostapd/hostapd-wlan0.conf
+```
+
+Delete `mkcert` from within `/usr/bin/`
+```bash
+sudo rm /usr/bin/mkcert
 ```
 
 Change directory to `humanSoundSculpture` and checkout the branch `performace@venus`
