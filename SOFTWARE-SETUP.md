@@ -242,7 +242,7 @@ to replace each occurance of a variable with it's value.
 ## We run names2values inside humanSoundSculpture passing the file bin/hss-globalVariables
 ./bin/names2values.sh . bin/hss-globalVariables
 ```
-To revert to variable names, use the script [values2names](bin/values2names). You should not
+To revert, latter, to variable names, use the script [values2names](bin/values2names). You should not
 make any changes to global variable values in order for this to work.
 
 ```bash
@@ -367,9 +367,9 @@ sudo cp conf/hostapd-wlan0.conf /etc/hostapd/
 ### Configure `SuperCollider`
 The file [humanSoundSculpture.scd](supercollider/humanSoundSculpture.scd) is responsible for the note
 sequence that is distributed among the performers. It is started with the `systemd` unit
-[`hss-supercollider.service`](systemd/hss-supercollider.service). Copy this file to `/lib/systemd/system/`.
+[`hss-supercollider.service`](systemd/hss-supercollider.service). Copy this file to `~/.config/systemd/user/`.
 ```bash
-sudo cp systemd/hss-supercollider.service /lib/systemd/system/
+sudo cp systemd/hss-supercollider.service ~/.config/systemd/user/
 ```
 ### Configure the web server
 We are going to use the TLS certificate `hss-crt.pem` and key `hss-key.pem`. They were generated with `mkcert` and
@@ -392,7 +392,11 @@ sudo cp systemd/hss-web-server.service /lib/systemd/system/
 ## Putting it all together
 First reload the `systemd` configuration
 ```bash
+# Reload for system services
 sudo systemctl daemon-reload
+
+#Reload for user services
+systemctl --user daemon-reload
 ```
 Then start the `systemd` unit `systemd-networkd` to assign a static IP to the WIFI interface device.
 ```bash
@@ -401,7 +405,8 @@ sudo systemctl start systemd-networkd.service
 Use the unit `hostapd@.service` to turn the network card into an access point. The unit `dhcpd4@.service`
 will start the DHCP server. Start both services by passing the WIFI interface device name `wlan0`
 ```bash
-sudo systemctl start hostapd@wlan0.service dhcpd4@wlan0.service
+sudo systemctl start hostapd@wlan0.service
+sudo systemctl start dhcpd4@wlan0.service
 ```
 Check if the wireless interface is assigned the IP
 ```bash
@@ -409,25 +414,27 @@ ip addr show wlan0
 ```
 
 Now, start the web server process with the unit `hss-web-server.service` and `SuperCollider` with
-`hss-supercollider.service`.
+the `hss-supercollider.service`.
 ```bash
-sudo systemctl start hss-web-server.service hss-supercollider.service
+sudo systemctl start hss-web-server.service
+
+# Unit hss-supercollider is a user service
+systemctl --user start hss-supercollider.service
 ```
 
-> You could start all services with one command\
-> `sudo systemctl start systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server hss-supercollider`
-
-By using the browser navigate to `https://$HSS_IP:$HSS_HTTP_PORT`. Hopefully, you will see the *index*
+By using the browser, navigate to `https://$HSS_IP:$HSS_HTTP_PORT`. Hopefully, you will see the *index*
 page of *Human Sound Sculpture*.
 
-A `systemd` service is stopped with the command
+A *system* `systemd` service is stopped with the command
 ```bash
 sudo systemctl stop <unit-name>
 ```
-To stop all the running processes of the piece use the command
+
+For *user* service use
 ```bash
-sudo systemctl stop hss-supercollider hss-web-server hostapd@wlan0 dhcpd4@wlan0 systemd-networkd
+systemctl --user stop <unit-name>
 ```
+
 ## Troubleshooting
 You can check the status of a `systemd` service with
 ```bash
@@ -446,19 +453,19 @@ You can see runtime messages about a service with the command
 sudo journalctl -u <unit-name> -f
 ```
 This approach was found usefull in inspecting `node.js` or `SuperCollider` messages. Use it in
-compination with log statements inside web server or `SuperCollider` files. Output from both services can be
-printed with
-```bash
-sudo journalctl -u hss-* -f
-```
+compination with log statements inside web server or `SuperCollider` files.
 
 Sometimes an error may occur in a `systemd` unit file and not in the underlying process, and vice versa. With
 `systemd-networkd`, `dhcpd4@wlan0`, `hostapd@wlan0` running, you can start the web server process by calling
 `node server.js` (or `sudo node server.js` if the global variable `HSS_HTTP_PORT` is less than 1024).
-After any change in the `systemd` service files under `/usr/lib/systemd/system`, you should reload the configuration
+After any change in the `systemd` *system* or *user* service files, you should reload the configuration
 of the service manager with
 ```bash
+# System services
 sudo systemctl daemon-reload
+
+# User services
+systemctl --user daemon-reload
 ```
 
 We find it usefull to use `ssh` to connect to the *Human Sound Sculpture* computer from another machine. Use the
@@ -469,7 +476,11 @@ This step should be done after the necessary software is installed and configure
 are running without errors and you've made some tests with a bunch of smartphone devices. The only thing that has to
 be done is to make all `systemd` units start when the computer is turned on. Enable the services with the command
 ```bash
-sudo systemctl enable systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server hss-supercollider
+# Enable the system services
+sudo systemctl enable systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server
+
+# hss-supercollider is a user service
+systemctl --user enable hss-supercollider
 ```
 
 Uncomment line 13 of [`killHSS`](bin/killHSS.sh). This will enable the *conductor* to shutdown the computer by
@@ -477,23 +488,54 @@ double-clicking on the `shutdown` button.
 
 To stop services from starting on computer boot, run
 ```bash
-sudo systemctl disable systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server hss-supercollider
+sudo systemctl disable systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server
+systemctl --user disable hss-supercollider
 ```
 
 ### After a performance
 Disable `systemd` services
 ```bash
-sudo systemctl disable systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server hss-supercollider
+# Disable system services
+sudo systemctl disable systemd-networkd hostapd@wlan0 dhcpd4@wlan0 hss-web-server
+
+# Disable the user service hss-supercollider
+systemctl --user disable hss-supercollider
 ```
-Remove the relevant service files from `/usr/lib/systemd/system/`
+Remove the relevant service files under `/lib/systemd/system/` and `~/.config/systemd/user/`
 ```bash
-cd /usr/lib/systemd/system/
+cd /lib/systemd/system/
 # We don't delete systemd-networkd
-sudo rm hostapd@wlan0.service dhcpd4@wlan0.service hss-*
+sudo rm hostapd@wlan0.service dhcpd4@wlan0.service hss-web-server
+
+# Delete the hss-supercollider user service file
+rm ~/.config/systemd/user/hss-supercollider.service
 ```
-and the `10-wlan0.network` file from `/usr/lib/systemd/network/`
+
+as well, as the `10-wlan0.network` file from `/lib/systemd/network/`
 ```bash
-sudo rm /usr/systemd/network/10-wlan0.network
+sudo rm /systemd/network/10-wlan0.network
+```
+
+Delete the `dhcp.conf` file inside `/etc/dhcp/`
+```bash
+sudo rm /etc/dhcp/dhcp.conf
+```
+
+and rename the original `conf` file.
+
+```bash
+sudo mv /etc/dhcp/dhcp.conf.original /etc/dhcp/dhcp.conf
+```
+
+Delete `/etc/hostapd/hostapd-wlan0.conf`
+
+```bash
+sudo rm /etc/hostapd/hostapd-wlan0.conf
+```
+
+Delete `mkcert` from within `/usr/bin/`
+```bash
+sudo rm /usr/bin/mkcert
 ```
 
 Change directory to `humanSoundSculpture` and checkout the branch `performace@venus`

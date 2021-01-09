@@ -1,21 +1,11 @@
 # ##################################################
 #		Human Sound Sculpture
 #
-# A systemd service file for starting SuperCollider
+# A systemd user service file for starting SuperCollider
 # Save this file under ~/.config/systemd/user.
 #		see: man systemd.unit for paths
 # Start the service with
 #	systemctl --user hss-supercollider.service
-#
-# Raspberry Pi 3 note: For some reason, user systemd
-#	services don't start. We get the message:
-#		Failed to connect to bus: No such file or directory
-# See this
-#	https://www.raspberrypi.org/forums/viewtopic.php?t=287029
-# for a solution.
-#			OR
-# Save this file under /lib/systemd/system
-# and use it as a systemd system service.
 # ##################################################
 
 [Unit]
