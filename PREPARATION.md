@@ -35,6 +35,8 @@ durations by a factor of two, one would add the next line at the end of [humanSo
 ```supercollider
 hss.durMul = 2.0;
 ```
+Before any changes that have to do with the note sequence, you can make some tests by playing with the `SuperCollider` document
+[soundTests.scd](supercollider/soundTests.scd).
 
 Special care should be taken on the extended intervals of immobility of the performers. To mitigate immobility
 issues a performance may integrate slight movements. Any deviations from the text score shall be made on the
