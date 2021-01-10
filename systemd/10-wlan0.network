@@ -10,5 +10,5 @@
 Name=wlan0
 
 [Network]
-Address=$HSS_IP/24
+Address=192.168.100.1/24
 # DHCPServer=yes

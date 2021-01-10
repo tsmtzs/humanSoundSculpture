@@ -5,13 +5,13 @@ browsers should work. In general, the website should work on every browser that 
 the `WebSocket` protocol and the `Web Audio API`.
 
 Performers direct to the website by typing the `IP` address and the `HTTP` port inside the address bar.
-So, if the `IP` is `$HSS_IP` and the port is `$HSS_HTTP_PORT`, they should type `https://$HSS_IP:$HSS_HTTP_PORT`.
+So, if the `IP` is `192.168.100.1` and the port is `3000`, they should type `https://192.168.100.1:3000`.
 Performers should be informed that the browser will show a warning of the form
 ```
 Your connection is not private
 ```
 To avoid this they can install the TLS certificate to their device trust store. This can be done by
-directing the browser to `https://$HSS_IP:$HSS_HTTP_PORT/rootCA.pem`. In some cases the device will ask
+directing the browser to `https://192.168.100.1:3000/rootCA.pem`. In some cases the device will ask
 the user if he wants to install the certificate. In other cases, the user should download the file
 and add it manualy by going to device settings.
 

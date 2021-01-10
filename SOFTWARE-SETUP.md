@@ -28,7 +28,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 `Linux` distribution.
 
 ### Install the required software
-1. `Linux`
+1. `Linux` (`Raspbian 10 buster`)
 
    `Raspberry Pi OS` is a `Debian` based operating system. Before installing any
    new software, might be a good idea to update and upgrade your system.
@@ -38,27 +38,23 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
    sudo apt-get upgrade
    ```
 
-   Required version: `Raspbian 10`
 2. [`systemd`](https://systemd.io/)
 
 	`systemd` is a service manager for `Linux`. Normally, this comes with
 	the operating system.
 
-	Required version: `241`
 3. [`bash`](https://www.gnu.org/software/bash/)
 
 	The configuration for *Human Sound Sculpture* is done within the `bash` shell.
 	It should come with the operating system.
 
-	Required version: `5.0.3`
 4. [`sed`](https://www.gnu.org/software/sed/)
 
 	`sed` is a command line stream editor. Should be available with the operating
 	system. It is used in the scripts [names2values](bin/names2values.sh) and
 	[values2names](bin/values2names.sh).
 
-	Required version: `4.7`
-5. [`hostapd`](https://w1.fi/hostapd/)
+5. [`hostapd`](https://w1.fi/hostapd/) (version `>= 2.8-devel`)
 
 	This program is used to turn the WIFI network interface card of the computer into
 	an access point. Install it with
@@ -67,8 +63,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo apt-get install hostapd
 	```
 
-	Required version: `2.8-devel`
-6. [`dhcpd`](https://www.isc.org/dhcp/) version `4.4.2`
+6. [`dhcpd`](https://www.isc.org/dhcp/) (version `>= 4.4.1`)
 
 	This the ISC DHCP server. It is used to assign IP addresses to web clients. Install it with
 	(runs automatically at boot time? - Check)
@@ -77,8 +72,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo apt-get install isc-dhcp-server
 	```
 
-	Required version: `4.4.1`
-7. [`node.js`](https://nodejs.org/) version ???
+7. [`node.js`](https://nodejs.org/) (version `>= 10.21.0`)
 
 	`node.js` is a `JavaScript` runtime environment. The web server for *Human Sound Sculpture* is
 	developed on it. Install `node.js` with
@@ -87,8 +81,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo apt-get install nodejs
 	```
 
-	Required version: `10.21.0`
-8. [`SuperCollider`](https://supercollider.github.io/) version ???
+8. [`SuperCollider`](https://supercollider.github.io/) (version `>= 3.10.0`)
 
 	`SuperCollider` is an audio programming language. Follow this
 	[raspberry-installation](https://github.com/supercollider/supercollider/blob/develop/README_RASPBERRY_PI.md)
@@ -105,8 +98,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	The class `PGraphWalk` is a extension of the language. It can be found in the github repository [sc-tsmtzs](https://github.com/tsmtzs/sc-tsmtzs).
 	Clone the repository inside the `SuperCollider` user extension directory.
 
-	Required version: `sclang 3.10.0`
-9. [`mkcert`](https://github.com/FiloSottile/mkcert)
+9. [`mkcert`](https://github.com/FiloSottile/mkcert) (version `>= 1.4.3`)
 
 	The website of the piece is served on a local TLS network. You can create a TLS certificate
 	with the program `mkcert`. To install it follow the directions found in [mkcert-installation](https://github.com/FiloSottile/mkcert#installation).
@@ -137,8 +129,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 		sudo chmod a=rx mkcert
 		```
 
-	Required version: `1.4.3`
-10. [`git`](https://git-scm.com/)
+10. [`git`](https://git-scm.com/) (version `>= 2.20.1`)
 
 	A new `git branch` is created for every performance or test of *Human Sound Sculpture*. Install `git` by running
 
@@ -146,7 +137,6 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo apt-get install git
 	```
 
-	Required version: `2.20.1`
 11. (*optional*) [`XeTeX`](https://tug.org/xetex/)
 
 	`XeTeX` is a `TeX` derivative. It is used to produce the `PWA` [icon](public/icons/hssIcon_192x192.png)
@@ -158,7 +148,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 12. (*optional*) [`tikz`](https://github.com/pgf-tikz/pgf)
 
 	This is a `TeX` package for creating graphics. It is part of the `texlive` distribution.
-13. (*optional*) [`ffmpeg`](https://ffmpeg.org/) version `4.3.1`
+13. (*optional*) [`ffmpeg`](https://ffmpeg.org/) (version `>= 4.3.1`)
 
 	`ffmpeg` is a program for handling multimedia files. It is used in the `bash` script
 	[`multiresize`](bin/multiresize.sh) to resize a given picture file. Will be usefull if
@@ -219,14 +209,14 @@ The runtime environment of the piece depends on the following variables:
 Set their values by editing the file [hss-globalVariables](bin/hss-globalVariables).
 
 Global variables are scattered accross several files. Variable names are prepended by a `$`
-sign. To find all the occurances of a variable use `grep`. E.x. `grep -r '$HSS_IP'`.
+sign. To find all the occurances of a variable use `grep`. E.x. `grep -r '192.168.100.1'`.
 
 For this guide we will use
 ```
 ## bin/hss-globalVariables
-HSS_DIR			$HSS_DIR
-HSS_IP			$HSS_IP
-HSS_HTTP_PORT		$HSS_HTTP_PORT
+HSS_DIR			/home/pi/humanSoundSculpture
+HSS_IP			192.168.100.1
+HSS_HTTP_PORT		3000
 ```
 
 After editing
@@ -260,7 +250,7 @@ Inside `certs` you should save the certificates for *Human Sound Sculpture*. Run
 mkcert -key-file hss-key.pem -cert-file hss-crt.pem localhost ::1 <HSS_IP>
 ```
 
-where `<HSS_IP>` is `$HSS_IP` in our case. Now, install the root certificate with
+where `<HSS_IP>` is `192.168.100.1` in our case. Now, install the root certificate with
 ```bash
 mkcert -install
 ```
@@ -274,7 +264,7 @@ cd ..
 cp $(mkcert -CAROOT)/rootCA.pem public/
 ```
 In most cases, clients should be able to install the certificate to their trust store by using the browser
-to navigate to `https://$HSS_IP:$HSS_HTTP_PORT/rootCA.pem` (in general to`https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`).
+to navigate to `https://192.168.100.1:3000/rootCA.pem` (in general to`https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`).
 
 ### Configure the local WIFI network
 At first, find out the name of the WIFI interface device name.
@@ -289,7 +279,7 @@ sudo ip link set wlan0 up
 
 Now assign a static IP to `wlan0`. This is the value of the `HSS_IP`
 global variable, set in [`hss-globalVariables`](bin/hss-globalVariables). In this case,
-it is `$HSS_IP`.
+it is `192.168.100.1`.
 
 We will use the `systemd` service `systemd-networkd`. The configuration options for the local
 network are found in the file [`10-wlan0.network`](systemd/10-wlan0.network). If the WIFI
@@ -402,12 +392,14 @@ Then start the `systemd` unit `systemd-networkd` to assign a static IP to the WI
 ```bash
 sudo systemctl start systemd-networkd.service
 ```
+
 Use the unit `hostapd@.service` to turn the network card into an access point. The unit `dhcpd4@.service`
 will start the DHCP server. Start both services by passing the WIFI interface device name `wlan0`
 ```bash
 sudo systemctl start hostapd@wlan0.service
 sudo systemctl start dhcpd4@wlan0.service
 ```
+
 Check if the wireless interface is assigned the IP
 ```bash
 ip addr show wlan0
@@ -422,7 +414,7 @@ sudo systemctl start hss-web-server.service
 systemctl --user start hss-supercollider.service
 ```
 
-By using the browser, navigate to `https://$HSS_IP:$HSS_HTTP_PORT`. Hopefully, you will see the *index*
+By using the browser, navigate to `https://192.168.100.1:3000`. Hopefully, you will see the *index*
 page of *Human Sound Sculpture*.
 
 A *system* `systemd` service is stopped with the command
@@ -430,7 +422,7 @@ A *system* `systemd` service is stopped with the command
 sudo systemctl stop <unit-name>
 ```
 
-For *user* service use
+Stop *user* services with
 ```bash
 systemctl --user stop <unit-name>
 ```
