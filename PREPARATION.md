@@ -19,9 +19,10 @@ Some performers might hesitate to deal with security issues on their device. Esp
 of the TLS certificate could result in persistent warnings such as `Network may be monitored`. These performers can
 avoid to install the certificate.
 
-The website is developed as a PWA. Performers, if they wish, can download the website to their device.
-This is for the benefit of those who don't want to type the address. Alternatively, they can
-bookmark the page.
+The website is developed as a PWA. Performers can, if they wish, download the website to their device.
+If so, an icon will appear on the home screen. This is done for the benefit of those who don't want to
+type the address. The TLS certificate should have been installed in order for the website to run as an app.
+Alternatively, they can bookmark the page from within the browser.
 
 A `TEST` button appears on the *conductor* and *player* pages. This could be utilized to balance the volume
 across smartphone devices. Parameters regarding the note sequence can be set in the file
