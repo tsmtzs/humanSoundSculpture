@@ -15,8 +15,11 @@ const path = require('path');
 const https = require('https');
 // TLS credentials.
 const credentials = {
-    key: fs.readFileSync('./certs/hss-key.pem', 'utf8'),
-    cert: fs.readFileSync('./certs/hss-crt.pem', 'utf8')
+    // Server starts with a 'systemd' system service.
+    // In this service a dynamic user option is used.
+    // You need full paths to access everything under /home/pi.
+    key: fs.readFileSync('/home/pi/humanSoundSculpture/certs/hss-key.pem', 'utf8'),
+    cert: fs.readFileSync('/home/pi/humanSoundSculpture/certs/hss-crt.pem', 'utf8')
 };
 // The IP of the server
 const ip = "192.168.100.1";
