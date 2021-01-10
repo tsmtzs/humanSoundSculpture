@@ -35,7 +35,7 @@ until performance ends. The steps of connecting to the network and loading the
 website must be done before performance starts and is not part of the piece.
 
 The website is not accessible throught the `Internet`. Rather, it is served on a local network.
-The web server process runs on a dedicated computer. A portable solution, like a `Rasberry Pi`,
+The web server process runs on a dedicated computer. A portable solution, like a `Rasberry Pi` with a USB power bank,
 is preferred since it can fit inside a bag or a pocket. This computer should host a `Linux` environment
 with the `systemd` service manager. Also, utilizes `hostapd` to enable the network interface card
 to act as an access point. `SuperCollider` is used to generate sound events. These are sent to the
