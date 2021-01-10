@@ -497,7 +497,7 @@ Remove the relevant service files under `/lib/systemd/system/` and `~/.config/sy
 ```bash
 cd /lib/systemd/system/
 # We don't delete systemd-networkd
-sudo rm hostapd@wlan0.service dhcpd4@wlan0.service hss-web-server
+sudo rm hostapd@.service dhcpd4@.service hss-web-server.service
 
 # Delete the hss-supercollider user service file
 rm ~/.config/systemd/user/hss-supercollider.service
@@ -505,12 +505,12 @@ rm ~/.config/systemd/user/hss-supercollider.service
 
 as well, as the `10-wlan0.network` file from `/lib/systemd/network/`
 ```bash
-sudo rm /systemd/network/10-wlan0.network
+sudo rm /lib/systemd/network/10-wlan0.network
 ```
 
-Delete the `dhcp.conf` file inside `/etc/dhcp/`
+Delete the `dhcpd.conf` file inside `/etc/dhcp/`
 ```bash
-sudo rm /etc/dhcp/dhcp.conf
+sudo rm /etc/dhcp/dhcpd.conf
 ```
 
 and rename the original `conf` file.
