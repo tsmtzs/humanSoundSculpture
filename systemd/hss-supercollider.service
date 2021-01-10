@@ -9,7 +9,7 @@
 # ##################################################
 
 [Unit]
-Description=Run SuperCollider for the piece Human Sound Sculpture
+Description=Human Sound Sculpture - SuperCollider
 Documentation=file:$HSS_DIR/README.md
 After=network-online.target
 

@@ -11,7 +11,7 @@
 # ##################################################
 
 [Unit]
-Description=Web server for the piece Human Sound Sculpture
+Description=Human Sound Sculpture - Web server
 Documentation=file:$HSS_DIR/README.md
 After=network-online.target
 
