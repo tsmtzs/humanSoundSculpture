@@ -1,4 +1,4 @@
-# *Human Sound Sculpture* <p style="text-align: right; font-style:italic; font-size: small;">To Kyriakos K.</p>
+# *Human Sound Sculpture* <p style="text-align: right; font-style:italic; font-size: small;">To Kyriakos.</p>
 
 ## About
 *Human Sound Sculpture* is a piece of performance art for public space. It is based on the *text score*:
