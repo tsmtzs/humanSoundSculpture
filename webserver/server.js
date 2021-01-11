@@ -12,14 +12,12 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 const path = require('path');
+const rootDir = path.dirname(__dirname);
 const https = require('https');
 // TLS credentials.
 const credentials = {
-    // Server starts with a 'systemd' system service.
-    // In this service a dynamic user option is used.
-    // You need full paths to access everything under /home/pi.
-    key: fs.readFileSync('$HSS_DIR/certs/hss-key.pem', 'utf8'),
-    cert: fs.readFileSync('$HSS_DIR/certs/hss-crt.pem', 'utf8')
+    key: fs.readFileSync(`${rootDir}/certs/hss-key.pem`, 'utf8'),
+    cert: fs.readFileSync(`${rootDir}/certs/hss-crt.pem`, 'utf8')
 };
 // The IP of the server
 const ip = "$HSS_IP";
@@ -40,7 +38,7 @@ const oscPath = '/action';
 // ////////////////////////////////////////////////////////////
 // WebSockets
 // HSS_WSS implicitly loads the 'ws' module.
-const HSS_WSS = require(__dirname + '/webServerJS/hss_wss.js').HSS_WSS;
+const HSS_WSS = require(__dirname + '/hss_wss.js').HSS_WSS;
 const webServerPort = process.env.HTTP_PORT || $HSS_HTTP_PORT;
 const wss = new HSS_WSS({ server: server, clientTracking: true });
 
@@ -73,7 +71,7 @@ const wsMsgListener = (sclang, oscPath) => msg => {
     if (msg === 'shutdown') {
 	// On message 'shutdown' execute file 'killHSS.sh
 	// OR USE sh /usr/bin/shutdown now
-	exec(`sh ${__dirname}/bin/killHSS.sh`, (err, stdout, stderr) => {
+	exec(`sh ${rootDir}/bin/killHSS.sh`, (err, stdout, stderr) => {
 	    if (err) {
 		console.error(`exec error: ${err}`);
 		return;
@@ -109,29 +107,29 @@ const oscMessageHandler = wss => {
     };
 };
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(rootDir, 'public')));
 
 // ////////////////////////////////////////////////////////////
 // Respond to incoming HTTP messages.
 // ////////////////////////////////////////////////////////////
 // Send to performers the basic web page of the piece.
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname,'public/views/index.html'));
+    res.sendFile(path.join(rootDir,'public/views/index.html'));
 });
 
 // Send the 'conductor' web page.
 app.get('/conductor', (req, res) => {
-    res.sendFile(path.join(__dirname,'public/views/conductor.html'));
+    res.sendFile(path.join(rootDir,'public/views/conductor.html'));
 });
 
 // Send the 'player' web page.
 app.get('/player', (req, res) => {
-    res.sendFile(path.join(__dirname,'public/views/player.html'));
+    res.sendFile(path.join(rootDir,'public/views/player.html'));
 });
 
 // Send the 'description' web page.
 app.get('/description', (req, res) => {
-    res.sendFile(path.join(__dirname,'public/views/description.html'));
+    res.sendFile(path.join(rootDir,'public/views/description.html'));
 });
 
 app.use(appErrorListener);
