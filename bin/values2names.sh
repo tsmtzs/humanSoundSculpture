@@ -5,7 +5,7 @@
 # A bash script that sets project global variables to
 # their initial names.
 # Arguments:
-#	1st arg: base directory
+#	1st arg: Path to the Human Sound Sculpture repository.
 #	2nd arg: A file with pairs parameter name - value.
 #		 Pairs are one per line.
 #		 Lines that start with a # are not processed.
@@ -35,10 +35,9 @@ do
 	fi
 
 	# Search and change common parameters in all files
-	# except those in node_modules, bin and .git
-	# if file {} is a regular file the substitute parVal with parName
-	find $1 -type d \( -path ${1}/node_modules -o -path ${1}/bin -o -path ${1}/.git -o -path ${1}/conf \) \
-	     -prune  -o \
+	# under public/, webserver/ supercollider/ and systemd/.
+	# If file {} is a regular file the substitute parVal with parName
+	find $1/public $1/webserver $1/supercollider $1/systemd \
 	     -exec test -f {} \; -exec sed -i -e "s|$parVal|\$$parName|g" {} \;
     fi
 done < $2

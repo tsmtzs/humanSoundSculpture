@@ -16,6 +16,6 @@
 #
 # Note: Variable names appear in files with a beginning $ sign.
 # ##################################################
-HSS_DIR		/home/pi/humanSoundSculpture
-HSS_IP		192.168.100.1
-HSS_HTTP_PORT	3000
+HSS_DIR		$HSS_DIR
+HSS_IP		$HSS_IP
+HSS_HTTP_PORT	$HSS_HTTP_PORT
