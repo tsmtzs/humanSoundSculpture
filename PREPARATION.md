@@ -5,13 +5,13 @@ browsers should work. In general, the website should work on every browser that 
 the `WebSocket` protocol and the `Web Audio API`.
 
 Performers direct to the website by typing the `IP` address and the `HTTP` port inside the address bar.
-So, if the `IP` is `$HSS_IP` and the port is `$HSS_HTTP_PORT`, they should type `https://$HSS_IP:$HSS_HTTP_PORT`.
+So, if the `IP` is `192.168.100.1` and the port is `3000`, they should type `https://192.168.100.1:3000`.
 Performers should be informed that the browser will show a warning of the form
 ```
 Your connection is not private
 ```
 To avoid this they can install the TLS certificate to their device trust store. This can be done by
-directing the browser to `https://$HSS_IP:$HSS_HTTP_PORT/rootCA.pem`. In some cases the device will ask
+directing the browser to `https://192.168.100.1:3000/rootCA.pem`. In some cases the device will ask
 the user if he wants to install the certificate. In other cases, the user should download the file
 and add it manualy by going to device settings.
 
@@ -26,7 +26,7 @@ Alternatively, they can bookmark the page from within the browser.
 
 A `TEST` button appears on the *conductor* and *player* pages. This could be utilized to balance the volume
 across smartphone devices. Parameters regarding the note sequence can be set in the file
-[humanSoundSculpture.scd](humanSoundSculpture.scd). The variable `hss` holds an `Event` object. This `Event`
+[humanSoundSculpture.scd](humanSoundSculpture.scd). The variable `hss` holds a `SuperCollider` `Event` object. This `Event`
 is defined in [hssEvent.scd](supercollider/hssEvent.scd). It offers the keys `ampMul`, `durMul` and `deltaMul`.
 These are multipliers for the amplitude, duration and successive note time interval values produced by the
 algorithmic process. If used, should be set with respect to the ambient soundscape of the performance place,
@@ -35,7 +35,7 @@ durations by a factor of two, one would add the next line at the end of [humanSo
 ```supercollider
 hss.durMul = 2.0;
 ```
-Before any changes that have to do with the note sequence, you can make some tests by playing with the `SuperCollider` document
+Before any changes that have to do with the note sequence, it might help to make some test by playing with the `SuperCollider` document
 [soundTests.scd](supercollider/soundTests.scd).
 
 Special care should be taken on the extended intervals of immobility of the performers. To mitigate immobility

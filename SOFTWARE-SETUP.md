@@ -23,7 +23,7 @@ dedicated computer assigns IP addresses to clients, runs the web server and
 generates note events. All software configuration should be
 done on this computer. We have used the `Raspberry Pi model B+` single board
 computer with the `Raspberry Pi OS Lite` operating system. The following sections
-offer the details for each step of setting up software.
+offer the details for each step of setting up the piece.
 All commands assume the `Raspberry Pi OS`. They should work on every `Debian` based
 `Linux` distribution.
 
@@ -66,7 +66,6 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 6. [`dhcpd`](https://www.isc.org/dhcp/) (version `>= 4.4.1`)
 
 	This the ISC DHCP server. It is used to assign IP addresses to web clients. Install it with
-	(runs automatically at boot time? - Check)
 
 	```bash
 	sudo apt-get install isc-dhcp-server
@@ -110,7 +109,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 		dpkg --print-architecture
 		```
 
-		This will print, probably, `armhf` on `Raspberry Pi 3`.
+		This will, probably, print `armhf` on `Raspberry Pi 3`.
 		2. Change directory to `/usr/bin/`
 		```bash
 		cd /usr/bin
@@ -170,7 +169,7 @@ cd
 Clone the repository `humanSoundSculpture`.
 
 ```bash
-git clone ?????
+git clone https://github.com/tsmtzs/humanSoundSculpture.git
 ```
 
 ### Install `node` packages
@@ -179,7 +178,9 @@ First, change directory to `humanSoundSculpture`
 cd humanSoundSculpture
 ```
 
-Install the required packages with
+This project uses the packages [`express`](https://expressjs.com/) (version `>= 4.17.1`),
+[`node-osc`](https://github.com/MylesBorins/node-osc) (version `>= 4.1.1`) and
+[`ws`](https://github.com/websockets/ws) (version `>= 3.3.3`). Install the required packages with
 
 ```bash
 npm install
@@ -213,7 +214,7 @@ sign. To find all the occurances of a variable use `grep`. E.x. `grep -r '$HSS_I
 
 For this guide we will use
 ```
-## bin/hss-globalVariables
+# bin/hss-globalVariables
 HSS_DIR			$HSS_DIR
 HSS_IP			$HSS_IP
 HSS_HTTP_PORT		$HSS_HTTP_PORT
@@ -224,19 +225,19 @@ After editing
 to replace each occurance of a variable with it's value.
 
 ```bash
-## names2values accepts 2 arguments.
-## 1st arg: a directory. The script will replace variables
-#		recursively under this directory.
-## 2nd arg: a path to a text file. It collects pairs of the form (variable name) - value.
+# names2values accepts 2 arguments.
+# 1st arg: The humanSoundSculpture directory path. The script will replace variables
+#		recursively under this.
+# 2nd arg: a path to a text file. It collects pairs of the form (variable name) - value.
 #
-## We run names2values inside humanSoundSculpture passing the file bin/hss-globalVariables
+# We run names2values inside humanSoundSculpture passing the file bin/hss-globalVariables
 ./bin/names2values.sh . bin/hss-globalVariables
 ```
 To revert, latter, to variable names, use the script [values2names](bin/values2names). You should not
 make any changes to global variable values in order for this to work.
 
 ```bash
-## values2names accepts the same arguments as names2values.
+# values2names accepts the same arguments as names2values.
 ./bin/values2names.sh . bin/hss-globalVariables
 ```
 
@@ -250,7 +251,7 @@ Inside `certs` you should save the certificates for *Human Sound Sculpture*. Run
 mkcert -key-file hss-key.pem -cert-file hss-crt.pem localhost ::1 <HSS_IP>
 ```
 
-where `<HSS_IP>` is `$HSS_IP` in our case. Now, install the root certificate with
+where `<HSS_IP>` is `192.168.100.1` in our case. Now, install the root certificate with
 ```bash
 mkcert -install
 ```
@@ -258,13 +259,13 @@ mkcert -install
 Web clients should, also, install the root certificate on their device. This is the `rootCA.pem` file
 located under `mkcert -CAROOT`. Copy this file to `public/`.
 ```bash
-## First, change directory to humanSoundSculpture
+# First, change directory to humanSoundSculpture
 cd ..
-## Then copy the root certificate
+# Then copy the root certificate
 cp $(mkcert -CAROOT)/rootCA.pem public/
 ```
 In most cases, clients should be able to install the certificate to their trust store by using the browser
-to navigate to `https://$HSS_IP:$HSS_HTTP_PORT/rootCA.pem` (in general to`https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`).
+to navigate to `https://192.168.100.1:3000/rootCA.pem` (in general to`https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`).
 
 ### Configure the local WIFI network
 At first, find out the name of the WIFI interface device name.
@@ -272,21 +273,18 @@ At first, find out the name of the WIFI interface device name.
 ip link show
 ```
 Normally, the name should start with a `w`. For this guide we will assume
-that the device name is `wlan0`. Bring the interface up, if it is not, by running
-```bash
-sudo ip link set wlan0 up
-```
+that the device name is `wlan0`.
 
 Now assign a static IP to `wlan0`. This is the value of the `HSS_IP`
 global variable, set in [`hss-globalVariables`](bin/hss-globalVariables). In this case,
-it is `$HSS_IP`.
+it is `192.168.100.1`.
 
 We will use the `systemd` service `systemd-networkd`. The configuration options for the local
 network are found in the file [`10-wlan0.network`](systemd/10-wlan0.network). If the WIFI
 interface device name is not `wlan0`, you should rename this file. Open
 [`10-wlan0.network`](systemd/10-wlan0.network) and edit, if needed, line 10:
 ```
-## 10-wlan0.network
+# 10-wlan0.network
 Name=wlan0
 ```
 
@@ -385,7 +383,7 @@ First reload the `systemd` configuration
 # Reload for system services
 sudo systemctl daemon-reload
 
-#Reload for user services
+# Reload for user services
 systemctl --user daemon-reload
 ```
 Then start the `systemd` unit `systemd-networkd` to assign a static IP to the WIFI interface device.
@@ -406,7 +404,7 @@ ip addr show wlan0
 ```
 
 Now, start the web server process with the unit `hss-web-server.service` and `SuperCollider` with
-the `hss-supercollider.service`.
+`hss-supercollider.service`.
 ```bash
 sudo systemctl start hss-web-server.service
 
@@ -414,7 +412,7 @@ sudo systemctl start hss-web-server.service
 systemctl --user start hss-supercollider.service
 ```
 
-By using the browser, navigate to `https://$HSS_IP:$HSS_HTTP_PORT`. Hopefully, you will see the *index*
+By using the browser, navigate to `https://192.169.100.1:3000`. Hopefully, you will see the *index*
 page of *Human Sound Sculpture*.
 
 A *system* `systemd` service is stopped with the command
@@ -440,7 +438,7 @@ or `sudo journalctl -u <unit-name> -r` might reveal usefull information about th
 Also, might be usefull to start the services one by one and checking, in each step, the status of the
 most recently started service.
 
-You can see runtime messages about a service with the command
+You can see runtime messages for a service with the command
 ```bash
 sudo journalctl -u <unit-name> -f
 ```
