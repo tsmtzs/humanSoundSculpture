@@ -1,4 +1,4 @@
-# *Human Sound Sculpture* <p style="text-align: right; font-style:italic; font-size: small;">To Kyriakos.</p>
+# *Human Sound Sculpture* <p style="text-align: right; font-style:italic; font-size: small;">To Kyriakos</p>
 
 ## About
 *Human Sound Sculpture* is a piece of performance art for public space. It is based on the *text score*:
@@ -55,7 +55,7 @@ the performance, must start/stop the generation of sound events.
 
 ### Web Server
 The web server is written in [`node.js`](https://nodejs.org/en/). It receives `OSC` messages from
-`SuperCollider` and distributes them to web clients using `WebSockets`. Each `OSC` message is one
+[`SuperCollider`](http://supercollider.github.io/) and distributes them to web clients using `WebSockets`. Each `OSC` message is one
 of the following:
 
 - `[/action, "start"]`: Signals the start of the piece. Upon receiving this, the server sends
@@ -65,7 +65,7 @@ of the following:
 - `[/note, freq, amp, dur]`: Signals a new note event of frequency `freq`, amplitude `amp` and duration
 			`dur`. Server sends the object `{ type: '/note', args: [freq, amp, dur] }` to a random client.
 
-We have used the libraries [`osc.js`](https://github.com/colinbdclark/osc.js/) for `OSC` and
+The web server is developed with [`express`](https://expressjs.com/). The package [`osc.js`](https://github.com/colinbdclark/osc.js/) is used for `OSC` and
 [`ws`](https://github.com/websockets/ws) for `WebSockets`.
 
 The web server process is started by a `systemd` service.
@@ -80,14 +80,14 @@ The *conductor* sends `WebSocket` messages to the web server. These are
 	start/stop, the note generation event stream.
 - `shutdown`: Send when the `shutdown` button is pressed. It is used to poweroff the computer.
 ### `SuperCollider`
-[`SuperCollider`](http://supercollider.github.io/) generates the sound events. A random walk on the
+`SuperCollider` generates the sound events. A random walk on the
 vertices of a Paley graph of order 13 is used to select the `freq`, `amp` and `dur` for a sound
-`Event`, as well as the `delta` time between succesive `Events`. Communicates with the web browser
-by interchanging `OSC` messages. These are
+`Event`, as well as the `delta` time between succesive `Events`. The `SuperCollider` process
+communicates with the web server by interchanging `OSC` messages. These are
 - `action`: Takes one of the parameters `start`/`stop`. It is used to start/stop, respectively, the
   `EventStreamPlayer` object that handles the note generation pattern. It propagates to web clients
   with a `WebSocket` message.
-- `note`: This message is send to web server whenever a new note event is generated. It sends as
+- `note`: This message is send to the web server whenever a new note event is generated. It sends as
   parameters the frequency, amplitude and duration of the new note. The web server will send this data
   to a random client.
 
