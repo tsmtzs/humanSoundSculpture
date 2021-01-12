@@ -14,7 +14,7 @@
 	x. [Configure the web server](#configure-the-web-server)
 - [Putting it all together](#putting-it-all-together)
 - [Troubleshooting](#troubleshooting)
-- [Preparing a performace](#preparing-a-performace)
+- [Preparing a performance](#preparing-a-performance)
 
 ## Installing and configuring software
 *Human Sound Sculpture* depends on a local WIFI TLS network. Performers

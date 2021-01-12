@@ -1,4 +1,4 @@
-# *Human Sound Sculpture* <p style="text-align: right; font-style:italic; font-size: small;">To Kyriakos</p>
+# *Human Sound Sculpture*
 
 ## About
 *Human Sound Sculpture* is a piece of performance art for public space. It is based on the *text score*:
@@ -104,5 +104,10 @@ This project is open to contribution. Please direct to [CONTRIBUTING](CONTRIBUTI
 Some of the things that we will like to do in our project can be found in [TODO](TODO.org).
 
 ## License
-*Human Sound Sculpture* is distributed under the terms of the CC??? license, except the code which is
-distributed under the terms of the MIT license.
+[![License: CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-sa/4.0/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+*Human Sound Sculpture* is distributed under the terms of the
+[Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/legalcode),
+except the code which is
+distributed under the terms of the [MIT License](`MIT-LICENSE.md`).
