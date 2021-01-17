@@ -1,13 +1,13 @@
 #!/bin/bash
 # ##################################################
 #		Human Sound Sculpture
-# 
+#
 # Discussion:	This little program is a help script
 #		that generates a json formated text.
 #		The output string is suitable for the
 #		'icons' field of a webmanifest
 #		json file.
-#		
+#
 # args:
 #	$1 - A path that prepends the file name in
 #	     the field "src".
@@ -47,7 +47,7 @@ for ((i=1; i < $#; i++)); do
     # jozxyqk's and bhups's answer on
     # https://stackoverflow.com/questions/2227182/how-can-i-find-out-a-files-mime-type-content-type
     mime=$(file -b --mime-type $file)
- 
+
     jsonEntry='{
     "src": "%s",
     "sizes": "%s",
@@ -56,7 +56,7 @@ for ((i=1; i < $#; i++)); do
     json=$(printf "$jsonEntry" "${relativePath}/${fullname}" "$size" "$mime")
 
     JSON+=$json
-    
+
     if (( $i != $# - 1 )); then
     	JSON+=$',\n'
     fi
