@@ -7,12 +7,46 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased]
 
 ## [3.0.0] - ???
+### Added
+- *Human Sound Sculpture* adopts [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+- File `CONTRIBUTING.md`.
+- File `PERFORMANCES.md`.
+- File `SOFTWARE-SETUP.md`.
+- File `TODO.org`.
+- File `systemd/10-wlan0.network`.
+- File `webserver/hss-wss.js`.
+- `Bash` script `bin/multiresize.sh`.
+- `Bash` script `bin/pic2json.sh`.
+- `Hostapd` Configuration file `conf/hostapd-wlan0.conf`.
+- A `PWA` website. New files `public/sw.js`, `public/hss.webmanifest`.
+- New `JavaScript` modules `public/javascript/sound.mjs` and `public/javascript/functors.mjs`.
+- New web pages `public/views/description.html` and `public/views/player.html`.
+- `systemd` unit files `systemd/dhcpd4@.service`, `systemd/hostapd@.service`, `systemd/hss-supercollider.service` and `systemd/hss-web-server.service`.
+- `XeLaTeX` file `tex/hssIcon.tex`.
+
+### Changed
+- File `README.md`.
+- File `bin/commonParameters` renamed as `bin/hss-globalVariables`.
+- File `bin/killHSS.sh`. The script runs one command: `shutdown now;`.
+- File `public/hss.js` moved under `public/javascript`.
+- File `server.js` moved under `webserver`.
+- Files `views/index.html` and `views/conductor.html` moved under `public/views/`.
+- `Bash` script `bin/writeParValues.sh` renamed as `bin/names2values.sh`.
+- `Bash` script `bin/writeParNames.sh` renamed as `bin/values2names.sh`.
+- Occurances of global variables are prefixed by `$`.
+- Global variable `HSS_NETWORK` used in `conf/dhcpd.conf`.
+
+### Removed
+- `Bash` script `bin/startHSS.sh`.
+- Configuration file `conf/hostapd.conf`.
+- File `notesHSS.org`.
+- Unit `systemd/hss.service`.
 
 ___
 
 ## [2.0] - 2019-08-31
 ### Added
-- Global parameters are listed in file `bin/commonParameters`. Parameter name-value pairs
+- Global parameters are listed in file the `bin/commonParameters`. Parameter name-value pairs
 are listed in columns. Pairs are written in different lines.
 - `Bash` script `bin/writeParValues.sh`. It reads `bin/commonParameters` and changes names with
 values in all the relevant files.

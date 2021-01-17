@@ -1,7 +1,7 @@
 #!/bin/bash
 # ##################################################
 #		Human Sound Sculpture
-# 
+#
 # A help script to generate the icons for the
 # webmanifest file.
 #
