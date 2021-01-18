@@ -94,7 +94,7 @@ communicates with the web server by interchanging `OSC` messages. These are
 The `SuperCollider` script of the piece is started by a `systemd` service.
 
 ## Prepare a performance
-The document [software-setup](SOFTWARE-SETUP.md) describes the necessary steps required for configuring
+The document [SOFTWARE-SETUP](SOFTWARE-SETUP.md) describes the necessary steps required for configuring
 the software components of the piece. Other details about a perfomance can be found in
 [PREPARATION](PREPARATION.md). If you realized a public performance and you would like
 to mention it here, please, refer to [PERFORMANCES](PERFORMANCES.md).
@@ -110,4 +110,4 @@ Some of the things that we will like to do in our project can be found in [TODO]
 *Human Sound Sculpture* is distributed under the terms of the
 [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/legalcode),
 except the code which is
-distributed under the terms of the [MIT License](`MIT-LICENSE.md`).
+distributed under the terms of the [MIT License](MIT-LICENSE.md).

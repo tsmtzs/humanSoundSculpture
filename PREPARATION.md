@@ -26,17 +26,17 @@ Alternatively, they can bookmark the page from within the browser.
 
 A `TEST` button appears on the *conductor* and *player* pages. This could be utilized to balance the volume
 across smartphone devices. Parameters regarding the note sequence can be set in the file
-[humanSoundSculpture.scd](humanSoundSculpture.scd). The variable `hss` holds a `SuperCollider` `Event` object. This `Event`
-is defined in [hssEvent.scd](supercollider/hssEvent.scd). It offers the keys `ampMul`, `durMul` and `deltaMul`.
+[`humanSoundSculpture.scd`](supercollider/humanSoundSculpture.scd). The variable `hss` holds a `SuperCollider` `Event` object. This `Event`
+is defined in [`hssEvent.scd`](supercollider/hssEvent.scd). It offers the keys `ampMul`, `durMul` and `deltaMul`.
 These are multipliers for the amplitude, duration and successive note time interval values produced by the
 algorithmic process. If used, should be set with respect to the ambient soundscape of the performance place,
 the number of the performers and the distance between successive performers. For example, to multiply all the default
-durations by a factor of two, one would add the next line at the end of [humanSoundSculpture.scd](humanSoundSculpture.scd)
+durations by a factor of two, one would add the next line at the end of [`humanSoundSculpture.scd`](supercollider/humanSoundSculpture.scd)
 ```supercollider
 hss.durMul = 2.0;
 ```
 Before any changes that have to do with the note sequence, it might help to make some test by playing with the `SuperCollider` document
-[soundTests.scd](supercollider/soundTests.scd).
+[`soundTests.scd`](supercollider/soundTests.scd).
 
 Special care should be taken on the extended intervals of immobility of the performers. To mitigate immobility
 issues a performance may integrate slight movements. Any deviations from the text score shall be made on the
