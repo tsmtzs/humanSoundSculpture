@@ -17,7 +17,6 @@ After=network-online.target
 
 [Service]
 Type=simple
-Environment=HTTP_PORT=443
 DynamicUser=true
 User=hss
 # Start the web server.
