@@ -39,7 +39,7 @@ const oscPath = '/action';
 // WebSockets
 // HSS_WSS implicitly loads the 'ws' module.
 const HSS_WSS = require(__dirname + '/hss_wss.js').HSS_WSS;
-const webServerPort = process.env.HTTP_PORT || $HSS_HTTP_PORT;
+const webServerPort = $HSS_HTTP_PORT;
 const wss = new HSS_WSS({ server: server, clientTracking: true });
 
 // ////////////////////////////////////////////////////////////
