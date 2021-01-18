@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
-## [3.0.0] - ???
+## [3.0.0] - 2021-01-18
 ### Added
 - *Human Sound Sculpture* adopts [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - File `CONTRIBUTING.md`.
