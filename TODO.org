@@ -1,5 +1,5 @@
 # ##################################################
-#	Human Sound Sculpture
+# Human Sound Sculpture
 #
 # In this file we collect a (largely incomplete) list of
 # TODO items.

@@ -54,7 +54,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	system. It is used in the scripts [names2values](bin/names2values.sh) and
 	[values2names](bin/values2names.sh).
 
-5. [`hostapd`](https://w1.fi/hostapd/) (version `>= 2.8-devel`)
+5. [`hostapd`](https://w1.fi/hostapd/) (version `2.8-devel`)
 
 	This program is used to turn the WIFI network interface card of the computer into
 	an access point. Install it with
@@ -63,7 +63,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo apt-get install hostapd
 	```
 
-6. [`dhcpd`](https://www.isc.org/dhcp/) (version `>= 4.4.1`)
+6. [`dhcpd`](https://www.isc.org/dhcp/) (version `4.4.1`)
 
 	This the ISC DHCP server. It is used to assign IP addresses to web clients. Install it with
 
@@ -71,7 +71,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo apt-get install isc-dhcp-server
 	```
 
-7. [`node.js`](https://nodejs.org/) (version `>= 10.21.0`)
+7. [`node.js`](https://nodejs.org/) (version `10.21.0`)
 
 	`node.js` is a `JavaScript` runtime environment. The web server for *Human Sound Sculpture* is
 	developed on it. Install `node.js` with
@@ -80,7 +80,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo apt-get install nodejs
 	```
 
-8. [`SuperCollider`](https://supercollider.github.io/) (version `>= 3.10.0`)
+8. [`SuperCollider`](https://supercollider.github.io/) (version `3.10.0`)
 
 	`SuperCollider` is an audio programming language. Follow this
 	[raspberry-installation](https://github.com/supercollider/supercollider/blob/develop/README_RASPBERRY_PI.md)
@@ -97,7 +97,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	The class `PGraphWalk` is a extension of the language. It can be found in the github repository [sc-tsmtzs](https://github.com/tsmtzs/sc-tsmtzs).
 	Clone the repository inside the `SuperCollider` user extension directory.
 
-9. [`mkcert`](https://github.com/FiloSottile/mkcert) (version `>= 1.4.3`)
+9. [`mkcert`](https://github.com/FiloSottile/mkcert) (version `1.4.3`)
 
 	The website of the piece is served on a local TLS network. You can create a TLS certificate
 	with the program `mkcert`. To install it follow the directions found in [mkcert-installation](https://github.com/FiloSottile/mkcert#installation).
@@ -128,7 +128,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 		sudo chmod a=rx mkcert
 		```
 
-10. [`git`](https://git-scm.com/) (version `>= 2.20.1`)
+10. [`git`](https://git-scm.com/) (version `2.20.1`)
 
 	A new `git branch` is created for every performance or test of *Human Sound Sculpture*. Install `git` by running
 
@@ -147,7 +147,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 12. (*optional*) [`tikz`](https://github.com/pgf-tikz/pgf)
 
 	This is a `TeX` package for creating graphics. It is part of the `texlive` distribution.
-13. (*optional*) [`ffmpeg`](https://ffmpeg.org/) (version `>= 4.3.1`)
+13. (*optional*) [`ffmpeg`](https://ffmpeg.org/) (version `4.3.1`)
 
 	`ffmpeg` is a program for handling multimedia files. It is used in the `bash` script
 	[`multiresize`](bin/multiresize.sh) to resize a given picture file. Will be usefull if
@@ -178,9 +178,9 @@ First, change directory to `humanSoundSculpture`
 cd humanSoundSculpture
 ```
 
-This project uses the packages [`express`](https://expressjs.com/) (version `>= 4.17.1`),
-[`node-osc`](https://github.com/MylesBorins/node-osc) (version `>= 4.1.1`) and
-[`ws`](https://github.com/websockets/ws) (version `>= 3.3.3`). Install the required packages with
+This project uses the packages [`express`](https://expressjs.com/) (version `4.17.1`),
+[`node-osc`](https://github.com/MylesBorins/node-osc) (version `4.1.1`) and
+[`ws`](https://github.com/websockets/ws) (version `3.3.3`). Install the required packages with
 
 ```bash
 npm install
@@ -215,9 +215,9 @@ sign. To find all the occurances of a variable use `grep`. E.x. `grep -r '$HSS_I
 For this guide we will use
 ```
 # bin/hss-globalVariables
-HSS_DIR			$HSS_DIR
-HSS_IP			$HSS_IP
-HSS_HTTP_PORT		$HSS_HTTP_PORT
+HSS_DIR			/home/pi/humanSoundSculpture
+HSS_IP			192.168.100.1
+HSS_HTTP_PORT		3000
 ```
 
 After editing
@@ -233,7 +233,7 @@ to replace each occurance of a variable with it's value.
 # We run names2values inside humanSoundSculpture passing the file bin/hss-globalVariables
 ./bin/names2values.sh . bin/hss-globalVariables
 ```
-To revert, latter, to variable names, use the script [values2names](bin/values2names). You should not
+To revert, latter, to variable names, use the script [`values2names`](bin/values2names.sh). You should not
 make any changes to global variable values in order for this to work.
 
 ```bash
@@ -353,17 +353,23 @@ sudo cp conf/hostapd-wlan0.conf /etc/hostapd/
 ```
 
 ### Configure `SuperCollider`
-The file [humanSoundSculpture.scd](supercollider/humanSoundSculpture.scd) is responsible for the note
+The file [`humanSoundSculpture.scd`](supercollider/humanSoundSculpture.scd) is responsible for the note
 sequence that is distributed among the performers. It is started with the `systemd` unit
-[`hss-supercollider.service`](systemd/hss-supercollider.service). Copy this file to `~/.config/systemd/user/`.
+[`hss-supercollider.service`](systemd/hss-supercollider.service). Find the location of the `sclang`
+with
+```bash
+which sclang
+```
+Make any changes in the `ExecStart` option of [`hss-supercollider.service`](systemd/hss-supercollider.service)
+and copy this file to `~/.config/systemd/user/`.
 ```bash
 sudo cp systemd/hss-supercollider.service ~/.config/systemd/user/
 ```
 ### Configure the web server
 We are going to use the TLS certificate `hss-crt.pem` and key `hss-key.pem`. They were generated with `mkcert` and
-are located under `certs`. Open the file [`server.js`](server.js). Lines 18-19, should read these files.
+are located under `certs`. Open the file [`server.js`](webserver/server.js). Lines 18-19, should read these files.
 
-[`Server.js`](server.js) listens to `WebSocket` messages from web clients. If the message is `shutdown` will
+[`Server.js`](webserver/server.js) listens to `WebSocket` messages from web clients. If the message is `shutdown` will
 call the `bash` script [`killHSS`](bin/killHSS.sh). This message is signaled by the *conductor* of the performance
 after double-clicking on the `shutdown` button. The idea here is to be able to shutdown the computer (a `Raspberry Pi` in
 our case) without the need of a keyboard, a monitor or a person different than the performers.
@@ -371,7 +377,8 @@ our case) without the need of a keyboard, a monitor or a person different than t
 In line 13 of [`killHSS`](bin/killHSS.sh) we read `shutdown now;`.
 This line is commented by default. Uncomment it for a live performance.
 
-The `systemd` unit `hss-web-server.service` starts the web server process of the piece. Copy the file
+The `systemd` unit `hss-web-server.service` starts the web server process of the piece. The `ExecStart` option
+should have the correct path for the `node` executable. Make changes, if needed, and copy the file
 [`hss-web-server.service`](systemd/hss-web-server.service) to `/lib/systemd/system/`.
 ```bash
 sudo cp systemd/hss-web-server.service /lib/systemd/system/
@@ -412,7 +419,7 @@ sudo systemctl start hss-web-server.service
 systemctl --user start hss-supercollider.service
 ```
 
-By using the browser, navigate to `https://192.169.100.1:3000`. Hopefully, you will see the *index*
+By using the browser, navigate to `https://192.168.100.1:3000`. Hopefully, you will see the *index*
 page of *Human Sound Sculpture*.
 
 A *system* `systemd` service is stopped with the command
