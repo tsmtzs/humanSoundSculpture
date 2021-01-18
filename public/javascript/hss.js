@@ -1,5 +1,6 @@
 // ////////////////////////////////////////////////////////////
 //		Human Sound Sculpture
+//				by Tassos Tsesmetzis
 //
 // Web client javascript for the pages 'Player' and 'Conductor'.
 // ////////////////////////////////////////////////////////////
@@ -10,7 +11,7 @@ import Sound from './sound.mjs';
 // Constants
 // ////////////////////////////////////////////////////////////
 const wsOpenMsg = 'Tap on this sentence to enable sound.';
-const wsErrorMsg = 'Cannot connect.';
+const wsErrorMsg = 'Not connected to server.';
 
 // ////////////////////////////////////////////////////////////
 // Get the html element with id 'textMsg'.
@@ -24,12 +25,9 @@ const textMsgMaybe = Maybe.of(document.getElementById('textMsg'));
 // Websockets
 // ////////////////////////////////////////////////////////////
 // Initialize WebSockets
-// 'hss_ip' and 'node_port' are
-// bash environment variables.
-// For each session they are set in server.js with a 'sed' command.
-// After perfomance, they are unset in bin/setEnvirParNames.sh'
-// when the hss-webServer.service stops.
-const socket = new WebSocket('wss://HSS_IP:NODE_PORT');
+// 'HSS_IP' and 'HSS_HTTP_PORT' are
+// global variables.
+const socket = new WebSocket('wss://$HSS_IP:$HSS_HTTP_PORT');
 
 // ////////////////////////////////////////////////////////////
 // Functions
@@ -72,7 +70,7 @@ const wsListener = msgHandlerObj => message => {
     msgHandlerObj[msg.type](...msg.args);
 
     // console.log('Websocket message: ', msg.args, msg.type, msg);
-    
+
 };
 // WebSocket 'error' event listener.
 const wsErrorListener = event => {
@@ -105,7 +103,7 @@ const wsOpenListener = event => {
     // Shutdown computer button
     ////////////////////////////////////////////////////////////
     const shutdownBtnMaybe = Maybe.of(document.getElementById('shutdownBtn'));
-    
+
     // When conductor double clicks the button,
     // send a 'shutdown' message to web server.
     shutdownBtnMaybe.map(addEventListener('dblclick'))
@@ -132,14 +130,14 @@ const wsOpenListener = event => {
 // Sound related functions
 // Play sound on clicking the 'Test' button
 const createTestSynth = soundObj => {
-    // A random frequency for each client. 
+    // A random frequency for each client.
     const freq = 400.0 + Math.random() * 600;
     // Max duration of sound.
     const dur = 20;
     // Check sound in high amplitude. Adjust device volume.
     const amp = 0.9;
     let synth;
-    
+
     return () => {
 	if (synth) {
     	    synth.stop(0);
@@ -147,7 +145,7 @@ const createTestSynth = soundObj => {
 	} else {
     	    synth = soundObj.play(freq, amp, dur);
     	    synth.addEventListener('ended', event => synth = null);
-	}	
+	}
     };
 };
 
@@ -156,7 +154,3 @@ const createTestSynth = soundObj => {
 socket.onerror = wsErrorListener;
 
 socket.onopen = wsOpenListener;
-
-// Initialize mobileConsole. Post console messages on the web page.
-// Usefull for tests. 
-// if (mobileConsole) mobileConsole.init();

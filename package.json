@@ -1,26 +1,20 @@
 {
-  "name": "humansoundsculpture",
-  "version": "1.0.0",
-  "description": "A web browser version of the piece Human Sound Sculpture",
-  "main": "server.js",
-  "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "systemctl --user start hss-webServer",
-      "stop": "systemctl --user stop hss-supercollider",
-      "restart": "systemctl --user restart hss-webServer",
-      "status": "systemctl --user status hss-webServer",
-      "status-sc": "systemctl --user status hss-supercollider",
-      "log": "journalctl --user -u hss-webServer -r",
-      "log-sc": "journalctl --user -u hss-supercollider -r",
-      "log-follow": "journalctl --user -u hss-webServer -f",
-      "log-sc-follow": "journalctl --user -u hss-supercollider -f"
-  },
-  "author": "Tassos Tsesmetzis",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.17.1",
-    "node-osc": "^4.1.1",
-    "osc": "^2.3.1",
-    "ws": "^3.3.3"
-  }
+    "name": "humansoundsculpture",
+    "version": "3.0.0",
+    "description": "Human Sound Sculpture - a performance art piece",
+    "main": "webserver/server.js",
+    "scripts": {
+	"test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Tassos Tsesmetzis",
+    "license": "MIT",
+    "dependencies": {
+	"express": "^4.17.1",
+	"node-osc": "^4.1.1",
+	"ws": "^3.3.3"
+    },
+    "repository": {
+	"type" : "git",
+	"url" : "https://github.com/tsmtzs/humanSoundSculpture.git"
+    }
 }
