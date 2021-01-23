@@ -8,7 +8,7 @@
 	   People with wooden faces. Moving towards the same point.
 	   One behind the other. Close enough or far apart.
 
-	   Time at still.
+	   Time stands still.
 ```
 
 A group of people arranged in a line is moving towards a point.
@@ -23,7 +23,7 @@ levels and the frozen atmosphere is not destroyed.
 The performance simply starts and lasts as long as the performers have decided. Similarly, the
 performance simply stops and the performers are leaving silently taking distinct paths.
 
-*Human Sound Sculpture* despite it's static form, deals with motion. The relentless motion of
+*Human Sound Sculpture*, despite it's static form, deals with motion. The relentless motion of
 *Time*. Which interwines with the footsteps of passers-by. With the roar of the city. With the
 thoughts, dreams, memories and aspirations of the people that stand frozen in the row.
 
@@ -82,7 +82,7 @@ The *conductor* sends `WebSocket` messages to the web server. These are
 ### `SuperCollider`
 `SuperCollider` generates the sound events. A random walk on the
 vertices of a Paley graph of order 13 is used to select the `freq`, `amp` and `dur` for a sound
-`Event`, as well as the `delta` time between succesive `Events`. The `SuperCollider` process
+`Event`, as well as the `delta` time between successive `Events`. The `SuperCollider` process
 communicates with the web server by interchanging `OSC` messages. These are
 - `action`: Takes one of the parameters `start`/`stop`. It is used to start/stop, respectively, the
   `EventStreamPlayer` object that handles the note generation pattern. It propagates to web clients

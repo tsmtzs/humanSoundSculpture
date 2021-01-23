@@ -24,7 +24,7 @@ For each new entry, try to follow the scheme
   Evi Triantafilidou, Tassos Tsesmetzis, Ageliki Xanthopoulou, Paschalis Xanthopoulos
 - **Date**: 2020-02-21
 - **Location**: Democracy Square, Xanthi, Greece.
-- **Other**: The performance was presented in the program of the *Thracian Folk Festival*.
+- **Other**: The performance was presented as part of the *Thracian Folk Festival*.
 - **URL**: <https://www.youtube.com/watch?v=oZ8cVRF8kGU&t=30s>,
   <https://www.fex.org.gr/content/anthropino-ixitiko-glypto>
 
