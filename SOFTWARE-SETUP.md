@@ -23,7 +23,7 @@ dedicated computer assigns IP addresses to clients, runs the web server and
 generates note events. All software configuration should be
 done on this computer. We have used the `Raspberry Pi model B+` single board
 computer with the `Raspberry Pi OS Lite` operating system. The following sections
-offer the details for each step of setting up the piece.
+offer the details for setting up the piece.
 All commands assume the `Raspberry Pi OS`. They should work on every `Debian` based
 `Linux` distribution.
 
@@ -92,7 +92,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	Alternatively, you could download only the file
 	[ProbabilityDistributions.sc](https://github.com/supercollider/sc3-plugins/blob/dd092a20cb66fc976d47ad402be601985cb8bf84/source/LoopBufUGens/sc/classes/LJP%20Classes/ProbabilityDistributions.sc)
 	inside the `SuperCollider` user extension directory. This is, usually, `~/.local/share/SuperCollider/Extensions`. You can find it by calling
-	`Platform.userExtensionDir` from within `SuperCollider`.
+	`Platform.userExtensionDir` from within the `SuperCollider` interpreter.
 
 	The class `PGraphWalk` is a extension of the language. It can be found in the github repository [sc-tsmtzs](https://github.com/tsmtzs/sc-tsmtzs).
 	Clone the repository inside the `SuperCollider` user extension directory.
@@ -158,7 +158,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	```
 
 ### Clone the `humanSoundSculpture` repository
-At this step you have installed all the necessary software. Open a `bash` terminal and change
+This step assumes that you have installed all the necessary software. Open a `bash` terminal and change
 directory to an appropriate place.
 
 ```bash
@@ -399,13 +399,13 @@ sudo systemctl start systemd-networkd.service
 ```
 
 Use the unit `hostapd@.service` to turn the network card into an access point. The unit `dhcpd4@.service`
-will start the DHCP server. Start both services by passing the WIFI interface device name `wlan0`
+will start the DHCP server. Start both services by passing the WIFI interface device name `wlan0`.
 ```bash
 sudo systemctl start hostapd@wlan0.service
 sudo systemctl start dhcpd4@wlan0.service
 ```
 
-Check if the wireless interface is assigned the IP
+Check if the wireless interface is assigned the IP.
 ```bash
 ip addr show wlan0
 ```
@@ -445,7 +445,7 @@ or `sudo journalctl -u <unit-name> -r` might reveal usefull information about th
 Also, might be usefull to start the services one by one and checking, in each step, the status of the
 most recently started service.
 
-You can see runtime messages for a service with the command
+You can see runtime messages about a service, with the command
 ```bash
 sudo journalctl -u <unit-name> -f
 ```
@@ -524,30 +524,30 @@ and rename the original `conf` file.
 sudo mv /etc/dhcp/dhcp.conf.original /etc/dhcp/dhcp.conf
 ```
 
-Delete `/etc/hostapd/hostapd-wlan0.conf`
+Delete `/etc/hostapd/hostapd-wlan0.conf`.
 
 ```bash
 sudo rm /etc/hostapd/hostapd-wlan0.conf
 ```
 
-Delete `mkcert` from within `/usr/bin/`
+Delete `mkcert` from within `/usr/bin/`.
 ```bash
 sudo rm /usr/bin/mkcert
 ```
 
-Change directory to `humanSoundSculpture` and checkout the branch `performace@venus`
+Change directory to `humanSoundSculpture` and checkout the branch `performace@venus`.
 ```bash
 cd ~/humanSoundSculpture
 git checkout performance@venus
 ```
 
-Commit any changes and checkout `master`
+Commit any changes and checkout `master`.
 ```bash
 git commit -a -m "Performance end"
 git checkout master
 ```
 
-Now delete the branch `performance@venus`
+Now delete the branch `performance@venus`.
 ```bash
 git branch -D performance@venus
 ```
