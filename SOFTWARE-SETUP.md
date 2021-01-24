@@ -104,28 +104,31 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 
 	Another way, although not recommended (read *use at your own risk*), to install `mkcert` is to download the binaries:
 
-		1. Find the `CPU` architecture
-		```bash
-		dpkg --print-architecture
-		```
+	1. Find the `CPU` architecture
+	```bash
+	dpkg --print-architecture
+	```
+	This will, probably, print `armhf` on `Raspberry Pi 3`.
 
-		This will, probably, print `armhf` on `Raspberry Pi 3`.
-		2. Change directory to `/usr/bin/`
-		```bash
-		cd /usr/bin
-		```
-		3. Direct to [mkcert pre-build binaries](https://github.com/FiloSottile/mkcert/releases) and download the
-		one that matches the output of `dpkg`. We will download the file `mkcert-v1.4.3-linux-arm`
-		```bash
-		sudo wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-linux-arm
-		```
-		4. Rename the binary file as `mkcert`
-		```bash
-		sudo mv mkcert-v1.4.3-linux-arm mkcert
-		```
-		5. Change `mkcert`'s mode
-		```bash
-		sudo chmod a=rx mkcert
+	2. Change directory to `/usr/bin/`
+	```bash
+	cd /usr/bin
+	```
+
+	3. Direct to [mkcert pre-build binaries](https://github.com/FiloSottile/mkcert/releases) and download the
+	one that matches the output of `dpkg`. We will download the file `mkcert-v1.4.3-linux-arm`
+	```bash
+	sudo wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-linux-arm
+	```
+
+	4. Rename the binary file as `mkcert`
+	```bash
+	sudo mv mkcert-v1.4.3-linux-arm mkcert
+	```
+
+	5. Change `mkcert`'s mode
+	```bash
+	sudo chmod a=rx mkcert
 		```
 
 10. [`git`](https://git-scm.com/) (version `2.20.1`)
@@ -187,12 +190,11 @@ npm install
 ```
 
 ### Work on a separate `git branch`
-For a performance you should create a new branch on top of `master`.
-Make sure you 're on the `master` branch by running
+For a performance you should create a new branch on top of `master`. First, checkout `master`.
 ```bash
-git branch
+git checkout master
 ```
-If this is so, create the new branch. Use an appropriate name.
+Now, create the new branch. Use an appropriate name.
 Something like `test` or `test@raspberry` or `performance@venus` might be handy.
 
 ```bash
