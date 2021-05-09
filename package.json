@@ -4,17 +4,20 @@
     "description": "Human Sound Sculpture - a performance art piece",
     "main": "webserver/server.js",
     "scripts": {
-	"test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Tassos Tsesmetzis",
     "license": "MIT",
     "dependencies": {
-	"express": "^4.17.1",
-	"node-osc": "^4.1.1",
-	"ws": "^3.3.3"
+        "express": "^4.17.1",
+        "node-osc": "^4.1.1",
+        "ws": "^3.3.3"
     },
     "repository": {
-	"type" : "git",
-	"url" : "https://github.com/tsmtzs/humanSoundSculpture.git"
+        "type": "git",
+        "url": "https://github.com/tsmtzs/humanSoundSculpture.git"
+    },
+    "devDependencies": {
+        "standard": "^16.0.3"
     }
 }
