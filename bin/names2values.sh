@@ -11,6 +11,16 @@
 #		 Lines that start with a # are not processed.
 # ##################################################
 
+function replaceName2Value {
+    local name=$1
+    local value=$2
+    # Search and change 'name' with 'value' in all files
+    # under public/, webserver/ and systemd/.
+    # If file {} is a regular file, then substitute name with value
+    find ./public ./webserver ./systemd \
+	 -exec test -f {} \; -exec sed -i -e "s|\$$name|$value|g" {} \;
+}
+
 # A regular expression pattern that
 # matches the first three leftmost
 # bytes of an IP address.
@@ -35,10 +45,11 @@ do
 	    fi
 	fi
 
-	# Search and change common parameters in all files
-	# under public/, webserver/ supercollider/ and systemd/.
-	# If file {} is a regular file, then substitute parName with parVal
-	find $1/public $1/webserver $1/supercollider $1/systemd \
-	     -exec test -f {} \; -exec sed -i -e "s|\$$parName|$parVal|g" {} \;
+	replaceName2Value $parName $parVal
     fi
 done < $2
+
+# Replace $HSS_DIR with the working directory
+name="HSS_DIR"
+value="$(pwd)"
+replaceName2Value $name $value
