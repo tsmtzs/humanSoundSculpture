@@ -5,7 +5,9 @@
   "main": "webserver/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "standard webserver/*.js public/javascript/*"
+    "lint": "standard webserver/*.js public/javascript/*",
+    "build": "./bin/checkAndCopySrcFiles.sh",
+    "remove:build": "rm -r conf/ systemd/ webserver/ public/"
   },
   "author": "Tassos Tsesmetzis",
   "license": "MIT",

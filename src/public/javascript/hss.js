@@ -1,3 +1,4 @@
+/* eslint-env browser */
 // ////////////////////////////////////////////////////////////
 // Human Sound Sculpture
 //    by Tassos Tsesmetzis
@@ -27,7 +28,7 @@ const textMsgMaybe = Maybe.of(document.getElementById('textMsg'))
 // Initialize WebSockets
 // 'HSS_IP' and 'HSS_HTTP_PORT' are
 // global variables.
-const socket = new window.WebSocket('wss://$HSS_IP:$HSS_HTTP_PORT')
+const socket = new WebSocket('wss://$HSS_IP:$HSS_HTTP_PORT')
 
 // ////////////////////////////////////////////////////////////
 // Functions
