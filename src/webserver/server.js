@@ -21,7 +21,7 @@ const credentials = {
 const ip = '$HSS_IP'
 // ////////////////////////////////////////////////////////////
 // Create the server.
-const webServerPort = '$HSS_HTTP_PORT'
+const webServerPort = $HSS_HTTP_PORT
 const server = https.createServer(credentials, app)
 const exec = require('child_process').exec
 // ////////////////////////////////////////////////////////////
