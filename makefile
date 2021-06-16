@@ -11,55 +11,42 @@ export NODE_PATH := $(shell which node)
 export DHCP_PATH := $(shell which dhcpd)
 export HOSTAPD_PATH := $(shell which hostapd)
 
-variables = HSS_IP HSS_HTTP_PORT HSS_DIR \
-	SC_PATH NODE_PATH DHCP_PATH HOSTAPD_PATH
+define copyAndReplaceVars =
+envsubst < $(1) > ./$(2);
+endef
 
-values = $(foreach var, $(variables), $(value $(var)))
+define mkdirAndCopyReplaceVars =
+mkdir $(1); \
+dirPath=$(1); \
+for file in $(CURDIR)/src/$(1)/*; do \
+ $(call copyAndReplaceVars,$$file,$$dirPath/$$(basename $$file)) \
+done
+endef
+
+.PHONY: all
+
+all : webserver systemd conf public
 
 webserver : ./src/webserver/*.js
-	mkdir webserver
-	for file in ./src/webserver/*; do \
-	  name=$$(basename $$file); \
-	  envsubst < $$file > ./webserver/$$name; \
-	done
+	$(call mkdirAndCopyReplaceVars,webserver)
 
 systemd : ./src/systemd/*
-	mkdir systemd
-	for file in ./src/systemd/*; do \
-	  name=$$(basename $$file); \
-	  envsubst < $$file > ./systemd/$$name; \
-	done
+	$(call mkdirAndCopyReplaceVars,systemd)
 
 conf : ./src/conf/*
-	mkdir conf
-	for file in ./src/conf/*; do \
-	  name=$$(basename $$file); \
-	  envsubst < $$file > ./conf/$$name; \
-	done
+	$(call mkdirAndCopyReplaceVars,conf)
 
 public : ./src/public/*
-	mkdir public
+	mkdir public; \
 	for file in ./src/public/*; do \
 	  name=$$(basename $$file); \
 	  if [[ -d $$file ]]; then \
-	    mkdir ./public/$$name; \
-	    for subfile in $$file/*; do \
-	      subname=$$(basename $$subfile); \
-	      envsubst < $$subfile > public/$$name/$$subname; \
-	    done; \
+	    $(call mkdirAndCopyReplaceVars,public/$$name); \
 	  else \
-	    envsubst < $$file > ./public/$$name; \
+	    $(call copyAndReplaceVars,$$file,public/$$name) \
 	  fi; \
 	done
 
-.PHONY: paths
-paths :
-	echo $(CURDIR);
-
-.PHONY: test
-test :
-	for file in ./src/webserver/*; do \
-	  name=$$(basename $$file); \
-	  envsubst < $$file > ./webserver/$$name
-	  echo $$name; \
-	done
+.PHONY: clean
+clean :
+	rm -r webserver systemd conf public
