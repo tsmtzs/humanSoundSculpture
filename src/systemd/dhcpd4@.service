@@ -9,7 +9,7 @@ After=network.target network-online.target
 
 [Service]
 Type=forking
-ExecStart=$DHCP_PATH -4 -q -cf /etc/dhcp/dhcpd.conf -pf /run/dhcpd4/dhcpd.pid %I
+ExecStart=$DHCP_PATH -4 -q -cf $HSS_DIR/conf/dhcpd.conf -pf /run/dhcpd4/dhcpd.pid %I
 RuntimeDirectory=dhcpd4
 PIDFile=/run/dhcpd4/dhcpd.pid
 ProtectSystem=full

@@ -17,7 +17,7 @@ PIDFile=/run/hostapd.%i.pid
 Restart=on-failure
 RestartSec=2
 EnvironmentFile=-/etc/default/hostapd
-ExecStart=$HOSTAPD_PATH -B -P /run/hostapd.%i.pid $DAEMON_OPTS /etc/hostapd/hostapd-%i.conf
+ExecStart=$HOSTAPD_PATH -B -P /run/hostapd.%i.pid $DAEMON_OPTS $HSS_DIR/conf/hostapd-%i.conf
 
 [Install]
 WantedBy=multi-user.target sys-subsystem-net-devices-%i.device
