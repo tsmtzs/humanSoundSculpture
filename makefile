@@ -1,3 +1,6 @@
+# ####################################################################################################
+#	Human Sound Sculpture
+# ####################################################################################################
 export HSS_IP = 192.168.100.1
 export HSS_HTTP_PORT = 3000
 export WIFI_INTERFACE = wlan0
@@ -15,7 +18,7 @@ export NODE_PATH := $(shell which node)
 export DHCP_PATH := $(shell which dhcpd)
 export HOSTAPD_PATH := $(shell which hostapd)
 
-# ##################################################
+# ####################################################################################################
 define copyAndSetVars =
 envsubst < $(1) > $(CURDIR)/$(2)/$$(basename $(1));
 endef
@@ -64,8 +67,9 @@ public : $(CURDIR)/src/public/*
 	  fi; \
 	done
 
-.PHONY: install
-install : webserver systemd conf public
+.PHONY: install uninstall clean
+
+install : all
 	systemdPath=$(CURDIR)/systemd; \
 	systemServiceDir=/lib/systemd/system/; \
 	cp -i $$systemdPath/10-$(WIFI_INTERFACE).network /lib/systemd/network/; \
@@ -74,6 +78,11 @@ install : webserver systemd conf public
 	cp -i $$systemdPath/hss-web-server.service $$systemServiceDir; \
 	cp -i $$systemdPath/hss-supercollider.service $$systemServiceDir
 
-.PHONY: clean
+
+uninstall :
+	systemServiceDir=/lib/systemd/system; \
+	rm -i /lib/systemd/network/10-$(WIFI_INTERFACE).network; \
+	rm -i $$systemServiceDir/{dhcpd4@.service,hostapd@.service,hss-supercollider,hss-web-server}.service
+
 clean :
 	rm -r webserver systemd conf public
