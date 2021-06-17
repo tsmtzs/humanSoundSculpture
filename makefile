@@ -64,6 +64,16 @@ public : $(CURDIR)/src/public/*
 	  fi; \
 	done
 
+.PHONY: install
+install : webserver systemd conf public
+	systemdPath=$(CURDIR)/systemd; \
+	systemServiceDir=/lib/systemd/system/; \
+	cp -i $$systemdPath/10-$(WIFI_INTERFACE).network /lib/systemd/network/; \
+	cp -i $$systemdPath/dhcpd4@.service $$systemServiceDir; \
+	cp -i $$systemdPath/hostapd@.service $$systemServiceDir; \
+	cp -i $$systemdPath/hss-web-server.service $$systemServiceDir; \
+	cp -i $$systemdPath/hss-supercollider.service $$systemServiceDir
+
 .PHONY: clean
 clean :
 	rm -r webserver systemd conf public
