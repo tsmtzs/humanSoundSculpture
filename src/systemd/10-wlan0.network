@@ -7,7 +7,7 @@
 # Save this file under /usr/lib/systemd/network
 # ##################################################
 [Match]
-Name=wlan0
+Name=$WIFI_INTERFACE
 
 [Network]
 Address=$HSS_IP/24

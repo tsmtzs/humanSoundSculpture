@@ -1,5 +1,9 @@
 export HSS_IP = 192.168.100.1
 export HSS_HTTP_PORT = 3000
+export WIFI_INTERFACE = wlan0
+export WIFI_MACADDRESS = b8:27:eb:1e:2c:8d
+export WIFI_NAME = pi
+export WIFI_COUNTRYCODE = GR
 
 export HSS_DIR := $(CURDIR)
 
@@ -11,41 +15,55 @@ export NODE_PATH := $(shell which node)
 export DHCP_PATH := $(shell which dhcpd)
 export HOSTAPD_PATH := $(shell which hostapd)
 
-define copyAndReplaceVars =
-envsubst < $(1) > ./$(2);
+binariesExist := $(and $(SCLANG_PATH),$(NODE_PATH),$(DHCP_PATH),$(HOSTAPD_PATH))
+
+ifndef $(binariesExist)
+$(warning WARNING: No binaries found for at least one of node, sclang, dhcp, hostapd)
+endif
+
+define copyAndSetVars =
+envsubst < $(1) > $(CURDIR)/$(2)/$$(basename $(1));
 endef
 
-define mkdirAndCopyReplaceVars =
-mkdir $(1); \
-dirPath=$(1); \
+define mkdirAndCopySetVars =
+mkdir $(CURDIR)/$(1); \
+dirName=$(1); \
 for file in $(CURDIR)/src/$(1)/*; do \
- $(call copyAndReplaceVars,$$file,$$dirPath/$$(basename $$file)) \
+ $(call copyAndSetVars,$$file,$$dirName) \
 done
 endef
 
 .PHONY: all
 
-all : webserver systemd conf public
+all : webserver conf public systemd \
+	systemd/10-$(WIFI_INTERFASE).network conf/hostapd-$(WIFI_INTERFACE).conf
 
-webserver : ./src/webserver/*.js
-	$(call mkdirAndCopyReplaceVars,webserver)
+webserver : $(CURDIR)/src/webserver/*.js
+	@$(call mkdirAndCopySetVars,webserver)
 
-systemd : ./src/systemd/*
-	$(call mkdirAndCopyReplaceVars,systemd)
+systemd : $(CURDIR)/src/systemd/*
+	@$(call mkdirAndCopySetVars,systemd)
 
-conf : ./src/conf/*
-	$(call mkdirAndCopyReplaceVars,conf)
+conf : $(CURDIR)/src/conf/*
+	@$(call mkdirAndCopySetVars,conf)
 
-public : ./src/public/*
-	mkdir public; \
-	for file in ./src/public/*; do \
+public : $(CURDIR)/src/public/*
+	@mkdir public; \
+	for file in $(CURDIR)/src/public/*; do \
 	  name=$$(basename $$file); \
 	  if [[ -d $$file ]]; then \
-	    $(call mkdirAndCopyReplaceVars,public/$$name); \
+	    $(call mkdirAndCopySetVars,public/$$name); \
 	  else \
-	    $(call copyAndReplaceVars,$$file,public/$$name) \
+	    $(call copyAndSetVars,$$file,public) \
 	  fi; \
 	done
+
+# CAUTION: Assume only one file in the recipes
+systemd/10-$(WIFI_INTERFACE).network : systemd/10-*.network
+	 @mv $(wildcard systemd/*.network) $@
+
+conf/hostapd-$(WIFI_INTERFACE).conf : conf/hostapd-*.conf
+	mv $(wildcard conf/hostapd-*.conf) $@
 
 .PHONY: clean
 clean :
