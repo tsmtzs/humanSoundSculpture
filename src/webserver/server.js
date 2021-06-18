@@ -12,11 +12,11 @@ const express = require('express')
 const app = express()
 const fs = require('fs')
 const path = require('path')
-const rootDir = path.dirname(__dirname)
+const rootDir = '$HSS_DIR'
 const https = require('https')// TLS credentials.
 const credentials = {
-  key: fs.readFileSync(`${rootDir}/certs/hss-key.pem`, 'utf8'),
-  cert: fs.readFileSync(`${rootDir}/certs/hss-crt.pem`, 'utf8')
+  key: fs.readFileSync(path.join(rootDir, 'certs/hss-key.pem'), 'utf8'),
+  cert: fs.readFileSync(path.join(rootDir, 'certs/hss-crt.pem'), 'utf8')
 }// The IP of the server
 const ip = '$HSS_IP'
 // ////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ const oscPath = '/action'
 // ////////////////////////////////////////////////////////////
 // WebSockets
 // HSS_WSS implicitly loads the 'ws' module.
-const WebSocketServer = require(path.join(__dirname, 'hss_wss.js')).HSS_WSS
+const WebSocketServer = require(path.join(rootDir, 'webserver', 'hss_wss.js')).HSS_WSS
 const wss = new WebSocketServer({ server: server, clientTracking: true })
 // ////////////////////////////////////////////////////////////
 // Event listeners.
