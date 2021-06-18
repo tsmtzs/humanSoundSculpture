@@ -66,7 +66,7 @@ const wsMsgListener = (sclang, oscPath) => msg => {
 
       console.log('Script killHSS.sh ecexuted')
     })
-    console.log('PC is going to sleep!')
+    console.log('PC is shutting down!')
   } else {
     sclang.send(oscPath, msg)
   }

@@ -5,8 +5,23 @@ SHELL = /bin/sh
 
 export HSS_IP = 192.168.100.1
 export HSS_HTTP_PORT = 3000
+
+# Find the name of the wifi interface
+# with the shell command
+#     ip link show
+# Normaly, the name should start with a 'w'.
 export WIFI_INTERFACE = wlan0
+
+# The mac address of the wifi interface, can
+# be found with the shell command
+#     ip link show WIFI_INTERFACE
+# where WIFI_INTERFACE is the value of the
+# above variable. The output of 'ip link'
+# will print the MAC address on the second line.
+# It is a series of hexadecimal bytes
+# separated by colons just after `link/ether`.
 export WIFI_MACADDRESS = b8:27:eb:1e:2c:8d
+
 export WIFI_NAME = pi
 export WIFI_COUNTRYCODE = GR
 
@@ -76,10 +91,10 @@ certs :
 certs/hss-key.pem certs/hss-crt.pem &: certs
 	@mkcert -key-file $^/hss-key.pem -cert-file $^/hss-crt.pem localhost $(HSS_IP)
 
-.PHONY: install uninstall clean
+.PHONY: install installTLSCert uninstall clean
 
-install : all
-	systemdPath=$(CURDIR)/systemd; \
+install : all installTLSCert
+	@systemdPath=$(CURDIR)/systemd; \
 	systemServiceDir=/lib/systemd/system/; \
 	cp -i $$systemdPath/10-$(WIFI_INTERFACE).network /lib/systemd/network/; \
 	cp -i $$systemdPath/dhcpd4@.service $$systemServiceDir; \
@@ -87,6 +102,9 @@ install : all
 	cp -i $$systemdPath/hss-web-server.service $$systemServiceDir; \
 	cp -i $$systemdPath/hss-supercollider.service $$systemServiceDir
 
+installTLSCert : certs/hss-key.pem certs/hss-crt.pem
+	@mkcert -install; \
+	cp $$(mkcert -CAROOT)/rootCA.pem public/
 
 uninstall :
 	systemServiceDir=/lib/systemd/system; \
