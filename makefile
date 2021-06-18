@@ -41,7 +41,8 @@ endef
 
 .PHONY: all
 
-all : systemd/10-$(WIFI_INTERFACE).network conf/hostapd-$(WIFI_INTERFACE).conf webserver public certs
+all : systemd/10-$(WIFI_INTERFACE).network conf/hostapd-$(WIFI_INTERFACE).conf \
+	webserver public certs/hss-key.pem
 
 systemd/10-$(WIFI_INTERFACE).network : systemd
 	@$(call renameIfNotEqual,$(wildcard $</10*.network),$@)
@@ -71,6 +72,9 @@ public : $(CURDIR)/src/public/*
 
 certs :
 	@mkdir certs
+
+certs/hss-key.pem certs/hss-crt.pem &: certs
+	@mkcert -key-file $^/hss-key.pem -cert-file $^/hss-crt.pem localhost $(HSS_IP)
 
 .PHONY: install uninstall clean
 
