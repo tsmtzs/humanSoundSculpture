@@ -35,6 +35,13 @@ export NODE_PATH := $(shell which node)
 export DHCP_PATH := $(shell which dhcpd)
 export HOSTAPD_PATH := $(shell which hostapd)
 
+# userHome should be the value of user's $HOME.
+# It is used in the target 'install' to copy
+# the SuperCollider user service file to ~/.config/systemd/user.
+# Since this target is build with superuser privileges,
+# $HOME will be /. Hence, defining
+#	userHome := $(shell echo $$HOME) WAN'T WORK
+userHome := /home/pi
 # ####################################################################################################
 define copyAndSetVars =
 envsubst < $(1) > $(CURDIR)/$(2)/$$(basename $(1));
@@ -100,20 +107,19 @@ install : all installTLSCert
 	cp -i $$systemdPath/dhcpd4@.service $$systemServiceDir; \
 	cp -i $$systemdPath/hostapd@.service $$systemServiceDir; \
 	cp -i $$systemdPath/hss-web-server.service $$systemServiceDir; \
-	cp -i $$systemdPath/hss-supercollider.service $$systemServiceDir; \
-	if [ -e /etc/dhcp/dhcpd.conf ]; then \
-	  mv /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.original; \
-	fi; \
 	cp $(CURDIR)/conf/dhcpd.conf /etc/dhcp/
+	cp -i --preserve=all $$systemdPath/hss-supercollider.service $(userHome)/.config/systemd/user/;
 
 installTLSCert : certs/hss-key.pem certs/hss-crt.pem
 	@mkcert -install; \
 	cp $$(mkcert -CAROOT)/rootCA.pem public/
 
 uninstall :
-	systemServiceDir=/lib/systemd/system; \
+	@systemServiceDir=/lib/systemd/system; \
 	rm -i /lib/systemd/network/10-$(WIFI_INTERFACE).network; \
-	rm -i $$systemServiceDir/{dhcpd4@.service,hostapd@.service,hss-supercollider,hss-web-server}.service
+	rm -i $$systemServiceDir/{dhcpd4@.service,hostapd@.service,hss-web-server}.service; \
+	rm /etc/dhcp/dhcpd-hss.conf; \
+	rm -r $(userHome)/.config/systemd/user/hss-supercollider.service
 
 clean :
 	rm -r webserver systemd conf public certs
