@@ -41,7 +41,7 @@ endef
 
 .PHONY: all
 
-all : systemd/10-$(WIFI_INTERFACE).network conf/hostapd-$(WIFI_INTERFACE).conf webserver public
+all : systemd/10-$(WIFI_INTERFACE).network conf/hostapd-$(WIFI_INTERFACE).conf webserver public certs
 
 systemd/10-$(WIFI_INTERFACE).network : systemd
 	@$(call renameIfNotEqual,$(wildcard $</10*.network),$@)
@@ -69,6 +69,9 @@ public : $(CURDIR)/src/public/*
 	  fi; \
 	done
 
+certs :
+	@mkdir certs
+
 .PHONY: install uninstall clean
 
 install : all
@@ -87,4 +90,4 @@ uninstall :
 	rm -i $$systemServiceDir/{dhcpd4@.service,hostapd@.service,hss-supercollider,hss-web-server}.service
 
 clean :
-	rm -r webserver systemd conf public
+	rm -r webserver systemd conf public certs
