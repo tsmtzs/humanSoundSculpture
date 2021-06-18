@@ -34,7 +34,7 @@ done
 endef
 
 define renameIfNotEqual =
-if [[ $(1) != $(2) ]]; then \
+if [ $(1) != $(2) ]; then \
   mv $(1) $(2); \
 fi
 endef
@@ -62,7 +62,7 @@ public : $(CURDIR)/src/public/*
 	@mkdir public; \
 	for file in $(CURDIR)/src/public/*; do \
 	  name=$$(basename $$file); \
-	  if [[ -d $$file ]]; then \
+	  if [ -d $$file ]; then \
 	    $(call mkdirAndCopySetVars,public/$$name); \
 	  else \
 	    $(call copyAndSetVars,$$file,public) \
