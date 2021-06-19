@@ -5,7 +5,10 @@
   "main": "webserver/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "standard webserver/*.js public/javascript/*"
+    "lint": "standard webserver/*.js public/javascript/*",
+    "prebuild": "./bin/checkAndCopySrcFiles.sh",
+    "build": "./bin/names2values.sh . ./bin/hss-variables",
+    "remove:build": "rm -r conf/ systemd/ webserver/ public/"
   },
   "author": "Tassos Tsesmetzis",
   "license": "MIT",

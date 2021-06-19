@@ -1,3 +1,4 @@
+/* eslint-env browser */
 // ////////////////////////////////////////////////////////////
 //  Human Sound Sculpture
 //
@@ -7,7 +8,7 @@
 export default class Sound {
   constructor () {
     // Create an instance of AudioContext
-    this.context = new window.AudioContext()
+    this.context = new AudioContext()
     // Define parameters for the sound.
     this.mag1 = Math.random() * 0.5 + 0.4
     this.phase1 = 0.0

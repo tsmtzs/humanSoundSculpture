@@ -20,7 +20,7 @@ Type=simple
 DynamicUser=true
 User=hss
 # Start the web server.
-ExecStart=/usr/bin/node $HSS_DIR/webserver/server.js
+ExecStart=$NODE_PATH $HSS_DIR/webserver/server.js
 Restart=on-failure
 NoNewPrivileges=true
 AmbientCapabilities=CAP_NET_BIND_SERVICE CAP_DAC_READ_SEARCH

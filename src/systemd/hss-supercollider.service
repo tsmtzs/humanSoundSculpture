@@ -17,7 +17,7 @@ After=network-online.target
 Environment=QT_QPA_PLATFORM=offscreen DISPLAY=:0.0
 Type=simple
 # Start supercollider
-ExecStart=/usr/bin/sclang -D $HSS_DIR/supercollider/humanSoundSculpture.scd
+ExecStart=$SCLANG_PATH -D $HSS_DIR/supercollider/humanSoundSculpture.scd
 Restart=on-failure
 
 [Install]
