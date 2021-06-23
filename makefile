@@ -108,7 +108,7 @@ install : all installTLSCert
 	cp -i $$systemdPath/dhcpd4@.service $$systemServiceDir; \
 	cp -i $$systemdPath/hostapd@.service $$systemServiceDir; \
 	cp -i $$systemdPath/hss-web-server.service $$systemServiceDir; \
-	cp $(CURDIR)/conf/dhcpd.conf /etc/dhcp/
+	cp $(CURDIR)/conf/dhcpd.conf /etc/dhcp/; \
 	cp -i --preserve=all $$systemdPath/hss-supercollider.service $(userHome)/.config/systemd/user/;
 
 installTLSCert : certs/hss-key.pem certs/hss-crt.pem

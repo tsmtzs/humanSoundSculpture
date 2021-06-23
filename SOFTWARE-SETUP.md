@@ -214,55 +214,86 @@ The runtime environment of the piece depends on the following variables:
 - `userHome`: Absolute path to user's home directory. This variable is used only
 	in [makefile](makefile).
 
-Files that depend on the upper case named variables are saved under `./src`. Variable names are prepended by a `$`
+Files that depend on the uppercase named variables are saved under `src`. Variable names are prepended by a `$`
 sign or are written inside `${`, `}`, like `$HSS_DIR` or `${HSS_DIR}`. To find all the occurrences of a variable
 use `grep`, e.x. `grep -rn 'HSS_IP' src/`.
 
-[`GNU Make`](https://www.gnu.org/software/make/) is used to set the values of those variables, create directories
-and copy the files under `./src` to the appropriate location. `Make` reads the file [`makefile`](makefile). Inside
+[`GNU make`](https://www.gnu.org/software/make/) is used to set the values of those variables, create directories
+and copy the files under `src` to the appropriate locations. `Make` reads the file [`makefile`](makefile). Inside
 it, the variables `HSS_DIR`, `HSS_NETWORK`, `SCLANG_PATH`, `NODE_PATH`, `DHCP_PATH` and `HOSTAPD_PATH` are set
 programmatically. All other variables must be set manually. To do so, edit [`makefile`](makefile).
 
-### Set global variables
-The runtime environment of the piece depends on the following variables:
-- `HSS_DIR`: An absolute path. Points to the `humanSoundSculpture` directory.
-- `HSS_IP`: An IPv4 address. Web server's IP on the local network.
-- `HSS_NETWORK`: The network prefix of the local WIFI network, i.e. the three
-		leftmost bytes of the IP (assuming an IPv4 24 bit netmask).
-- `HSS_HTTP_PORT`: A positive integer. The `HTTP` port number.
+First, we set the IP and `HTTP` port in lines 6, 7. We can set them to whatever values seem appropriate.
+For this guide will set the IP to `192.168.100.1` and port number to `3000`.
 
-Set their values by editing the file [hss-globalVariables](bin/hss-globalVariables).
-
-Global variables are scattered accross several files. Variable names are prepended by a `$`
-sign. To find all the occurances of a variable use `grep`. E.x. `grep -r '$HSS_IP'`.
-
-For this guide we will use
-```
-# bin/hss-globalVariables
-HSS_DIR			/home/pi/humanSoundSculpture
-HSS_IP			192.168.100.1
-HSS_HTTP_PORT		3000
-```
-
-After editing
-[hss-globalVariables](bin/hss-globalVariables), use the script [`names2values`](bin/names2values.sh)
-to replace each occurance of a variable with it's value.
-
+Lines 13 and 23 define the variables `HSS_INTERFACE` and `HSS_MACADDRESS`, respectively. The first one is the name and the second 
+the MAC address of the WIFI interface. To find them use the `ip` shell command:
 ```bash
-# names2values accepts 2 arguments.
-# 1st arg: The humanSoundSculpture directory path. The script will replace variables
-#		recursively under this.
-# 2nd arg: a path to a text file. It collects pairs of the form (variable name) - value.
-#
-# We run names2values inside humanSoundSculpture passing the file bin/hss-globalVariables
-./bin/names2values.sh . bin/hss-globalVariables
+ip link show
 ```
-To revert, latter, to variable names, use the script [`values2names`](bin/values2names.sh). You should not
-make any changes to global variable values in order for this to work.
+The output should print a numbered list of network interfaces. Normaly, the name of the WIFI interface
+begins with a `w`. Assume that it is `wlan0`. The MAC address is a series of hexadecimal bytes
+separated by colons. Can be found in the output of `ip link`. It is on the second line of the WIFI interface list item,
+just on the right of `link/ether`. This should be something like `b8:27:eb:1e:2c:8d`.
 
+After setting all variables, lines 6 to 34 of [`makefile`](makefile) may look like this:
 ```bash
-# values2names accepts the same arguments as names2values.
-./bin/values2names.sh . bin/hss-globalVariables
+export HSS_IP = 192.168.100.1
+export HSS_HTTP_PORT = 3000
+
+# Find the name of the wifi interface
+# with the shell command
+#     ip link show
+# Normaly, the name should start with a 'w'.
+export WIFI_INTERFACE = wlan0
+
+# The mac address of the wifi interface, can
+# be found with the shell command
+#     ip link show WIFI_INTERFACE
+# where WIFI_INTERFACE is the value of the
+# above variable. The output of 'ip link'
+# will print the MAC address on the second line.
+# It is a series of hexadecimal bytes
+# separated by colons just after `link/ether`.
+export WIFI_MACADDRESS = b8:27:eb:1e:2c:8d
+
+export WIFI_NAME = pi
+export WIFI_COUNTRYCODE = GR
+
+# userHome should be the value of user's $HOME.
+# It is used in the target 'install' to copy
+# the SuperCollider user service file to ~/.config/systemd/user.
+# Since this target is build with superuser privileges,
+# $HOME will be /. Hence, defining
+#	userHome := $(shell echo $$HOME) WAN'T WORK
+userHome := /home/pi
+```
+
+The next step is to run
+```bash
+make
+```
+This command will copy all the directories and files under `src` to `humanSoundSculpture`. Furthermore, will
+replace all environment variables with their values, make the directory `certs` and create the TLS certificates.
+We can delete the files created, with
+```bash
+make clean
+```
+
+Now we have to copy the `systemd` service files to the appropriate locations, install the TLS root certificate to
+the system trust store and copy it to `public`. The `make` target `install` will do all these things for us. Run it
+with superuser privileges:
+```bash
+sudo make install
+```
+The above command will prompt us if a file with the same name is found to the destination directory. By typing `y`
+or `n` we can choose to overwrite it, respectively, or not. Specifically, the ISC DHCP server accepts a
+configuration file with name `dhcpd.conf` under `/etc/dhcp`. If this file already exists, might be a good idea
+to rename it before `make install`.
+
+We can delete all the files from the `install` target, with
+```bash
+sudo make uninstall
 ```
 
 ### Generate a TLS certificate
@@ -291,104 +322,6 @@ cp $(mkcert -CAROOT)/rootCA.pem public/
 In most cases, clients should be able to install the certificate to their trust store by using the browser
 to navigate to `https://192.168.100.1:3000/rootCA.pem` (in general to`https://HSS_IP:HSS_HTTP_PORT/rootCA.pem`).
 
-### Configure the local WIFI network
-At first, find out the name of the WIFI interface device name.
-```bash
-ip link show
-```
-Normally, the name should start with a `w`. For this guide we will assume
-that the device name is `wlan0`.
-
-Now assign a static IP to `wlan0`. This is the value of the `HSS_IP`
-global variable, set in [`hss-globalVariables`](bin/hss-globalVariables). In this case,
-it is `192.168.100.1`.
-
-We will use the `systemd` service `systemd-networkd`. The configuration options for the local
-network are found in the file [`10-wlan0.network`](systemd/10-wlan0.network). If the WIFI
-interface device name is not `wlan0`, you should rename this file. Open
-[`10-wlan0.network`](systemd/10-wlan0.network) and edit, if needed, line 10:
-```
-# 10-wlan0.network
-Name=wlan0
-```
-
-After editing, copy [`10-wlan0.network`](systemd/10-wlan0.network) to
-`/lib/systemd/network/` (see the man pages for `systemd.network` and `systemd-networkd`
-for other paths).
-
-```bash
-sudo cp systemd/10-wlan0.network /lib/systemd/network/
-```
-
-### Configure the DHCP server
-The ISC DHCP server is configured with the file `dhcpd.conf`. This should be located under
-`/etc/` or `/etc/dhcp/`. For our purposes, assume it under `/etc/dhcp/`. Start by renaming it
-```bash
-sudo mv /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.original
-```
-
-In place of the original configuration file we will use [`dhcpd.conf`](conf/dhcpd.conf). We will
-edit the MAC address of the WIFI interface. This is a series of hexadecimal bytes
-separated by colons. You can find it by inspecting the output of
-
-```bash
-ip link show wlan0
-```
-
-The MAC adddress is on the second line, on the right of `link/ether`. Add it in line 30 of
-[`dhcpd.conf`](conf/dhcpd.conf).
-
-Copy this file under `/etc/dhcp/`
-```bash
-sudo cp conf/dhcpd.conf /etc/dhcp/
-```
-
-The DHCP server process will be handled by a `systemd` service. Open the file
-[`dhcpd4@.service`](systemd/dhcpd4@.service). Make sure that the `ExecStart` option holds
-the correct paths for the `dhcpd` executable and the `dhcpd.conf` file.
-Use
-```bash
-which dhcpd
-```
-to find the location of `dhcpd`. Copy this file to `/lib/systemd/system/`
-```bash
-sudo cp systemd/dhcpd4@.service /lib/systemd/system/
-```
-
-### Configure `hostapd`
-The `systemd` service file [`hostapd@.service`](systemd/hostapd@.service) handles the `hostapd`
-process. The command
-```bash
-which hostapd
-```
-outputs the location of the `hostapd` executable. Make changes, if needed, in the `ExecStart` option
-of [`hostapd@.service`](systemd/hostapd@.service) (line 20). Copy this file to `/lib/systemd/system/`
-```bash
-sudo cp systemd/hostapd@.service /lib/systemd/system/
-```
-
-`Hostapd` configuration is bound to the WIFI interface device `wlan0`. For a different device name, rename the file
-[`hostapd-wlan0.conf`](conf/hostapd-wlan0.conf).
-Next, open the file and set the `interface` option to `wlan0` (line 11). The name for our WIFI network is set in
-line 17 with the `ssid` option. Our network will be named `pi`. You might want to set the option
-`country_code` in line 9. Save your changes and copy this file to `/etc/hostapd/`
-```bash
-sudo cp conf/hostapd-wlan0.conf /etc/hostapd/
-```
-
-### Configure `SuperCollider`
-The file [`humanSoundSculpture.scd`](supercollider/humanSoundSculpture.scd) is responsible for the note
-sequence that is distributed among the performers. It is started with the `systemd` unit
-[`hss-supercollider.service`](systemd/hss-supercollider.service). Find the location of the `sclang`
-with
-```bash
-which sclang
-```
-Make any changes in the `ExecStart` option of [`hss-supercollider.service`](systemd/hss-supercollider.service)
-and copy this file to `~/.config/systemd/user/`.
-```bash
-sudo cp systemd/hss-supercollider.service ~/.config/systemd/user/
-```
 ### Configure the web server
 We are going to use the TLS certificate `hss-crt.pem` and key `hss-key.pem`. They were generated with `mkcert` and
 are located under `certs`. Open the file [`server.js`](webserver/server.js). Lines 18-19, should read these files.
