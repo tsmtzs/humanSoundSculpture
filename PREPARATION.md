@@ -1,6 +1,6 @@
 # Preparation
 Performers of *Human Sound Sculpture* use a smartphone device to connect to a local WIFI TLS network.
-With the browser they direct to the website of the piece. Recent versions of the most well-known
+By using the browser they direct to the website of the piece. Recent versions of the most well-known
 browsers should work. In general, the website should work on every browser that supports
 the `WebSocket` protocol and the `Web Audio API`.
 
@@ -29,7 +29,7 @@ across smartphone devices. Parameters regarding the note sequence can be set in 
 [`humanSoundSculpture.scd`](supercollider/humanSoundSculpture.scd). The variable `hss` holds a `SuperCollider` `Event` object. This `Event`
 is defined in [`hssEvent.scd`](supercollider/hssEvent.scd). It offers the keys `ampMul`, `durMul` and `deltaMul`.
 These are multipliers for the amplitude, duration and successive note time interval values produced by the
-algorithmic process. If used, it should be set with respect to the ambient soundscape of the performance place,
+algorithmic process. If used, they should be set with respect to the ambient soundscape of the performance location,
 the number of the performers and the distance between successive performers. For example, to multiply all the default
 durations by a factor of two, one would add the next line at the end of [`humanSoundSculpture.scd`](supercollider/humanSoundSculpture.scd)
 ```supercollider

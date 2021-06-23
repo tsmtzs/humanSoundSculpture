@@ -48,13 +48,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	The configuration for *Human Sound Sculpture* is done within the `bash` shell.
 	It should come with the operating system.
 
-4. [`sed`](https://www.gnu.org/software/sed/)
-
-	`sed` is a command line stream editor. Should be available with the operating
-	system. It is used in the scripts [names2values](bin/names2values.sh) and
-	[values2names](bin/values2names.sh).
-
-5. [`hostapd`](https://w1.fi/hostapd/) (version `2.8-devel`)
+4. [`hostapd`](https://w1.fi/hostapd/) (version `2.8-devel`)
 
 	This program is used to turn the WIFI network interface card of the computer into
 	an access point. Install it with
@@ -63,7 +57,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo apt-get install hostapd
 	```
 
-6. [`dhcpd`](https://www.isc.org/dhcp/) (version `4.4.1`)
+5. [`dhcpd`](https://www.isc.org/dhcp/) (version `4.4.1`)
 
 	This the ISC DHCP server. It is used to assign IP addresses to web clients. Install it with
 
@@ -71,7 +65,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo apt-get install isc-dhcp-server
 	```
 
-7. [`node.js`](https://nodejs.org/) (version `10.21.0`)
+6. [`node.js`](https://nodejs.org/) (version `10.21.0`)
 
 	`node.js` is a `JavaScript` runtime environment. The web server for *Human Sound Sculpture* is
 	developed on it. Install `node.js` with
@@ -80,7 +74,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo apt-get install nodejs
 	```
 
-8. [`SuperCollider`](https://supercollider.github.io/) (version `3.10.0`)
+7. [`SuperCollider`](https://supercollider.github.io/) (version `3.10.0`)
 
 	`SuperCollider` is an audio programming language. Follow this
 	[raspberry-installation](https://github.com/supercollider/supercollider/blob/develop/README_RASPBERRY_PI.md)
@@ -97,7 +91,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	The class `PGraphWalk` is a extension of the language. It can be found in the github repository [sc-tsmtzs](https://github.com/tsmtzs/sc-tsmtzs).
 	Clone the repository inside the `SuperCollider` user extension directory.
 
-9. [`mkcert`](https://github.com/FiloSottile/mkcert) (version `1.4.3`)
+8. [`mkcert`](https://github.com/FiloSottile/mkcert) (version `1.4.3`)
 
 	The website of the piece is served on a local TLS network. You can create a TLS certificate
 	with the program `mkcert`. To install it follow the directions found in [mkcert-installation](https://github.com/FiloSottile/mkcert#installation).
@@ -131,7 +125,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo chmod a=rx mkcert
 		```
 
-10. [`git`](https://git-scm.com/) (version `2.20.1`)
+9. [`git`](https://git-scm.com/) (version `2.20.1`)
 
 	A new `git branch` is created for every performance or test of *Human Sound Sculpture*. Install `git` by running
 
@@ -139,7 +133,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo apt-get install git
 	```
 
-11. (*optional*) [`XeTeX`](https://tug.org/xetex/)
+10. (*optional*) [`XeTeX`](https://tug.org/xetex/)
 
 	`XeTeX` is a `TeX` derivative. It is used to produce the `PWA` [icon](public/icons/hssIcon_192x192.png)
 	of the piece. If you would like to modify this picture, you can install it with
@@ -147,10 +141,10 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	```bash
 	sudo apt-get install texlive
 	```
-12. (*optional*) [`tikz`](https://github.com/pgf-tikz/pgf)
+11. (*optional*) [`tikz`](https://github.com/pgf-tikz/pgf)
 
 	This is a `TeX` package for creating graphics. It is part of the `texlive` distribution.
-13. (*optional*) [`ffmpeg`](https://ffmpeg.org/) (version `4.3.1`)
+12. (*optional*) [`ffmpeg`](https://ffmpeg.org/) (version `4.3.1`)
 
 	`ffmpeg` is a program for handling multimedia files. It is used in the `bash` script
 	[`multiresize`](bin/multiresize.sh) to resize a given picture file. Will be usefull if
@@ -162,7 +156,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 
 ### Clone the `humanSoundSculpture` repository
 This step assumes that you have installed all the necessary software. Open a `bash` terminal and change
-directory to an appropriate place.
+directory to an appropriate location.
 
 ```bash
 ## Change to user's home directory
@@ -200,6 +194,34 @@ Something like `test` or `test@raspberry` or `performance@venus` might be handy.
 ```bash
 git checkout -b performance@venus
 ```
+
+## Configuration
+The runtime environment of the piece depends on the following variables:
+
+- `HSS_DIR`: An absolute path. Points to the `humanSoundSculpture` directory.
+- `HSS_IP`: An IPv4 address. Web server's IP on the local network.
+- `HSS_NETWORK`: The network prefix of the local WIFI network, i.e. the three
+		leftmost bytes of the IP (assuming an IPv4 24 bit netmask).
+- `HSS_HTTP_PORT`: A positive integer. The `HTTP` port number.
+- `WIFI_INTERFACE`: The _name_ of the WIFI interface.
+- `WIFI_MACADDRESS`: The MAC address of the WIFI interface.
+- `WIFI_NAME`: The name of the local WIFI network.
+- `WIFI_COUNTRYCODE`: Country code.
+- `SCLANG_PATH`: Absolute path to `SuperCollider`'s `sclang` binary file.
+- `NODE_PATH`: Absolute path to the `node.js` executable.
+- `DHCP_PATH`: Absolute path to the `DHCP` server executable.
+- `HOSTAPD_PATH`: Absolute path to the `hostapd` executable.
+- `userHome`: Absolute path to user's home directory. This variable is used only
+	in [makefile](makefile).
+
+Files that depend on the upper case named variables are saved under `./src`. Variable names are prepended by a `$`
+sign or are written inside `${`, `}`, like `$HSS_DIR` or `${HSS_DIR}`. To find all the occurrences of a variable
+use `grep`, e.x. `grep -rn 'HSS_IP' src/`.
+
+[`GNU Make`](https://www.gnu.org/software/make/) is used to set the values of those variables, create directories
+and copy the files under `./src` to the appropriate location. `Make` reads the file [`makefile`](makefile). Inside
+it, the variables `HSS_DIR`, `HSS_NETWORK`, `SCLANG_PATH`, `NODE_PATH`, `DHCP_PATH` and `HOSTAPD_PATH` are set
+programmatically. All other variables must be set manually. To do so, edit [`makefile`](makefile).
 
 ### Set global variables
 The runtime environment of the piece depends on the following variables:

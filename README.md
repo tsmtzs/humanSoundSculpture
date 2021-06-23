@@ -71,7 +71,7 @@ The web server is developed with [`express`](https://expressjs.com/). The packag
 The web server process is started by a `systemd` service.
 
 ### Web Clients
-In a performance clients should visit one of the pages *conductor* or *player*. In both cases receives
+In a performance clients should visit one of the pages *conductor* or *player*. In both cases receive
 `WebSocket` messages from the web server. Specifically, when a client receives an object
 `{ type: '/note', args: [freq, amp, dur] }`, it plays a synth with `freq`, `amp` and `dur` as arguments.
 
@@ -79,6 +79,7 @@ The *conductor* sends `WebSocket` messages to the web server. These are
 - `play`/`stop`: Send when the conductor presses the `play` button. These propagate to `SuperCollider` to
 	start/stop, the note generation event stream.
 - `shutdown`: Send when the `shutdown` button is pressed. It is used to poweroff the computer.
+
 ### `SuperCollider`
 `SuperCollider` generates the sound events. A random walk on the
 vertices of a Paley graph of order 13 is used to select the `freq`, `amp` and `dur` for a sound
@@ -88,7 +89,7 @@ communicates with the web server by interchanging `OSC` messages. These are
   `EventStreamPlayer` object that handles the note generation pattern. It propagates to web clients
   with a `WebSocket` message.
 - `note`: This message is send to the web server whenever a new note event is generated. It sends as
-  parameters the frequency, amplitude and duration of the new note. The web server will send this data
+  parameters the frequency, amplitude and duration of the new note. The web server will send these data
   to a random client.
 
 The `SuperCollider` script of the piece is started by a `systemd` service.
