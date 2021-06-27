@@ -12,6 +12,7 @@ const express = require('express')
 const app = express()
 const fs = require('fs')
 const path = require('path')
+const process = require('process')
 const rootDir = '$HSS_DIR'
 const https = require('https')// TLS credentials.
 const credentials = {
@@ -58,15 +59,15 @@ const wsMsgListener = (sclang, oscPath) => msg => {
   if (msg === 'shutdown') {
     // On message 'shutdown' execute file 'killHSS.sh
     // OR USE sh /usr/bin/shutdown now
-    exec(`sh ${rootDir}/bin/killHSS.sh`, (err, stdout, stderr) => {
+    exec('bin/killHSS.sh', { cwd: rootDir, shell: 'bash' }, (err, stdout, stderr) => {
       if (err) {
-        console.error(`exec error: ${err}`)
-        return
+        throw new Error('Exec error')
       }
 
       console.log('Script killHSS.sh ecexuted')
     })
     console.log('PC is shutting down!')
+    process.exit()
   } else {
     sclang.send(oscPath, msg)
   }
