@@ -25,6 +25,14 @@ export WIFI_MACADDRESS = b8:27:eb:1e:2c:8d
 export WIFI_NAME = pi
 export WIFI_COUNTRYCODE = GR
 
+# userHome should be the value of user's $HOME.
+# It is used in the target 'install' to copy
+# the SuperCollider user service file to ~/.config/systemd/user.
+# Since this target is build with superuser privileges,
+# $HOME will be /. Hence, defining
+#	userHome := $(shell echo $$HOME) WAN'T WORK
+userHome := /home/pi
+
 export HSS_DIR := $(CURDIR)
 
 # The three leftmost bytes of the IP (assuming an IPv4 24 bit netmask).
@@ -35,13 +43,6 @@ export NODE_PATH := $(shell which node)
 export DHCP_PATH := $(shell which dhcpd)
 export HOSTAPD_PATH := $(shell which hostapd)
 
-# userHome should be the value of user's $HOME.
-# It is used in the target 'install' to copy
-# the SuperCollider user service file to ~/.config/systemd/user.
-# Since this target is build with superuser privileges,
-# $HOME will be /. Hence, defining
-#	userHome := $(shell echo $$HOME) WAN'T WORK
-userHome := /home/pi
 # ####################################################################################################
 define copyAndSetVars =
 envsubst < $(1) > $(CURDIR)/$(2)/$$(basename $(1));
@@ -107,7 +108,7 @@ install : all installTLSCert
 	cp -i $$systemdPath/dhcpd4@.service $$systemServiceDir; \
 	cp -i $$systemdPath/hostapd@.service $$systemServiceDir; \
 	cp -i $$systemdPath/hss-web-server.service $$systemServiceDir; \
-	cp $(CURDIR)/conf/dhcpd.conf /etc/dhcp/
+	cp $(CURDIR)/conf/dhcpd.conf /etc/dhcp/; \
 	cp -i --preserve=all $$systemdPath/hss-supercollider.service $(userHome)/.config/systemd/user/;
 
 installTLSCert : certs/hss-key.pem certs/hss-crt.pem
