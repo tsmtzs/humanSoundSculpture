@@ -18,7 +18,7 @@
    sequence of note events. Parameters for these notes
    (order, frequency, amplitude, duration) are generated
    algorithmically by a random walk on a graph. The class
-   ~PGraphWalk~ is responsible for this. It relys on the
+   ~PGraphWalk~ is responsible for this. It relies on the
    powerfull ~Pattern~ abstraction of ~SuperCollider~.
    To eliminate the need for ~SuperCollider~ means to
    accomplish the same functionality from within ~node.js~.

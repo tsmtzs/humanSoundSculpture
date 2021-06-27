@@ -5,6 +5,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+### Changed
+### Removed
+
+## [3.1.0] - 2021-06-27
+### Added
+- `GNU make` is used. New file `makefile`.
+- Directory `src`.
+- Web server and client `JavaScript` adheres to the `JavaScript Standard Style`.
+### Changed
+- File `SOFTWARE-SETUP.md`.
+- Directories `webserver`, `conf`, `systemd` and `public` moved under `src`.
+### Removed
+- `Bash` scripts `bin/names2values.sh` and `bin/values2names.sh`.
+- File `bin/hss-variables`.
 
 ## [3.0.0] - 2021-01-18
 ### Added
