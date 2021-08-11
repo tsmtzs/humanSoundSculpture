@@ -27,9 +27,9 @@ const server = https.createServer(credentials, app)
 const exec = require('child_process').exec
 // ////////////////////////////////////////////////////////////
 // OSC communication with SuperCollider
-const osc = require('node-osc')
-const oscServer = new osc.Server(57121, '0.0.0.0')
-const sclang = new osc.Client(ip, 57120)
+const { Server, Client } = require('node-osc')
+const oscServer = new Server(57121, '0.0.0.0')
+const sclang = new Client(ip, 57120)
 const oscPath = '/action'
 // ////////////////////////////////////////////////////////////
 // WebSockets
