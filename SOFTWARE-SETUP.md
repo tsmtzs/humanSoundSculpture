@@ -199,7 +199,7 @@ ip link show
 
 The output should print a numbered list of network interfaces. Normaly, the name of the WIFI interface
 begins with a `w`. Assume that it is `wlan0`. The MAC address is a series of hexadecimal bytes
-separated by colons. Can be found in the output of `ip link`. It is on the second line of the WIFI interface list item,
+separated by colons. Can be found in the output of `ip link`. It is on the second line of the WIFI interface item list,
 just on the right of `link/ether`. This should be something like `b8:27:eb:1e:2c:8d`.
 
 After setting all variables, lines 6 to 34 of [`makefile`](makefile) may look like this:
