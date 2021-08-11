@@ -55,8 +55,9 @@ const oscMsgListener = msgHandler => msg => {
 const wsErrorListener = error => console.log('Something went wrong in WebSockets', error.stack)
 // WebSocket message listener.
 const wsMsgListener = (sclang, oscPath) => msg => {
-  console.log('Client message: ', msg)
-  if (msg === 'shutdown') {
+  const data = msg.toString()
+  console.log('Client message: ', data)
+  if (data === 'shutdown') {
     // On message 'shutdown' execute file 'killHSS.sh
     // OR USE sh /usr/bin/shutdown now
     exec('bin/killHSS.sh', { cwd: rootDir, shell: 'bash' }, (err, stdout, stderr) => {
@@ -69,7 +70,7 @@ const wsMsgListener = (sclang, oscPath) => msg => {
     console.log('PC is shutting down!')
     process.exit()
   } else {
-    sclang.send(oscPath, msg)
+    sclang.send(oscPath, data)
   }
 }
 // WebSocket listener on 'connection' event.
