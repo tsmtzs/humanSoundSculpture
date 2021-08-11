@@ -35,7 +35,7 @@ const oscPath = '/action'
 // WebSockets
 // HSS_WSS implicitly loads the 'ws' module.
 const WebSocketServer = require(path.join(rootDir, 'webserver', 'hss_wss.js')).HSS_WSS
-const wss = new WebSocketServer({ server: server, clientTracking: true })
+const wss = new WebSocketServer({ server: server })
 // ////////////////////////////////////////////////////////////
 // Event listeners.
 // ////////////////////////////////////////////////////////////
