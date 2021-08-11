@@ -9,8 +9,8 @@
 const WebSocket = require('ws')
 
 class HSS_WSS extends WebSocket.Server {
-  constructor (par) {
-    super(par)
+  constructor (object) {
+    super(Object.assign(object, { clientTracking: true }))
     // Last client that played a note.
     this.lastClient = null
   }

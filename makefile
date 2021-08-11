@@ -3,7 +3,7 @@
 # ####################################################################################################
 SHELL = /bin/sh
 
-export HSS_IP = 192.168.100.1
+export HSS_IP = 192.168.1.65
 export HSS_HTTP_PORT = 3000
 
 # Find the name of the wifi interface

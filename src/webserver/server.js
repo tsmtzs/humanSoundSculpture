@@ -27,15 +27,15 @@ const server = https.createServer(credentials, app)
 const exec = require('child_process').exec
 // ////////////////////////////////////////////////////////////
 // OSC communication with SuperCollider
-const osc = require('node-osc')
-const oscServer = new osc.Server(57121, '0.0.0.0')
-const sclang = new osc.Client(ip, 57120)
+const { Server, Client } = require('node-osc')
+const oscServer = new Server(57121, '0.0.0.0')
+const sclang = new Client(ip, 57120)
 const oscPath = '/action'
 // ////////////////////////////////////////////////////////////
 // WebSockets
 // HSS_WSS implicitly loads the 'ws' module.
 const WebSocketServer = require(path.join(rootDir, 'webserver', 'hss_wss.js')).HSS_WSS
-const wss = new WebSocketServer({ server: server, clientTracking: true })
+const wss = new WebSocketServer({ server: server })
 // ////////////////////////////////////////////////////////////
 // Event listeners.
 // ////////////////////////////////////////////////////////////
@@ -55,8 +55,9 @@ const oscMsgListener = msgHandler => msg => {
 const wsErrorListener = error => console.log('Something went wrong in WebSockets', error.stack)
 // WebSocket message listener.
 const wsMsgListener = (sclang, oscPath) => msg => {
-  console.log('Client message: ', msg)
-  if (msg === 'shutdown') {
+  const data = msg.toString()
+  console.log('Client message: ', data)
+  if (data === 'shutdown') {
     // On message 'shutdown' execute file 'killHSS.sh
     // OR USE sh /usr/bin/shutdown now
     exec('bin/killHSS.sh', { cwd: rootDir, shell: 'bash' }, (err, stdout, stderr) => {
@@ -69,7 +70,7 @@ const wsMsgListener = (sclang, oscPath) => msg => {
     console.log('PC is shutting down!')
     process.exit()
   } else {
-    sclang.send(oscPath, msg)
+    sclang.send(oscPath, data)
   }
 }
 // WebSocket listener on 'connection' event.
