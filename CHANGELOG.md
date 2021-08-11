@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 ### Removed
 
+## [3.1.1] - 2021-08-11
+### Changed
+- `Node.js` package `node-osc` upgraded to version `5.2.3`.
+- `Node.js` package `ws` upgraded to version `ws`.
+- Constructor of `HSS_WSS` assigns the property `clientTracking: true` to the given argument object.
+
 ## [3.1.0] - 2021-06-27
 ### Added
 - `GNU make` is used. New file `makefile`.
