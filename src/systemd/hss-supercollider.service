@@ -1,0 +1,24 @@
+# ##################################################
+#		Human Sound Sculpture
+#
+# A systemd user service file for starting SuperCollider
+# Save this file under ~/.config/systemd/user.
+#		see: man systemd.unit for paths
+# Start the service with
+#	systemctl --user hss-supercollider.service
+# ##################################################
+
+[Unit]
+Description=Human Sound Sculpture - SuperCollider
+Documentation=file:$HSS_DIR/README.md
+After=network-online.target
+
+[Service]
+Environment=QT_QPA_PLATFORM=offscreen DISPLAY=:0.0
+Type=simple
+# Start supercollider
+ExecStart=$SCLANG_PATH -D $HSS_DIR/supercollider/humanSoundSculpture.scd
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
