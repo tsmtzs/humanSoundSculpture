@@ -8,21 +8,31 @@
 // journalctl -u hss-web-server -f
 // in a terminal to see log messages.
 // ////////////////////////////////////////////////////////////
+const proc = require('process')
+const parseArgs = require('minimist')
+const argv = parseArgs(proc.argv.slice(2))
+
 const express = require('express')
 const app = express()
 const fs = require('fs')
 const path = require('path')
 const process = require('process')
-const rootDir = '$HSS_DIR'
+// const rootDir = '$HSS_DIR'
+const rootDir = argv['root-dir'] || proc.cwd()
 const https = require('https')// TLS credentials.
 const credentials = {
   key: fs.readFileSync(path.join(rootDir, 'certs/hss-key.pem'), 'utf8'),
   cert: fs.readFileSync(path.join(rootDir, 'certs/hss-crt.pem'), 'utf8')
-}// The IP of the server
-const ip = '$HSS_IP'
+}
+// The IP of the server
+// const ip = '$HSS_IP'
+const ip = argv['ip'] || '192.168.1.8'
+
+console.log(argv, rootDir, ip)
 // ////////////////////////////////////////////////////////////
 // Create the server.
-const webServerPort = $HSS_HTTP_PORT
+// const webServerPort = $HSS_HTTP_PORT
+const webServerPort = argv['port'] || 3000
 const server = https.createServer(credentials, app)
 const exec = require('child_process').exec
 // ////////////////////////////////////////////////////////////
