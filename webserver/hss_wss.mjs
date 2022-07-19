@@ -6,9 +6,9 @@
 // It is an extension of 'ws''s WebSocket.Server object.
 // Defines additional functionality specific to the piece.
 // ////////////////////////////////////////////////////////////
-const WebSocket = require('ws')
+import { WebSocketServer } from 'ws'
 
-class HSS_WSS extends WebSocket.Server {
+class HSS_WSS extends WebSocketServer {
   constructor (object) {
     super(Object.assign(object, { clientTracking: true }))
     // Last client that played a note.
@@ -41,4 +41,4 @@ class HSS_WSS extends WebSocket.Server {
   }
 }
 
-exports.HSS_WSS = HSS_WSS
+export { HSS_WSS }

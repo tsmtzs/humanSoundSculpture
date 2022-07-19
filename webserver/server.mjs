@@ -16,7 +16,7 @@ import express from 'express'
 import https from 'https'
 import exec from 'child_process'
 import { Server, Client } from 'node-osc'
-// import WebSocketServer from path.join(rootDir, 'webserver', 'hss_wss.js')
+import { HSS_WSS } from './hss_wss.mjs'
 
 const argv = parseArgs(process.argv.slice(2))
 
@@ -27,12 +27,12 @@ const credentials = {
   cert: fs.readFileSync(path.join(rootDir, 'certs/hss-crt.pem'), 'utf8')
 }
 // The IP of the server
-const ip = argv['ip'] || '192.168.1.8'
+const ip = argv['ip'] ?? '192.168.1.8'
 
 console.log(argv, rootDir, ip)
 // ////////////////////////////////////////////////////////////
 // Create the server.
-const webServerPort = argv['port'] || 3000
+const webServerPort = argv['port'] ?? 3000
 const server = https.createServer(credentials, app)
 // ////////////////////////////////////////////////////////////
 // OSC communication with SuperCollider
@@ -41,8 +41,7 @@ const sclang = new Client(ip, 57120)
 const oscPath = '/action'
 // ////////////////////////////////////////////////////////////
 // WebSockets
-// HSS_WSS implicitly loads the 'ws' module.
-// const wss = new WebSocketServer({ server: server })
+const wss = new HSS_WSS({ server: server })
 
 // ////////////////////////////////////////////////////////////
 // Event listeners.
@@ -125,10 +124,10 @@ app.get('/description', (req, res) => {
 app.use(appErrorListener)
 
 // OSC messages: SC => web clients
-// oscServer.on('message', oscMsgListener(oscMessageHandler(wss)))
+oscServer.on('message', oscMsgListener(oscMessageHandler(wss)))
 
-// // websockets: web server => web clients
-// wss.on('connection', wsConnectionListener(wsErrorListener, wsMsgListener(sclang, oscPath)))
+// websockets: web server => web clients
+wss.on('connection', wsConnectionListener(wsErrorListener, wsMsgListener(sclang, oscPath)))
 
 // ////////////////////////////////////////////////////////////
 // Create the SSL/TSL server.
