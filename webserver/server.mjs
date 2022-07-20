@@ -18,6 +18,15 @@ import exec from 'child_process'
 import { Server, Client } from 'node-osc'
 import { HSS_WSS } from './hss_wss.mjs'
 
+import {
+		appErrorListener,
+		oscMsgListener,
+		wsErrorListener,
+		wsMsgListener,
+		wsConnectionListener,
+		oscMessageHandler
+} from './functions.mjs'
+
 const argv = parseArgs(process.argv.slice(2))
 
 const app = express()
@@ -43,60 +52,6 @@ const oscPath = '/action'
 // WebSockets
 const wss = new HSS_WSS({ server: server })
 
-// ////////////////////////////////////////////////////////////
-// Event listeners.
-// ////////////////////////////////////////////////////////////
-// error handling - from https://expressjs.com/en/guide/error-handling.html
-const appErrorListener = (err, req, res, next) => {
-  console.error(err.stack)
-  res.status(500).send('Oops! Something went wrong.')
-}
-// OSC messages: SuperCollider => web server
-const oscMsgListener = msgHandler => msg => {
-  const msgObj = { type: msg[0] }
-  Object.assign(msgObj, { args: msg.slice(1) })
-  msgHandler[msgObj.type](JSON.stringify(msgObj), wss)
-  console.log('Recieved SC message:\n', msgObj)
-}
-// WebSocket error listener.
-const wsErrorListener = error => console.log('Something went wrong in WebSockets', error.stack)
-// WebSocket message listener.
-const wsMsgListener = (sclang, oscPath) => msg => {
-  const data = msg.toString()
-  console.log('Client message: ', data)
-  if (data === 'shutdown') {
-    // On message 'shutdown' execute file 'killHSS.sh
-    // OR USE sh /usr/bin/shutdown now
-    exec('bin/killHSS.sh', { cwd: rootDir, shell: 'bash' }, (err, stdout, stderr) => {
-      if (err) {
-        throw new Error('Exec error')
-      }
-
-      console.log('Script killHSS.sh ecexuted')
-    })
-    console.log('PC is shutting down!')
-    process.exit()
-  } else {
-    sclang.send(oscPath, data)
-  }
-}
-// WebSocket listener on 'connection' event.
-const wsConnectionListener = (errorListener, msgListener) => ws => {
-  ws.on('message', msgListener)
-  // catch ws errors
-  ws.onerror = errorListener
-}
-// ////////////////////////////////////////////////////////////
-// Function 'oscMessageHandler' returns an object.
-// This is used to send data to clients
-// for each receiving OSC message.
-// ////////////////////////////////////////////////////////////
-const oscMessageHandler = wss => {
-  return {
-    '/action': data => wss.broadcast(data),
-    '/note': data => wss.sendToRandomClient(data)
-  }
-}
 app.use(express.static(path.join(rootDir, 'public')))
 // ////////////////////////////////////////////////////////////
 // Respond to incoming HTTP messages.
