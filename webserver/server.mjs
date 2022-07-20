@@ -8,44 +8,41 @@
 // journalctl -u hss-web-server -f
 // in a terminal to see log messages.
 // ////////////////////////////////////////////////////////////
-const proc = require('process')
-const parseArgs = require('minimist')
-const argv = parseArgs(proc.argv.slice(2))
+import fs from 'fs'
+import path from 'path'
+import process from 'process'
+import parseArgs from 'minimist'
+import express from 'express'
+import https from 'https'
+import exec from 'child_process'
+import { Server, Client } from 'node-osc'
+import { HSS_WSS } from './hss_wss.mjs'
 
-const express = require('express')
+const argv = parseArgs(process.argv.slice(2))
+
 const app = express()
-const fs = require('fs')
-const path = require('path')
-const process = require('process')
-// const rootDir = '$HSS_DIR'
-const rootDir = argv['root-dir'] || proc.cwd()
-const https = require('https')// TLS credentials.
+const rootDir = argv['root-dir'] ?? process.cwd()
 const credentials = {
   key: fs.readFileSync(path.join(rootDir, 'certs/hss-key.pem'), 'utf8'),
   cert: fs.readFileSync(path.join(rootDir, 'certs/hss-crt.pem'), 'utf8')
 }
 // The IP of the server
-// const ip = '$HSS_IP'
-const ip = argv['ip'] || '192.168.1.8'
+const ip = argv['ip'] ?? '192.168.1.8'
 
 console.log(argv, rootDir, ip)
 // ////////////////////////////////////////////////////////////
 // Create the server.
-// const webServerPort = $HSS_HTTP_PORT
-const webServerPort = argv['port'] || 3000
+const webServerPort = argv['port'] ?? 3000
 const server = https.createServer(credentials, app)
-const exec = require('child_process').exec
 // ////////////////////////////////////////////////////////////
 // OSC communication with SuperCollider
-const { Server, Client } = require('node-osc')
 const oscServer = new Server(57121, '0.0.0.0')
 const sclang = new Client(ip, 57120)
 const oscPath = '/action'
 // ////////////////////////////////////////////////////////////
 // WebSockets
-// HSS_WSS implicitly loads the 'ws' module.
-const WebSocketServer = require(path.join(rootDir, 'webserver', 'hss_wss.js')).HSS_WSS
-const wss = new WebSocketServer({ server: server })
+const wss = new HSS_WSS({ server: server })
+
 // ////////////////////////////////////////////////////////////
 // Event listeners.
 // ////////////////////////////////////////////////////////////
