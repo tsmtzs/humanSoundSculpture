@@ -20,7 +20,7 @@ import { HSS_WSS } from './hss_wss.mjs'
 
 import {
 		appErrorListener,
-		oscMsgListener,
+		getOscMsgListener,
 		wsErrorListener,
 		wsMsgListener,
 		wsConnectionListener,
@@ -79,7 +79,8 @@ app.get('/description', (req, res) => {
 app.use(appErrorListener)
 
 // OSC messages: SC => web clients
-oscServer.on('message', oscMsgListener(oscMessageHandler(wss)))
+const oscListener = getOscMsgListener(oscMessageHandler(wss), wss)
+oscServer.on('message', oscListener)
 
 // websockets: web server => web clients
 wss.on('connection', wsConnectionListener(wsErrorListener, wsMsgListener(sclang, oscPath)))

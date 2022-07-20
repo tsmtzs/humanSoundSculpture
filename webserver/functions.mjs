@@ -12,15 +12,17 @@ const appErrorListener = (err, req, res, next) => {
 }
 
 // OSC messages: SuperCollider => web server
-const oscMsgListener = msgHandler => msg => {
+const getOscMsgListener = (msgHandler, webSocketServer) => msg => {
   const msgObj = { type: msg[0] }
   Object.assign(msgObj, { args: msg.slice(1) })
-  msgHandler[msgObj.type](JSON.stringify(msgObj), wss)
+  msgHandler[msgObj.type](JSON.stringify(msgObj), webSocketServer)
   console.log('Recieved SC message:\n', msgObj)
 }
 
 // WebSocket error listener.
-const wsErrorListener = error => console.log('Something went wrong in WebSockets', error.stack)
+const wsErrorListener = error => {
+		console.error('Something went wrong in WebSockets\n%d', error.stack)
+}
 
 // WebSocket message listener.
 const wsMsgListener = (sclang, oscPath) => msg => {
@@ -64,7 +66,7 @@ const oscMessageHandler = wss => {
 
 export {
 		appErrorListener,
-		oscMsgListener,
+		getOscMsgListener,
 		wsErrorListener,
 		wsMsgListener,
 		wsConnectionListener,
