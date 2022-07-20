@@ -14,7 +14,6 @@ import process from 'process'
 import parseArgs from 'minimist'
 import express from 'express'
 import https from 'https'
-import exec from 'child_process'
 import { Server, Client } from 'node-osc'
 import { HSS_WSS } from './hss_wss.mjs'
 
@@ -22,7 +21,7 @@ import {
 		appErrorListener,
 		getOscMsgListener,
 		wsErrorListener,
-		wsMsgListener,
+		getWsMsgListener,
 		wsConnectionListener,
 		oscMessageHandler
 } from './functions.mjs'
@@ -83,7 +82,8 @@ const oscListener = getOscMsgListener(oscMessageHandler(wss), wss)
 oscServer.on('message', oscListener)
 
 // websockets: web server => web clients
-wss.on('connection', wsConnectionListener(wsErrorListener, wsMsgListener(sclang, oscPath)))
+const wsListener = getWsMsgListener(sclang, oscPath, rootDir)
+wss.on('connection', wsConnectionListener(wsErrorListener, wsListener))
 
 // ////////////////////////////////////////////////////////////
 // Create the SSL/TSL server.

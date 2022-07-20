@@ -3,6 +3,8 @@
 //
 // This file collects listener functions.
 // ////////////////////////////////////////////////////////////
+import process from 'process'
+import child_process from 'child_process'
 
 // Event listeners.
 // error handling - from https://expressjs.com/en/guide/error-handling.html
@@ -19,19 +21,17 @@ const getOscMsgListener = (msgHandler, webSocketServer) => msg => {
   console.log('Recieved SC message:\n', msgObj)
 }
 
-// WebSocket error listener.
 const wsErrorListener = error => {
 		console.error('Something went wrong in WebSockets\n%d', error.stack)
 }
 
-// WebSocket message listener.
-const wsMsgListener = (sclang, oscPath) => msg => {
+const getWsMsgListener = (sclang, oscPath, rootDir) => msg => {
   const data = msg.toString()
   console.log('Client message: ', data)
   if (data === 'shutdown') {
     // On message 'shutdown' execute file 'killHSS.sh
     // OR USE sh /usr/bin/shutdown now
-    exec('bin/killHSS.sh', { cwd: rootDir, shell: 'bash' }, (err, stdout, stderr) => {
+    child_process.exec('bin/killHSS.sh', { cwd: rootDir, shell: 'bash' }, (err, stdout, stderr) => {
       if (err) {
         throw new Error('Exec error')
       }
@@ -68,7 +68,7 @@ export {
 		appErrorListener,
 		getOscMsgListener,
 		wsErrorListener,
-		wsMsgListener,
+		getWsMsgListener,
 		wsConnectionListener,
 		oscMessageHandler
 }
