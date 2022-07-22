@@ -16,7 +16,8 @@ import child_process from 'child_process'
 import {
 		appErrorListener,
 		getOscMsgListener,
-		getWsMsgListener
+		getWsMsgListener,
+		getWsConnectionListener
 } from '../../webserver/functions.mjs'
 
 describe('Tests for listener functions.', function () {
@@ -164,6 +165,42 @@ describe('Tests for listener functions.', function () {
 						listener(msg)
 
 						expect(sclang.send.calledOnceWith(oscPath, msg)).to.be.true
+				})
+		})
+
+		describe("Function 'getWsConnectionListener'.", function () {
+				let listener
+				let errorListener
+				let msgListener
+				let webSocket
+
+				before(function () {
+						errorListener = () => { }
+						msgListener = () => { }
+				})
+
+				beforeEach(function () {
+						webSocket = { on: sinon.fake() }
+						listener = getWsConnectionListener(errorListener, msgListener)
+				})
+
+				afterEach(() => {
+						sinon.restore()
+						webSocket.error = undefined
+				})
+
+				it("Should return a Function instance when called.", function () {
+						expect(listener instanceof Function).to.be.true
+				})
+
+				it("The rturned function, when called, should call the 'on' method of its argument.", function () {
+						listener(webSocket)
+						expect(webSocket.on.calledOnceWith('message', msgListener)).to.be.true
+				})
+
+				it("The returned function, when called, should set the 'onerror' property of its argument.", function () {
+						listener(webSocket)
+						expect(webSocket.onerror).to.equal(errorListener)
 				})
 		})
 })

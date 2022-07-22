@@ -45,11 +45,9 @@ const getWsMsgListener = (sclang, oscPath, rootDir) => msg => {
   }
 }
 
-// WebSocket listener on 'connection' event.
-const wsConnectionListener = (errorListener, msgListener) => ws => {
-  ws.on('message', msgListener)
-  // catch ws errors
-  ws.onerror = errorListener
+const getWsConnectionListener = (errorListener, msgListener) => aWebSocket => {
+  aWebSocket.on('message', msgListener)
+  aWebSocket.onerror = errorListener
 }
 
 // ////////////////////////////////////////////////////////////
@@ -69,6 +67,6 @@ export {
 		getOscMsgListener,
 		wsErrorListener,
 		getWsMsgListener,
-		wsConnectionListener,
+		getWsConnectionListener,
 		oscMessageHandler
 }

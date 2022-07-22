@@ -22,7 +22,7 @@ import {
 		getOscMsgListener,
 		wsErrorListener,
 		getWsMsgListener,
-		wsConnectionListener,
+		getWsConnectionListener,
 		oscMessageHandler
 } from './functions.mjs'
 
@@ -83,9 +83,10 @@ oscServer.on('message', oscListener)
 
 // websockets: web server => web clients
 const wsListener = getWsMsgListener(sclang, oscPath, rootDir)
-wss.on('connection', wsConnectionListener(wsErrorListener, wsListener))
+const wsConnectionListener = getWsConnectionListener(wsErrorListener, wsListener)
+wss.on('connection', wsConnectionListener)
 
 // ////////////////////////////////////////////////////////////
 // Create the SSL/TSL server.
 // ////////////////////////////////////////////////////////////
-server.listen({ port: webServerPort, host: ip }, () => console.log('Server listening on port: ', webServerPort))
+server.listen({ port: webServerPort, host: ip }, () => { console.log('Server listening on port: ', webServerPort) })
