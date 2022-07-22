@@ -17,7 +17,8 @@ import {
 		appErrorListener,
 		getOscMsgListener,
 		getWsMsgListener,
-		getWsConnectionListener
+		getWsConnectionListener,
+		oscMsgHandler
 } from '../../webserver/functions.mjs'
 
 describe('Tests for listener functions.', function () {
@@ -201,6 +202,40 @@ describe('Tests for listener functions.', function () {
 				it("The returned function, when called, should set the 'onerror' property of its argument.", function () {
 						listener(webSocket)
 						expect(webSocket.onerror).to.equal(errorListener)
+				})
+		})
+
+		describe("Function 'oscMsgHandler'.", function () {
+				let handler
+				let webSocketServer
+
+				beforeEach(function () {
+						webSocketServer = {
+								broadcast: sinon.fake(),
+								sendToRandomClient: sinon.fake()
+						}
+						handler = oscMsgHandler(webSocketServer)
+				})
+
+				afterEach(function () {
+						sinon.restore()
+				})
+
+				it("When called should return an object with keys '/action' and '/note'.", function () {
+						expect(handler['/action']).to.not.be.undefined
+						expect(handler['/note']).to.not.be.undefined
+				})
+
+				it("When the message '/action' is send to the returned object, the method 'broadcast' of function's argument should be called.", function () {
+						const data = 'msg'
+						handler['/action'](data)
+						expect(webSocketServer.broadcast.calledOnceWith(data)).to.be.true
+				})
+
+				it("When the message '/note' is send to the returned object, the method 'sendToRandomClient' of function's argument should be called.", function () {
+						const data = 'msg'
+						handler['/note'](data)
+						expect(webSocketServer.sendToRandomClient.calledOnceWith(data)).to.be.true
 				})
 		})
 })

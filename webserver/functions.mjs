@@ -50,15 +50,10 @@ const getWsConnectionListener = (errorListener, msgListener) => aWebSocket => {
   aWebSocket.onerror = errorListener
 }
 
-// ////////////////////////////////////////////////////////////
-// Function 'oscMessageHandler' returns an object.
-// This is used to send data to clients
-// for each receiving OSC message.
-// ////////////////////////////////////////////////////////////
-const oscMessageHandler = wss => {
+const oscMsgHandler = aWebSocketServer => {
   return {
-    '/action': data => wss.broadcast(data),
-    '/note': data => wss.sendToRandomClient(data)
+    '/action': data => aWebSocketServer.broadcast(data),
+    '/note': data => aWebSocketServer.sendToRandomClient(data)
   }
 }
 
@@ -68,5 +63,5 @@ export {
 		wsErrorListener,
 		getWsMsgListener,
 		getWsConnectionListener,
-		oscMessageHandler
+		oscMsgHandler
 }
