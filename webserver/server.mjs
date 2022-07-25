@@ -24,26 +24,21 @@ import {
 		oscMsgHandler
 } from './functions.mjs'
 
-import {
-		IP,
-		WEB_SERVER_PORT,
-		OSC_SERVER,
-		OSC_CLIENT
-} from './parameters.mjs'
-
 const argv = parseArgs(process.argv.slice(2))
 const rootDir = argv['root-dir'] ?? process.cwd()
 const credentials = {
   key: fs.readFileSync(path.join(rootDir, 'certs/hss-key.pem'), 'utf8'),
   cert: fs.readFileSync(path.join(rootDir, 'certs/hss-crt.pem'), 'utf8')
 }
-const ip = argv['ip'] ?? IP ?? 'localhost'
-const webServerPort = argv['port'] ?? WEB_SERVER_PORT ?? 8080
+const PARAMETERS = JSON.parse(fs.readFileSync(path.join(rootDir, 'webserver/parameters.json'), 'utf8'))
+
+const ip = argv['ip'] ?? PARAMETERS.IP ?? 'localhost'
+const webServerPort = argv['port'] ?? PARAMETERS.WEB_SERVER_PORT ?? 8080
 
 const server = https.createServer(credentials, app)
-const oscServer = new Server(OSC_SERVER.PORT ?? 57121, OSC_SERVER.IP ?? '0.0.0.0')
-const sclang = new Client(OSC_CLIENT.IP ?? ip, OSC_CLIENT.PORT ?? 57120)
-const oscPath = OSC_CLIENT.PATH ?? '/action'
+const oscServer = new Server(PARAMETERS.OSC_SERVER.PORT ?? 57121, PARAMETERS.OSC_SERVER.IP ?? '0.0.0.0')
+const sclang = new Client(ip, PARAMETERS.OSC_CLIENT.PORT ?? 57120)
+const oscPath = PARAMETERS.OSC_CLIENT.PATH ?? '/action'
 
 const wss = new HSS_WSS({ server: server })
 const oscListener = getOscMsgListener(oscMsgHandler(wss), wss)

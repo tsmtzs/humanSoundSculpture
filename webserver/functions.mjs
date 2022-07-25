@@ -6,8 +6,6 @@
 import process from 'process'
 import child_process from 'child_process'
 
-import { WS_MSG_SHUTDOWN } from './parameters.mjs'
-
 // Event listeners.
 // error handling - from https://expressjs.com/en/guide/error-handling.html
 const appErrorListener = (err, req, res, next) => {
@@ -30,7 +28,7 @@ const wsErrorListener = error => {
 const getWsMsgListener = (sclang, oscPath, rootDir) => msg => {
   const data = msg.toString()
   console.log('Client message: ', data)
-  if (data === WS_MSG_SHUTDOWN) {
+  if (data === 'shutdown') {
     // On message 'shutdown' execute file 'killHSS.sh
     // OR USE sh /usr/bin/shutdown now
     child_process.exec('bin/killHSS.sh', { cwd: rootDir, shell: 'bash' }, (err, stdout, stderr) => {
