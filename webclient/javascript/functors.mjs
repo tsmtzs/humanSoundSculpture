@@ -4,11 +4,11 @@
 // and
 // James Sinclair's 'THE MARVELLOUSLY MYSTERIOUS JAVASCRIPT MAYBE MONAD'
 // https://jrsinclair.com/articles/2016/marvellously-mysterious-javascript-maybe-monad/
-const value = Symbol('value')
-
 class Maybe {
+  #value
+
   get isNothing () {
-    return this[value] === null || this[value] === undefined
+    return this.#value === null || this.#value === undefined
   }
 
   get isJust () {
@@ -16,7 +16,7 @@ class Maybe {
   }
 
   constructor (x) {
-    this[value] = x
+    this.#value = x
   }
 
   // ----- Pointed Maybe
@@ -26,12 +26,12 @@ class Maybe {
 
   // ----- Functor Maybe
   map (fn) {
-    return this.isNothing ? this : Maybe.of(fn(this[value]))
+    return this.isNothing ? this : Maybe.of(fn(this.#value))
   }
 
   // ----- Applicative Maybe
   ap (f) {
-    return this.isNothing ? this : f.map(this[value])
+    return this.isNothing ? this : f.map(this.#value)
   }
 
   // ----- Monad Maybe
@@ -40,11 +40,11 @@ class Maybe {
   }
 
   join () {
-    return this.isNothing ? this : this[value]
+    return this.isNothing ? this : this.#value
   }
 
   traverse (of, fn) {
-    return this.isNothing ? of(this) : fn(this[value]).map(Maybe.of)
+    return this.isNothing ? of(this) : fn(this.#value).map(Maybe.of)
   }
 
   // ---- From James Sinclair

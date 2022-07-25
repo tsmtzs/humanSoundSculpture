@@ -3,8 +3,7 @@
 // Human Sound Sculpture
 //        by Tassos Tsesmetzis
 //
-// Web client javascript.
-// ServiceWorker.
+// Web app ServiceWorker.
 // ////////////////////////////////////////////////////////////
 const cacheName = 'hss-v1'
 const interlayStr = '/views'
@@ -15,7 +14,6 @@ const interlayStrToURL = interString => url => {
   const origin = url.origin
   const pathname = url.pathname
 
-  // Return a String object.
   return origin + interString + pathname + '.html'
 }
 //
@@ -53,8 +51,6 @@ self.addEventListener('install', event => {
 })
 
 self.addEventListener('fetch', event => {
-  // Check if request points to '/conductor', '/player' or '/description'.
-  // If yes, send the corresponding html file from cache.
   const request = isHtmlReq(event.request) ? new Request(interlayToURL(new URL(event.request.url))) : event.request
 
   event.respondWith(
@@ -64,7 +60,6 @@ self.addEventListener('fetch', event => {
   )
 })
 
-// Worker ACTIVATE event
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keyList => {
