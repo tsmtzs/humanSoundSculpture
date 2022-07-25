@@ -22,7 +22,7 @@ const getOscMsgListener = (msgHandler, webSocketServer) => msg => {
 }
 
 const wsErrorListener = error => {
-		console.error('Something went wrong in WebSockets\n%d', error.stack)
+	console.error('Something went wrong in WebSockets\n%d', error.stack)
 }
 
 const getWsMsgListener = (sclang, oscPath, rootDir) => msg => {
@@ -58,10 +58,10 @@ const oscMsgHandler = aWebSocketServer => {
 }
 
 export {
-		appErrorListener,
-		getOscMsgListener,
-		wsErrorListener,
-		getWsMsgListener,
-		getWsConnectionListener,
-		oscMsgHandler
+	appErrorListener,
+	getOscMsgListener,
+	wsErrorListener,
+	getWsMsgListener,
+	getWsConnectionListener,
+	oscMsgHandler
 }

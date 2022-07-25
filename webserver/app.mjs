@@ -16,19 +16,19 @@ const app = express()
 app.use(express.static(path.join(rootDir, 'public')))
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(rootDir, 'public/views/index.html'))
+	res.sendFile(path.join(rootDir, 'public/views/index.html'))
 })
 
 app.get('/conductor', (req, res) => {
-  res.sendFile(path.join(rootDir, 'public/views/conductor.html'))
+	res.sendFile(path.join(rootDir, 'public/views/conductor.html'))
 })
 
 app.get('/player', (req, res) => {
-  res.sendFile(path.join(rootDir, 'public/views/player.html'))
+	res.sendFile(path.join(rootDir, 'public/views/player.html'))
 })
 
 app.get('/description', (req, res) => {
-  res.sendFile(path.join(rootDir, 'public/views/description.html'))
+	res.sendFile(path.join(rootDir, 'public/views/description.html'))
 })
 
 app.use(appErrorListener)

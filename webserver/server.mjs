@@ -17,11 +17,11 @@ import { Server, Client } from 'node-osc'
 import { HSS_WSS } from './hss_wss.mjs'
 import { app } from './app.mjs'
 import {
-		getOscMsgListener,
-		wsErrorListener,
-		getWsMsgListener,
-		getWsConnectionListener,
-		oscMsgHandler
+	getOscMsgListener,
+	wsErrorListener,
+	getWsMsgListener,
+	getWsConnectionListener,
+	oscMsgHandler
 } from './functions.mjs'
 
 const argv = parseArgs(process.argv.slice(2))
