@@ -4,8 +4,7 @@
 //
 // Sound related classes.
 // ////////////////////////////////////////////////////////////
-// Sound initializes the Web Audio API.
-// Acts as container for all sound objects of the piece.
+// Class Sounds acts as container for all sound objects of the piece.
 class Sounds {
   #objectPool = new Map()
   #types = new Map()
@@ -133,17 +132,107 @@ class Sounds {
   }
 }
 
-class WaveShape {
-  // static #context
+class WaveShaper {
+  #context
+  #wave
+  #isPlaying = false
+  #shapingFunction
+  #inputFunction
+  #gain
+  #index
 
-  // static set context () { }
-  // static hasContext () { }
+  static of (anObject) {
+    return new WaveShaper(anObject)
+  }
 
-  // constructor () { }
+  static getDefaultWave (context) {
+    const mag1 = Math.random() * 0.5 + 0.4
+    const phase1 = 0.0
+    const mag2 = Math.random() * 0.5 + 0.4
+    const phase2 = Math.PI * Math.random()
+    const mag3 = Math.random() * 0.5 + 0.4
+    const phase3 = Math.PI * Math.random()
+    const real = new Float32Array([0, mag1 * Math.cos(phase1), mag2 * Math.cos(phase2), mag3 * Math.cos(phase3)])
+    const imag = new Float32Array([0, mag1 * Math.sin(phase1), mag2 * Math.sin(phase2), mag3 * Math.sin(phase3)])
+    return context.createPeriodicWave(real, imag)
+  }
 
-  // play () { }
+  constructor ({ freq = 440, amp = 0.1, dur = 1, wave, context } = {}) {
+    this.freq = freq
+    this.dur = dur
+    this.amp = amp
+    this.#wave = wave
+    this.#context = context
+  }
 
-  // env () { }
+  get wave () {
+    return this.#wave
+  }
+
+  set wave (wave) {
+    this.#wave = wave
+  }
+
+  get context () {
+    return this.#context
+  }
+
+  set context (aWebAudioContext) {
+    this.#context = aWebAudioContext
+  }
+
+  play ({ freq, amp, dur, wave, time = 0 } = {}) {
+    if (!this.#isPlaying) {
+      this.#shapingFunction = this.#context.createOscillator()
+      this.#inputFunction = this.#context.createOscillator()
+      this.#gain = this.#context.createGain()
+      this.#index = this.#context.createGain()
+
+      this.#shapingFunction.type = 'sawtooth'
+      this.#shapingFunction.frequency.value = 0.0
+
+      this.#inputFunction.frequency.value = freq ?? this.freq
+      this.#inputFunction.setPeriodicWave(wave ?? this.#wave)
+
+      this.#inputFunction.connect(this.#index)
+      this.#index.connect(this.#shapingFunction.frequency)
+      this.#shapingFunction.connect(this.#gain)
+      this.#gain.connect(this.#context.destination)
+
+      const now = this.#context.currentTime
+      const start = now + time
+      const end = start + dur
+
+      this.#inputFunction.start(start)
+      this.#shapingFunction.start(start)
+      this.#inputFunction.stop(end)
+      this.#shapingFunction.stop(end)
+
+      const amplitude = amp ?? this.amp
+      this.#env({ attack: 0.25 * dur, sustain: 0.5 * dur, release: 0.25 * dur, startValue: 0.0, endValue: amplitude, time: start, anAudioParam: this.#gain })
+
+      this.#env({ attack: 0.5 * dur, sustain: 0.0, release: 0.5 * dur, startValue: 50.0, endValue: Math.random() * 800 + 700, time: start, anAudioParam: this.#index })
+
+      this.#toggleIsPlaying()
+    }
+  }
+
+  // An ASR envelope.
+  #env ({ attack = 0.5, sustain = 0.0, release = 1.0, startValue = 0.0, endValue = 1, time = 0.0, anAudioParam } = {}) {
+    const attackTime = time + attack
+    const sustainTime = attackTime + sustain
+    const releaseTime = sustainTime + release
+
+    anAudioParam.cancelScheduledValues(time)
+    anAudioParam.setValueAtTime(startValue, time)
+    anAudioParam.linearRampToValueAtTime(endValue, attackTime)
+    anAudioParam.setValueAtTime(endValue, sustainTime)
+    anAudioParam.linearRampToValueAtTime(startValue, releaseTime)
+  }
+
+  #toggleIsPlaying () {
+    this.#isPlaying = !this.#isPlaying
+  }
 
   // stop () { }
 
@@ -152,68 +241,6 @@ class WaveShape {
 
 export {
   Sounds,
-  WaveShape
+  WaveShaper
 }
 
-// export default class Sound {
-//   constructor () {
-//     // Create an instance of AudioContext
-//     this.context = new AudioContext()
-//     // Define parameters for the sound.
-//     this.mag1 = Math.random() * 0.5 + 0.4
-//     this.phase1 = 0.0
-//     this.mag2 = Math.random() * 0.5 + 0.4
-//     this.phase2 = Math.PI * Math.random()
-//     this.mag3 = Math.random() * 0.5 + 0.4
-//     this.phase3 = Math.PI * Math.random()
-//     this.real = new Float32Array([0, this.mag1 * Math.cos(this.phase1), this.mag2 * Math.cos(this.phase2), this.mag3 * Math.cos(this.phase3)])
-//     this.imag = new Float32Array([0, this.mag1 * Math.sin(this.phase1), this.mag2 * Math.sin(this.phase2), this.mag3 * Math.sin(this.phase3)])
-//     this.wave = this.context.createPeriodicWave(this.real, this.imag)
-//   }
-
-//   // A wave shaping synth.
-//   play (freq, amp, dur) {
-//     const shapingFunction = this.context.createOscillator()
-//     const inputFunction = this.context.createOscillator()
-//     const gain = this.context.createGain()
-//     const indexFunction = this.context.createGain()
-
-//     shapingFunction.type = 'sawtooth'
-
-//     // amp envelope
-//     this.asrEnv(0.25 * dur, 0.5 * dur, 0.25 * dur, 0.0, amp, gain)
-//     inputFunction.frequency.value = freq
-
-//     // apply triangular shape to index function
-//     this.asrEnv(0.5 * dur, 0.0, 0.5 * dur, 50, Math.random() * 800 + 700, indexFunction)
-//     inputFunction.connect(indexFunction)
-
-//     indexFunction.connect(shapingFunction.frequency)
-
-//     inputFunction.setPeriodicWave(this.wave)
-//     shapingFunction.frequency.value = 0
-
-//     shapingFunction.connect(gain)
-//     gain.connect(this.context.destination)
-
-//     inputFunction.start(0)
-//     shapingFunction.start(0)
-//     shapingFunction.stop(this.context.currentTime + dur)
-//     inputFunction.stop(this.context.currentTime + dur)
-
-//     return shapingFunction
-//   }
-
-//   // An asr envelope.
-//   // Better if defined in a separate 'Envelope' object.
-//   // But...
-//   asrEnv (attack = 0.5, sustain = 0.0, release = 0.5, startValue = 0.0, endValue = 1, gainNode) {
-//     const now = this.context.currentTime
-
-//     gainNode.gain.cancelScheduledValues(0)
-//     gainNode.gain.setValueAtTime(startValue, now)
-//     gainNode.gain.linearRampToValueAtTime(endValue, now + attack)
-//     gainNode.gain.setValueAtTime(endValue, now + attack + sustain)
-//     gainNode.gain.linearRampToValueAtTime(startValue, now + attack + sustain + release)
-//   }
-// }
