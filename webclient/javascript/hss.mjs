@@ -3,16 +3,14 @@
 // Human Sound Sculpture
 //    by Tassos Tsesmetzis
 //
-// Web client javascript for the pages 'Player' and 'Conductor'.
+// Web client JavaScript for the pages 'Player' and 'Conductor'.
 // ////////////////////////////////////////////////////////////
+import { PARAMETERS } from './parameters.mjs'
 import { Maybe } from './functors.mjs'
 import Sound from './sound.mjs'
 
-// ////////////////////////////////////////////////////////////
-// Constants
-// ////////////////////////////////////////////////////////////
-const wsOpenMsg = 'Tap on this sentence to enable sound.'
-const wsErrorMsg = 'Not connected to server.'
+const wsOpenMsg = PARAMETERS.WEBSOCKETS.OPEN_MSG
+const wsErrorMsg = PARAMETERS.WEBSOCKETS.ERROR_MSG
 
 // ////////////////////////////////////////////////////////////
 // Get the html element with id 'textMsg'.
@@ -20,15 +18,11 @@ const wsErrorMsg = 'Not connected to server.'
 //    * On WebSocket load prints 'wsLoadMsg'
 //    * On WebSocket error prints 'wsErrorMsg'
 // ////////////////////////////////////////////////////////////
-const textMsgMaybe = Maybe.of(document.getElementById('textMsg'))
+const textMsgMaybe = Maybe.of(document.getElementById(PARAMETERS.ELEMENT_ID.TEXT_MSG))
 
-// ////////////////////////////////////////////////////////////
-// Websockets
-// ////////////////////////////////////////////////////////////
-// Initialize WebSockets
-// 'HSS_IP' and 'HSS_HTTP_PORT' are
-// global variables.
-const socket = new WebSocket('wss://$HSS_IP:$HSS_HTTP_PORT')
+const ip = PARAMETERS.WEBSOCKETS.IP
+const port = PARAMETERS.WEBSOCKETS.PORT
+const socket = new WebSocket(`wss://${ip}:${port}`)
 
 // ////////////////////////////////////////////////////////////
 // Functions
@@ -92,7 +86,7 @@ const wsOpenListener = event => {
   // //////////////////////////////////////////////////////////
   // Start button
   // //////////////////////////////////////////////////////////
-  const startBtnMaybe = Maybe.of(document.getElementById('startBtn'))
+  const startBtnMaybe = Maybe.of(document.getElementById(PARAMETERS.ELEMENT_ID.START_BTN))
 
   // On every 'click' event send a 'start' / 'stop'
   // message to the web server.
@@ -102,7 +96,7 @@ const wsOpenListener = event => {
   // //////////////////////////////////////////////////////////
   // Shutdown computer button
   // //////////////////////////////////////////////////////////
-  const shutdownBtnMaybe = Maybe.of(document.getElementById('shutdownBtn'))
+  const shutdownBtnMaybe = Maybe.of(document.getElementById(PARAMETERS.ELEMENT_ID.SHUTDOWN_BTN))
 
   // When conductor double clicks the button,
   // send a 'shutdown' message to web server.
@@ -122,7 +116,7 @@ const wsOpenListener = event => {
   // //////////////////////////////////////////////////////////
   // Test button
   // //////////////////////////////////////////////////////////
-  const testButton = document.getElementById('soundCheckBtn')
+  const testButton = document.getElementById(PARAMETERS.ELEMENT_ID.SOUNDCHECK_BTN)
 
   addEventListener('click')(testButton)(createTestSynth(sound))
 }
