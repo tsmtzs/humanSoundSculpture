@@ -7,7 +7,7 @@ const PARAMETERS = {
   WEBSOCKETS: {
     OPEN_MSG: 'Tap on this sentence to enable sound.',
     ERROR_MSG: 'Not connected to server.',
-    IP: 192.168.1.8,
+    IP: '192.168.10.5',
     PORT: 3000
   },
   ELEMENT_ID: {
