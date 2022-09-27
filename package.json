@@ -3,10 +3,11 @@
   "version": "3.1.1",
   "description": "Human Sound Sculpture - a performance art piece",
   "scripts": {
-    "test-client": "mocha test/client/*.mjs",
+    "test-client": "c8 mocha test/client/*.mjs",
     "test-server": "c8 mocha test/server/*-spec.mjs",
     "lint": "standard webserver/*.js public/javascript/*",
-    "create-cert": "openssl req -newkey rsa:2048 -nodes -keyout hss-key.pem -x509 -days 365 -out hss-crt.pem"
+    "create-cert": "openssl req -newkey rsa:2048 -nodes -keyout hss-key.pem -x509 -days 365 -out hss-crt.pem",
+    "start-dev": "node webserver/server.mjs"
   },
   "author": "Tassos Tsesmetzis",
   "license": "MIT",

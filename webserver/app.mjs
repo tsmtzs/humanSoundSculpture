@@ -13,22 +13,22 @@ const __dirname = path.dirname(__filename)
 const rootDir = path.join(__dirname, '../')
 const app = express()
 
-app.use(express.static(path.join(rootDir, 'public')))
+app.use(express.static(path.join(rootDir, 'webclient')))
 
 app.get('/', (req, res) => {
-	res.sendFile(path.join(rootDir, 'public/views/index.html'))
+	res.sendFile(path.join(rootDir, 'webclient/views/index.html'))
 })
 
 app.get('/conductor', (req, res) => {
-	res.sendFile(path.join(rootDir, 'public/views/conductor.html'))
+	res.sendFile(path.join(rootDir, 'webclient/views/conductor.html'))
 })
 
 app.get('/player', (req, res) => {
-	res.sendFile(path.join(rootDir, 'public/views/player.html'))
+	res.sendFile(path.join(rootDir, 'webclient/views/player.html'))
 })
 
 app.get('/description', (req, res) => {
-	res.sendFile(path.join(rootDir, 'public/views/description.html'))
+	res.sendFile(path.join(rootDir, 'webclient/views/description.html'))
 })
 
 app.use(appErrorListener)
