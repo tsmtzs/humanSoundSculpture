@@ -38,10 +38,10 @@ self.addEventListener('install', event => {
           '/views/conductor.html',
           '/views/player.html',
           '/views/description.html',
-          '/javascript/index.js',
+          '/javascript/index.mjs',
           '/javascript/functors.mjs',
           '/javascript/sound.mjs',
-          '/javascript/hss.js',
+          '/javascript/hss.mjs',
           '/icons/hssIcon_192x192.png',
           '/icons/hssIcon_512x512.png'
         ])
