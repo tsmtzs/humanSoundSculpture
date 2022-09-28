@@ -5,7 +5,9 @@
 // Tests for the module functions.mjs.
 // //////////////////////////////////////////////////
 import {
-  setTextToElement
+  setTextToElement,
+  getShowButtons,
+  getRemoveElementListener
 } from '../../webclient/javascript/functions.mjs'
 
 import sinon from 'sinon'
@@ -20,6 +22,62 @@ describe('Tests for functions.mjs', function () {
       const text = 'test'
       setTextToElement(text, element)
       expect(element.textContent).to.equal(text)
+    })
+  })
+
+  describe("Function 'getShowButtons'.", function () {
+    let domTree
+    let listener
+    let elements
+
+    beforeEach(function () {
+      elements = [{}, {}]
+      domTree = {
+	querySelectorAll: sinon.fake.returns(elements)
+      }
+      listener = getShowButtons(domTree)
+    })
+
+    afterEach(function () {
+      sinon.restore()
+    })
+
+    it('Should return a Function instance.', function () {
+      expect(listener instanceof Function).to.be.true
+    })
+
+    it("Should send the message 'querySelectorAll' on the given argument, passing 'input'.", function () {
+      expect(domTree.querySelectorAll.calledOnce).to.be.true
+      expect(domTree.querySelectorAll.firstArg).to.equal('input')
+    })
+
+    it("The returned function, when called, should set the property 'type' to 'button' on each element of the 'querySelector' call.", function () {
+      listener()
+      expect(elements.every(elem => elem.type == 'button')).to.be.true
+    })
+  })
+
+  describe("Function 'getRemoveElementListener'.", function () {
+    let element
+    let domTree
+    let listener
+
+    beforeEach(function () {
+      element = { remove: sinon.fake() }
+      listener = getRemoveElementListener(element)
+    })
+
+    afterEach(function () {
+      sinon.restore()
+    })
+
+    it("Should return a Function instance.", function () {
+      expect(listener instanceof Function).to.be.true
+    })
+
+    it("The returned event listener, when called should send the message 'remove' to function's argument.", function () {
+      listener()
+      expect(element.remove.calledOnce).to.be.true
     })
   })
 })

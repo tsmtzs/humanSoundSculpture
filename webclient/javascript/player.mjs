@@ -6,14 +6,12 @@
 import { PARAMETERS } from './parameters.mjs'
 import { Maybe } from './functors.mjs'
 import {
-  setTextToElement
-} from './functions.mjs'
-import {
-  wsErrorListener
+  wsErrorListener,
+  wsOpenListener,
+  setTapMsg,
+  addTapListeners
 } from './common.mjs'
 // import Sound from './sound.mjs'
-
-const wsOpenMsg = PARAMETERS.WEBSOCKETS.OPEN_MSG
 
 // ////////////////////////////////////////////////////////////
 // Get the html element with id 'textMsg'.
@@ -38,16 +36,7 @@ const socket = new WebSocket(`wss://${ip}:${port}`)
 // //   // Change the value of the button.
 // //   button.value = valueFunc(button.value)
 // // }
-// // Listener for the <p> element with ID 'textMsg'.
-// const tapListener = element => event => {
-//   const inputElements = Array.from(document.body.getElementsByTagName('input'))
 
-//   // Show all input buttons.
-//   inputElements.forEach(elem => { elem.type = 'button' })
-
-//   // Remove h2 element from the node tree.
-//   document.body.removeChild(element)
-// }
 // // WebSocket message handler.
 // const wsMsgHandler = func => {
 //   return {
@@ -63,55 +52,6 @@ const socket = new WebSocket(`wss://${ip}:${port}`)
 //   msgHandlerObj[msg.type](...msg.args)
 
 //   // console.log('Websocket message: ', msg.args, msg.type, msg)
-// }
-
-// // WebSocket 'open' event listener.
-// const wsOpenListener = event => {
-//   // //////////////////////////////////////////////////////////
-//   // 'textMsg' element
-//   // //////////////////////////////////////////////////////////
-//   // Set text to 'wsOpenMsg'
-//   textMsgElement.map(setTextToElement(wsOpenMsg))
-//   // Attach the 'tapListener' function to the 'click' event.
-//   textMsgElement.map(addEventListener('click'))
-//     .ap(textMsgElement.map(tapListener))
-
-//   // //////////////////////////////////////////////////////////
-//   // Start button
-//   // //////////////////////////////////////////////////////////
-//   const startBtnMaybe = Maybe.of(document.getElementById(PARAMETERS.ELEMENT_ID.START_BTN))
-
-//   // On every 'click' event send a 'start' / 'stop'
-//   // message to the web server.
-//   startBtnMaybe.map(addEventListener('click'))
-//     .ap(startBtnMaybe.map(buttonListener(socket)(x => x === 'play' ? 'stop' : 'play')))
-
-//   // //////////////////////////////////////////////////////////
-//   // Shutdown computer button
-//   // //////////////////////////////////////////////////////////
-//   const shutdownBtnMaybe = Maybe.of(document.getElementById(PARAMETERS.ELEMENT_ID.SHUTDOWN_BTN))
-
-//   // When conductor double clicks the button,
-//   // send a 'shutdown' message to web server.
-//   shutdownBtnMaybe.map(addEventListener('dblclick'))
-//     .ap(shutdownBtnMaybe.map(buttonListener(socket)(() => 'hss ended')))
-
-//   // ////////////////////////////////////////////////////////////
-//   // Start AudioContext and play sound.
-//   // ////////////////////////////////////////////////////////////
-//   const sound = new Sound()
-
-//   // WebSocket message handler.
-//   const wsMsgHandlerObj = wsMsgHandler(sound.play.bind(sound)) // Grrrr... 'this' is very annoying
-
-//   socket.onmessage = wsListener(wsMsgHandlerObj)
-
-//   // //////////////////////////////////////////////////////////
-//   // Test button
-//   // //////////////////////////////////////////////////////////
-//   const testButton = document.getElementById(PARAMETERS.ELEMENT_ID.SOUNDCHECK_BTN)
-
-//   addEventListener('click')(testButton)(createTestSynth(sound))
 // }
 
 // // Sound related functions
@@ -137,7 +77,13 @@ const socket = new WebSocket(`wss://${ip}:${port}`)
 // }
 
 // ////////////////////////////////////////////////////////////
-// Set WebSocket listeners
-socket.onerror = wsErrorListener
+const openWebSockets = new Promise((resolve, reject) => {
+  socket.addEventListener('open', resolve)
+  socket.onerror = reject
+})
 
-// socket.onopen = wsOpenListener
+openWebSockets
+  .then(wsOpenListener)
+  .then(setTapMsg)
+  .then(addTapListeners)
+  .catch(wsErrorListener)
