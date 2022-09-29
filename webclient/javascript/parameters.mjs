@@ -15,7 +15,8 @@ const PARAMETERS = {
     START_BTN: 'startBtn',
     SHUTDOWN_BTN: 'shutdownBtn',
     SOUNDCHECK_BTN: 'soundCheckBtn'
-  }
+  },
+  TEST_BTN_FREQ: 400 + Math.random() * 600
 }
 
 export { PARAMETERS }

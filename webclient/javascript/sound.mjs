@@ -201,7 +201,8 @@ class WaveShaper {
 
       const now = this.#context.currentTime
       const start = now + time
-      const end = start + dur
+      const duration = dur ?? this.dur
+      const end = start + duration
 
       this.#inputFunction.start(start)
       this.#shapingFunction.start(start)
@@ -209,10 +210,11 @@ class WaveShaper {
       this.#shapingFunction.stop(end)
 
       const amplitude = amp ?? this.amp
-      this.#env({ attack: 0.25 * dur, sustain: 0.5 * dur, release: 0.25 * dur, startValue: 0.0, endValue: amplitude, time: start, anAudioParam: this.#gain })
+      this.#env({ attack: 0.25 * duration, sustain: 0.5 * duration, release: 0.25 * duration, startValue: 0.0, endValue: amplitude, time: start, anAudioParam: this.#gain.gain })
 
-      this.#env({ attack: 0.5 * dur, sustain: 0.0, release: 0.5 * dur, startValue: 50.0, endValue: Math.random() * 800 + 700, time: start, anAudioParam: this.#index })
+      this.#env({ attack: 0.5 * duration, sustain: 0.0, release: 0.5 * duration, startValue: 50.0, endValue: Math.random() * 800 + 700, time: start, anAudioParam: this.#index.gain })
 
+      this.#disconnectAtTime(end)
       this.#toggleIsPlaying()
     }
   }
@@ -230,17 +232,94 @@ class WaveShaper {
     anAudioParam.linearRampToValueAtTime(startValue, releaseTime)
   }
 
+  #disconnectAtTime (time = 0.0) {
+    setTimeout(() => {
+      this.#inputFunction.disconnect()
+      this.#shapingFunction.disconnect()
+      this.#gain.disconnect()
+      this.#index.disconnect()
+    },
+	       time * 1000
+	      )
+  }
+
   #toggleIsPlaying () {
     this.#isPlaying = !this.#isPlaying
   }
 
-  // stop () { }
+  start ({ freq, amp, wave, time = 0, fadeIn = 1 } = {}) {
+    if (!this.#isPlaying) {
+      this.#shapingFunction = this.#context.createOscillator()
+      this.#inputFunction = this.#context.createOscillator()
+      this.#gain = this.#context.createGain()
+      this.#index = this.#context.createGain()
 
-  // disconnect () { }
+      this.#shapingFunction.type = 'sawtooth'
+      this.#shapingFunction.frequency.value = 0.0
+
+      this.#inputFunction.frequency.value = freq ?? this.freq
+      this.#inputFunction.setPeriodicWave(wave ?? this.#wave)
+
+      this.#inputFunction.connect(this.#index)
+      this.#index.connect(this.#shapingFunction.frequency)
+      this.#shapingFunction.connect(this.#gain)
+      this.#gain.connect(this.#context.destination)
+
+      const now = this.#context.currentTime
+      const start = now + time
+
+      this.#inputFunction.start(start)
+      this.#shapingFunction.start(start)
+
+      const amplitude = amp ?? this.amp
+
+      this.#fadeIn({ fadeIn, startValue: 0.0, endValue: amplitude, time: start, anAudioParam: this.#gain.gain })
+
+      this.#fadeIn({ fadeIn, startValue: 50.0, endValue: Math.random() * 800 + 700, time: start, anAudioParam: this.#index.gain })
+
+      this.#toggleIsPlaying()
+    }
+  }
+
+  #fadeIn ({ fadeIn = 1.0, startValue = 0.0, endValue = 1, time = 0.0, anAudioParam } = {}) {
+    const fadeTime = time + fadeIn
+
+    anAudioParam.cancelScheduledValues(time)
+    anAudioParam.setValueAtTime(startValue, time)
+    anAudioParam.linearRampToValueAtTime(endValue, fadeTime)
+  }
+
+  stop ({ fadeOut = 1.0, time = 0.0 } = {}) {
+    if (this.#isPlaying) {
+      const now = this.#context.currentTime
+      const start = now + time
+      const end = start + fadeOut
+
+      const currentAmp = this.#gain.gain.value
+      this.#fadeOut({ fadeOut, startValue: currentAmp, endValue: 1e-6, time: start, anAudioParam: this.#gain.gain })
+
+      const currentIndex = this.#index.gain.value
+      this.#fadeOut({ fadeOut, startValue: currentIndex, endValue: 1e-6, time: start, anAudioParam: this.#index.gain })
+
+      this.#inputFunction.stop(end)
+      this.#shapingFunction.stop(end)
+
+      this.#disconnectAtTime(end)
+
+      this.#toggleIsPlaying()
+    }
+  }
+
+  #fadeOut ({ fadeOut = 1.0, startValue = 1.0, endValue = 1e-6, time = 0.0, anAudioParam } = {}) {
+    const fadeTime = time + fadeOut
+
+    anAudioParam.cancelScheduledValues(time)
+    anAudioParam.setValueAtTime(startValue, time)
+    anAudioParam.exponentialRampToValueAtTime(Math.max(endValue, 1e-6), fadeTime)
+  }
 }
 
 export {
   Sounds,
   WaveShaper
 }
-

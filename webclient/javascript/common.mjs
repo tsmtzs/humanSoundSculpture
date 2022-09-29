@@ -11,10 +11,13 @@ import {
   getRemoveElementListener,
   getShowButtons
 } from './functions.mjs'
+import { WaveShaper } from './sound.mjs'
 
 const wsErrorMsg = PARAMETERS.WEBSOCKETS.ERROR_MSG
 const wsOpenMsg = PARAMETERS.WEBSOCKETS.OPEN_MSG
 
+const audioContext = new AudioContext()
+const shaperFunction = WaveShaper.getDefaultWave(audioContext)
 // ////////////////////////////////////////////////////////////
 // Get the html element with id 'textMsg'.
 // This element is used to post messages on the page.
@@ -22,6 +25,7 @@ const wsOpenMsg = PARAMETERS.WEBSOCKETS.OPEN_MSG
 //    * On WebSocket error prints 'wsErrorMsg'
 // ////////////////////////////////////////////////////////////
 const textMsgElement = document.querySelector(`#${PARAMETERS.ELEMENT_ID.TEXT_MSG}`)
+const soundTestButton = document.getElementById(PARAMETERS.ELEMENT_ID.SOUNDCHECK_BTN)
 
 const wsErrorListener = event => {
   setTextToElement(wsErrorMsg, textMsgElement)
@@ -29,15 +33,28 @@ const wsErrorListener = event => {
 }
 
 const setTapMsg = event => {
-
   setTextToElement(wsOpenMsg, textMsgElement)
 }
 
 const removeTextMsg = getRemoveElementListener(textMsgElement)
 const showButtons = getShowButtons(document.body)
+const initWebAudio = event => { audioContext.resume() }
 const addTapListeners = event => {
   textMsgElement.addEventListener('pointerdown', removeTextMsg)
   textMsgElement.addEventListener('pointerdown', showButtons)
+  textMsgElement.addEventListener('pointerdown', initWebAudio)
+}
+
+const addTestSoundBtnListeners = event => {
+  const synth = WaveShaper.of({
+    freq: PARAMETERS.TEST_BTN_FREQ, amp: 0.9, wave: shaperFunction, context: audioContext })
+
+  soundTestButton.addEventListener('pointerdown', event => {
+    synth.start()
+  })
+  soundTestButton.addEventListener('pointerup', event => {
+    synth.stop()
+  })
 }
 
 const wsOpenListener = event => {
@@ -72,18 +89,12 @@ const wsOpenListener = event => {
   // const wsMsgHandlerObj = wsMsgHandler(sound.play.bind(sound)) // Grrrr... 'this' is very annoying
 
   // socket.onmessage = wsListener(wsMsgHandlerObj)
-
-  // // //////////////////////////////////////////////////////////
-  // // Test button
-  // // //////////////////////////////////////////////////////////
-  // const testButton = document.getElementById(PARAMETERS.ELEMENT_ID.SOUNDCHECK_BTN)
-
-  // addEventListener('click')(testButton)(createTestSynth(sound))
 }
 
 export {
   wsErrorListener,
   setTapMsg,
   addTapListeners,
+  addTestSoundBtnListeners,
   wsOpenListener
 }

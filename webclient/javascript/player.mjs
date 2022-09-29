@@ -9,9 +9,9 @@ import {
   wsErrorListener,
   wsOpenListener,
   setTapMsg,
-  addTapListeners
+  addTapListeners,
+  addTestSoundBtnListeners
 } from './common.mjs'
-// import Sound from './sound.mjs'
 
 // ////////////////////////////////////////////////////////////
 // Get the html element with id 'textMsg'.
@@ -53,29 +53,6 @@ const socket = new WebSocket(`wss://${ip}:${port}`)
 
 //   // console.log('Websocket message: ', msg.args, msg.type, msg)
 // }
-
-// // Sound related functions
-// // Play sound on clicking the 'Test' button
-// const createTestSynth = soundObj => {
-//   // A random frequency for each client.
-//   const freq = 400.0 + Math.random() * 600
-//   // Max duration of sound.
-//   const dur = 20
-//   // Check sound in high amplitude. Adjust device volume.
-//   const amp = 0.9
-//   let synth
-
-//   return () => {
-//     if (synth) {
-//       synth.stop(0)
-//       synth = null
-//     } else {
-//       synth = soundObj.play(freq, amp, dur)
-//       synth.addEventListener('ended', event => { synth = null })
-//     }
-//   }
-// }
-
 // ////////////////////////////////////////////////////////////
 const openWebSockets = new Promise((resolve, reject) => {
   socket.addEventListener('open', resolve)
@@ -86,4 +63,6 @@ openWebSockets
   .then(wsOpenListener)
   .then(setTapMsg)
   .then(addTapListeners)
-  .catch(wsErrorListener)
+  .then(addTestSoundBtnListeners)
+// .catch(wsErrorListener)
+  .catch(console.error)
