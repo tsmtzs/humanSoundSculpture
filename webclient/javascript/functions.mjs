@@ -19,8 +19,15 @@ const getRemoveElementListener = element => event => {
   element.remove()
 }
 
+const getWsMsgListener = msgHandlerObj => message => {
+  const msg = JSON.parse(message.data)
+  msgHandlerObj[msg.type](...msg.args)
+  // console.log('Websocket message: ', msg.args, msg.type, msg)
+}
+
 export {
   setTextToElement,
   getShowButtons,
-  getRemoveElementListener
+  getRemoveElementListener,
+  getWsMsgListener
 }

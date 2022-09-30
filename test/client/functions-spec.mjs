@@ -7,7 +7,8 @@
 import {
   setTextToElement,
   getShowButtons,
-  getRemoveElementListener
+  getRemoveElementListener,
+  getWsMsgListener
 } from '../../webclient/javascript/functions.mjs'
 
 import sinon from 'sinon'
@@ -78,6 +79,52 @@ describe('Tests for functions.mjs', function () {
     it("The returned event listener, when called should send the message 'remove' to function's argument.", function () {
       listener()
       expect(element.remove.calledOnce).to.be.true
+    })
+  })
+
+  describe("Function 'getWsMsgListener'.", function () {
+    let listener
+    let msgHandler
+
+    beforeEach(function () {
+      msgHandler = {
+	test: sinon.fake()
+      }
+      listener = getWsMsgListener(msgHandler)
+    })
+
+    afterEach(function () {
+      sinon.restore()
+    })
+
+    it('Should return a Function instance.', function () {
+      expect(listener instanceof Function).to.be.true
+    })
+
+    it("The returned function should throw an error when called with argument 'message' which has a 'data' property which is not a valid JSON.", function () {
+      let msg = {
+      }
+      expect(() => { listener(msg) }).to.throw()
+
+      msg = {
+	data: '} 9 {'
+      }
+      expect(() => { listener(msg) }).to.throw()
+    })
+
+    it("The returned function when called with the 'message' argument, should call a property of the argument 'msgHandler' of 'getWsMsgListener'.", function () {
+      const arg1 = 1
+      const arg2 = 2
+      const msg = {
+	data: JSON.stringify({
+	  type: 'test',
+	  args: [arg1, arg2]
+	})
+      }
+      listener(msg)
+      expect(msgHandler['test'].calledOnce).to.be.true
+      expect(msgHandler['test'].firstArg).to.equal(arg1)
+      expect(msgHandler['test'].lastArg).to.equal(arg2)
     })
   })
 })

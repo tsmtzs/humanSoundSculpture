@@ -9,7 +9,8 @@ import { PARAMETERS } from './parameters.mjs'
 import {
   setTextToElement,
   getRemoveElementListener,
-  getShowButtons
+  getShowButtons,
+  getWsMsgListener
 } from './functions.mjs'
 import { WaveShaper } from './sound.mjs'
 
@@ -18,18 +19,12 @@ const wsOpenMsg = PARAMETERS.WEBSOCKETS.OPEN_MSG
 
 const audioContext = new AudioContext()
 const shaperFunction = WaveShaper.getDefaultWave(audioContext)
-// ////////////////////////////////////////////////////////////
-// Get the html element with id 'textMsg'.
-// This element is used to post messages on the page.
-//    * On WebSocket load prints 'wsLoadMsg'
-//    * On WebSocket error prints 'wsErrorMsg'
-// ////////////////////////////////////////////////////////////
 const textMsgElement = document.querySelector(`#${PARAMETERS.ELEMENT_ID.TEXT_MSG}`)
 const soundTestButton = document.getElementById(PARAMETERS.ELEMENT_ID.SOUNDCHECK_BTN)
 
 const wsErrorListener = event => {
   setTextToElement(wsErrorMsg, textMsgElement)
-  // console.log('ERROR in WebSocket', event)
+  // console.log('ERROR in WebSocket', event.target.constructor.name)
 }
 
 const setTapMsg = event => {
@@ -47,7 +42,8 @@ const addTapListeners = event => {
 
 const addTestSoundBtnListeners = event => {
   const synth = WaveShaper.of({
-    freq: PARAMETERS.TEST_BTN_FREQ, amp: 0.9, wave: shaperFunction, context: audioContext })
+    freq: PARAMETERS.TEST_BTN_FREQ, amp: 0.9, wave: shaperFunction, context: audioContext
+  })
 
   soundTestButton.addEventListener('pointerdown', event => {
     synth.start()
@@ -55,6 +51,23 @@ const addTestSoundBtnListeners = event => {
   soundTestButton.addEventListener('pointerup', event => {
     synth.stop()
   })
+}
+
+const wsMsgHandler = {
+  '/note': (freq, amp, dur) => {
+    WaveShaper.of({ freq, amp, dur, wave: shaperFunction, context: audioContext })
+      .play()
+  },
+  // '/action': do something on messages of type 'start', 'stop', 'end', 'shutdown'.
+  // Do nothing for now.
+  '/action': () => {}
+}
+
+const addWsMsgListenerTo = aWebSocket => {
+  const listener = getWsMsgListener(wsMsgHandler)
+  return event => {
+    aWebSocket.addEventListener('message', listener)
+  }
 }
 
 const wsOpenListener = event => {
@@ -79,16 +92,6 @@ const wsOpenListener = event => {
   // // send a 'shutdown' message to web server.
   // shutdownBtnMaybe.map(addEventListener('dblclick'))
   //   .ap(shutdownBtnMaybe.map(buttonListener(socket)(() => 'hss ended')))
-
-  // // ////////////////////////////////////////////////////////////
-  // // Start AudioContext and play sound.
-  // // ////////////////////////////////////////////////////////////
-  // const sound = new Sound()
-
-  // // WebSocket message handler.
-  // const wsMsgHandlerObj = wsMsgHandler(sound.play.bind(sound)) // Grrrr... 'this' is very annoying
-
-  // socket.onmessage = wsListener(wsMsgHandlerObj)
 }
 
 export {
@@ -96,5 +99,6 @@ export {
   setTapMsg,
   addTapListeners,
   addTestSoundBtnListeners,
+  addWsMsgListenerTo,
   wsOpenListener
 }
