@@ -6,7 +6,6 @@
 import { PARAMETERS } from './parameters.mjs'
 import {
   wsErrorListener,
-  wsOpenListener,
   setTapMsg,
   addTapListeners,
   addTestSoundBtnListeners,
@@ -24,7 +23,6 @@ const openWebSockets = new Promise((resolve, reject) => {
 })
 
 openWebSockets
-  .then(wsOpenListener)
   .then(setTapMsg)
   .then(addTapListeners)
   .then(addTestSoundBtnListeners)

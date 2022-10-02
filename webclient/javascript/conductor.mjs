@@ -6,7 +6,6 @@
 import { PARAMETERS } from './parameters.mjs'
 import {
   wsErrorListener,
-  wsOpenListener,
   setTapMsg,
   addTapListeners,
   addTestSoundBtnListeners,
@@ -18,7 +17,7 @@ const port = PARAMETERS.WEBSOCKETS.PORT
 // const socket = new WebSocket(`wss://${ip}:4000`)
 const socket = new WebSocket(`wss://${ip}:${port}`)
 
-const addStartBtnPointerDownListeners = event => {
+const addStartBtnPointerdownListeners = event => {
   const startBtn = document.querySelector(`#${PARAMETERS.ELEMENT_ID.START_BTN}`)
 
   startBtn.addEventListener('pointerdown', event => {
@@ -29,17 +28,40 @@ const addStartBtnPointerDownListeners = event => {
   })
 }
 
+const addShutdownBtnPointerEventListeners = event => {
+  const shutdownBtn = document.querySelector(`#${PARAMETERS.ELEMENT_ID.SHUTDOWN_BTN}`)
+
+  let id
+
+  shutdownBtn.addEventListener('pointerdown', event => {
+    console.log('Shutdown pressed')
+
+    id = setTimeout(() => {
+      console.log('More than 2s')
+      socket.send(shutdownBtn.value)
+      shutdownBtn.value = 'HSS ended'
+    },
+		    PARAMETERS.SHUTDOWN_WAIT_TIME
+		   )
+  })
+
+  shutdownBtn.addEventListener('pointerup', event => {
+    console.log('Shutdown released', id)
+    clearTimeout(id)
+  })
+}
+
 const openWebSockets = new Promise((resolve, reject) => {
   socket.addEventListener('open', resolve)
   socket.onerror = reject
 })
 
 openWebSockets
-  .then(wsOpenListener)
   .then(setTapMsg)
   .then(addTapListeners)
   .then(addTestSoundBtnListeners)
   .then(addWsMsgListenerTo(socket))
-  .then(addStartBtnPointerDownListeners)
+  .then(addStartBtnPointerdownListeners)
+  .then(addShutdownBtnPointerEventListeners)
   // .catch(wsErrorListener)
   .catch(console.error)

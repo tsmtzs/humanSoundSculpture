@@ -70,24 +70,10 @@ const addWsMsgListenerTo = aWebSocket => {
   }
 }
 
-const wsOpenListener = event => {
-  console.log('Inside wsOpenListener')
-  // // //////////////////////////////////////////////////////////
-  // // Shutdown computer button
-  // // //////////////////////////////////////////////////////////
-  // const shutdownBtnMaybe = Maybe.of(document.getElementById(PARAMETERS.ELEMENT_ID.SHUTDOWN_BTN))
-
-  // // When conductor double clicks the button,
-  // // send a 'shutdown' message to web server.
-  // shutdownBtnMaybe.map(addEventListener('dblclick'))
-  //   .ap(shutdownBtnMaybe.map(buttonListener(socket)(() => 'hss ended')))
-}
-
 export {
   wsErrorListener,
   setTapMsg,
   addTapListeners,
   addTestSoundBtnListeners,
-  addWsMsgListenerTo,
-  wsOpenListener
+  addWsMsgListenerTo
 }
