@@ -18,6 +18,17 @@ const port = PARAMETERS.WEBSOCKETS.PORT
 // const socket = new WebSocket(`wss://${ip}:4000`)
 const socket = new WebSocket(`wss://${ip}:${port}`)
 
+const addStartBtnPointerDownListeners = event => {
+  const startBtn = document.querySelector(`#${PARAMETERS.ELEMENT_ID.START_BTN}`)
+
+  startBtn.addEventListener('pointerdown', event => {
+    socket.send(startBtn.value)
+  })
+  startBtn.addEventListener('pointerdown', event => {
+    startBtn.value = startBtn.value === 'play' ? 'stop' : 'play'
+  })
+}
+
 const openWebSockets = new Promise((resolve, reject) => {
   socket.addEventListener('open', resolve)
   socket.onerror = reject
@@ -29,5 +40,6 @@ openWebSockets
   .then(addTapListeners)
   .then(addTestSoundBtnListeners)
   .then(addWsMsgListenerTo(socket))
-  .catch(wsErrorListener)
-  // .catch(console.error)
+  .then(addStartBtnPointerDownListeners)
+  // .catch(wsErrorListener)
+  .catch(console.error)

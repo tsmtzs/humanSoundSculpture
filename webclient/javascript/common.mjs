@@ -72,17 +72,6 @@ const addWsMsgListenerTo = aWebSocket => {
 
 const wsOpenListener = event => {
   console.log('Inside wsOpenListener')
-
-  // // //////////////////////////////////////////////////////////
-  // // Start button
-  // // //////////////////////////////////////////////////////////
-  // const startBtnMaybe = Maybe.of(document.getElementById(PARAMETERS.ELEMENT_ID.START_BTN))
-
-  // // On every 'click' event send a 'start' / 'stop'
-  // // message to the web server.
-  // startBtnMaybe.map(addEventListener('click'))
-  //   .ap(startBtnMaybe.map(buttonListener(socket)(x => x === 'play' ? 'stop' : 'play')))
-
   // // //////////////////////////////////////////////////////////
   // // Shutdown computer button
   // // //////////////////////////////////////////////////////////
