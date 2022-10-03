@@ -8,10 +8,10 @@
 const setTextToElement = (string, element) => { element.textContent = string }
 
 const getShowButtons = domTree => {
-  const inputElements = Array.from(domTree.querySelectorAll('input'))
+  const inputElements = Array.from(domTree.querySelectorAll('button'))
 
   return event => {
-    inputElements.forEach(elem => { elem.type = 'button' })
+    inputElements.forEach(elem => { elem.style.visibility = 'visible' })
   }
 }
 

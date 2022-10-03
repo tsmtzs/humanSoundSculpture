@@ -21,10 +21,10 @@ const addStartBtnPointerdownListeners = event => {
   const startBtn = document.querySelector(`#${PARAMETERS.ELEMENT_ID.START_BTN}`)
 
   startBtn.addEventListener('pointerdown', event => {
-    socket.send(startBtn.value)
+    socket.send(startBtn.textContent)
   })
   startBtn.addEventListener('pointerdown', event => {
-    startBtn.value = startBtn.value === 'play' ? 'stop' : 'play'
+    startBtn.textContent = startBtn.textContent === 'play' ? 'stop' : 'play'
   })
 }
 
@@ -34,19 +34,15 @@ const addShutdownBtnPointerEventListeners = event => {
   let id
 
   shutdownBtn.addEventListener('pointerdown', event => {
-    console.log('Shutdown pressed')
-
     id = setTimeout(() => {
-      console.log('More than 2s')
-      socket.send(shutdownBtn.value)
-      shutdownBtn.value = 'HSS ended'
+      socket.send(shutdownBtn.textContent)
+      shutdownBtn.textContent = 'HSS ended'
     },
-		    PARAMETERS.SHUTDOWN_WAIT_TIME
-		   )
+    PARAMETERS.SHUTDOWN_WAIT_TIME
+    )
   })
 
   shutdownBtn.addEventListener('pointerup', event => {
-    console.log('Shutdown released', id)
     clearTimeout(id)
   })
 }
@@ -63,5 +59,5 @@ openWebSockets
   .then(addWsMsgListenerTo(socket))
   .then(addStartBtnPointerdownListeners)
   .then(addShutdownBtnPointerEventListeners)
-  // .catch(wsErrorListener)
-  .catch(console.error)
+  .catch(wsErrorListener)
+  // .catch(console.error)
