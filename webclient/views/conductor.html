@@ -14,9 +14,11 @@
     <h1>Human Sound Sculpture</h1>
     <h2>Conductor</h2>
     <p id="textMsg" class="italics"></p>
-    <input type="hidden" id="soundCheckBtn" value="test"></input>
-    <input type="hidden" id="startBtn" value="play"></input>
-    <input type="hidden" id="shutdownBtn" value="shutdown"></input>
-    <script type="module" src="javascript/hss.js"></script>
+    <div id="flex-container">
+      <button id="soundCheckBtn">test</button>
+      <button id="startBtn">play</button>
+      <button id="shutdownBtn">shutdown<p id="shudown-note">Hold for at least 2 sec.</p></button>
+    </div>
+    <script type="module" src="javascript/conductor.mjs"></script>
   </body>
 </html>
