@@ -23,7 +23,7 @@ const textMsgElement = document.querySelector(`#${PARAMETERS.ELEMENT_ID.TEXT_MSG
 const soundTestButton = document.getElementById(PARAMETERS.ELEMENT_ID.SOUNDCHECK_BTN)
 
 const wsErrorListener = event => {
-  setTextToElement(wsErrorMsg, textMsgElement)
+  setTextToElement(wsErrorMsg + event.target.constructor.name, textMsgElement)
   // console.log('ERROR in WebSocket', event.target.constructor.name)
 }
 
@@ -70,10 +70,18 @@ const addWsMsgListenerTo = aWebSocket => {
   }
 }
 
-export {
-  wsErrorListener,
-  setTapMsg,
-  addTapListeners,
-  addTestSoundBtnListeners,
-  addWsMsgListenerTo
+const openWebSocketsAndAddListeners = (aWebSocket) => {
+  const openWebSockets = new Promise((resolve, reject) => {
+    aWebSocket.addEventListener('open', resolve)
+    aWebSocket.onerror = reject
+  })
+
+  return openWebSockets
+    .then(setTapMsg)
+    .then(addTapListeners)
+    .then(addTestSoundBtnListeners)
+    .then(addWsMsgListenerTo(aWebSocket))
+    .catch(wsErrorListener)
 }
+
+export { openWebSocketsAndAddListeners }

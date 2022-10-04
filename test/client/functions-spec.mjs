@@ -32,7 +32,8 @@ describe('Tests for functions.mjs', function () {
     let elements
 
     beforeEach(function () {
-      elements = [{}, {}]
+      const getElement = () => { return { style: {} } }
+      elements = [getElement(), getElement()]
       domTree = {
 	querySelectorAll: sinon.fake.returns(elements)
       }
@@ -47,14 +48,14 @@ describe('Tests for functions.mjs', function () {
       expect(listener instanceof Function).to.be.true
     })
 
-    it("Should send the message 'querySelectorAll' on the given argument, passing 'input'.", function () {
+    it("Should send the message 'querySelectorAll' on the given argument, passing 'button'.", function () {
       expect(domTree.querySelectorAll.calledOnce).to.be.true
-      expect(domTree.querySelectorAll.firstArg).to.equal('input')
+      expect(domTree.querySelectorAll.firstArg).to.equal('button')
     })
 
-    it("The returned function, when called, should set the property 'type' to 'button' on each element of the 'querySelector' call.", function () {
+    it("The returned function, when called, should set the property 'style.visibility' to 'visble' on each element of the 'querySelector' call.", function () {
       listener()
-      expect(elements.every(elem => elem.type == 'button')).to.be.true
+      expect(elements.every(elem => elem.style.visibility === 'visible')).to.be.true
     })
   })
 

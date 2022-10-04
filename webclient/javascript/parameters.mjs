@@ -1,14 +1,16 @@
 // ////////////////////////////////////////////////////////////
 // Human Sound Sculpture
 //    by Tassos Tsesmetzis
-//
 // ////////////////////////////////////////////////////////////
 const PARAMETERS = {
   WEBSOCKETS: {
     OPEN_MSG: 'Tap on this sentence to enable sound.',
-    ERROR_MSG: 'Ooops! An error occured.',
+    ERROR_MSG: 'Ooops! An error occured in ',
     IP: '192.168.10.6',
-    PORT: 3000
+    PORT: 3000,
+    get URL () {
+      return `wss://${this.IP}:${this.PORT}`
+    }
   },
   ELEMENT_ID: {
     TEXT_MSG: 'textMsg',
