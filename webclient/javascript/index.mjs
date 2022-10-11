@@ -10,8 +10,8 @@
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
     .register('./sw.js')
-    .then(registration => console.log('Service worker registration succeeded:', registration))
-    .catch(error => console.log('Service worker registration failed:', error))
+    .then(registration => { console.log('Service worker registration succeeded:', registration) })
+    .catch(console.error)
 } else {
   console.log('Service workers are not supported.')
 }

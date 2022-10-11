@@ -20,50 +20,55 @@ const interlayStrToURL = interString => url => {
 const isHtmlReq = isAcceptedHtmlReq(validHtmlPaths)
 const interlayToURL = interlayStrToURL(interlayStr)
 
+const assets = [
+  '/',
+  '/conductor',
+  '/player',
+  '/description',
+  '/hss.webmanifest',
+  '/styles.css',
+  '/views/index.html',
+  '/views/conductor.html',
+  '/views/player.html',
+  '/views/description.html',
+  '/javascript/index.mjs',
+  '/javascript/functors.mjs',
+  '/javascript/sound.mjs',
+  '/javascript/hss.mjs',
+  '/icons/hssIcon_192x192.png',
+  '/icons/hssIcon_512x512.png'
+];
+
 // adapted from
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches
-      .open(cacheName)
-      .then(cache => {
-        return cache.addAll([
-          '/',
-          '/conductor',
-          '/player',
-          '/description',
-          '/hss.webmanifest',
-          '/styles.css',
-          '/views/index.html',
-          '/views/conductor.html',
-          '/views/player.html',
-          '/views/description.html',
-          '/javascript/index.mjs',
-          '/javascript/functors.mjs',
-          '/javascript/sound.mjs',
-          '/javascript/hss.mjs',
-          '/icons/hssIcon_192x192.png',
-          '/icons/hssIcon_512x512.png'
-        ])
-      })
-      .catch(console.log)
-  )
-})
-
-self.addEventListener('fetch', event => {
-  const request = isHtmlReq(event.request) ? new Request(interlayToURL(new URL(event.request.url))) : event.request
-
-  event.respondWith(
-    caches.match(request)
-      .then(response => response || fetch(event.request))
-      .catch(console.log)
-  )
+  console.log('Inside instal event')
+  // event.waitUntil(
+  //   caches
+  //     .open(cacheName)
+  //     .then(cache => {
+  //       return cache.addAll(assests)
+  //     })
+  //     .catch(console.log)
+  // )
 })
 
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keyList => {
-      return Promise.all(keyList.filter(key => key !== cacheName).forEach(key => caches.delete(key)))
-    })
-  )
+  console.log('Inside activate event')
+  // event.waitUntil(
+  //   caches.keys().then(keyList => {
+  //     return Promise.all(keyList.filter(key => key !== cacheName).forEach(key => caches.delete(key)))
+  //   })
+  // )
+})
+
+self.addEventListener('fetch', event => {
+  console.log('Inside fetch event', event.request)
+  // const request = isHtmlReq(event.request) ? new Request(interlayToURL(new URL(event.request.url))) : event.request
+
+  // event.respondWith(
+  //   caches.match(request)
+  //     .then(response => response || fetch(event.request))
+  //     .catch(console.log)
+  // )
 })

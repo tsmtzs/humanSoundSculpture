@@ -18,6 +18,10 @@ const PARAMETERS = {
     SHUTDOWN_BTN: 'shutdownBtn',
     SOUNDCHECK_BTN: 'soundCheckBtn'
   },
+  RECONNECT: {
+    MSG: 'You \'re online again! Redirect to home page.',
+    DUR: 3000			// ms
+  },
   TEST_BTN_FREQ: 400 + Math.random() * 600,
   SHUTDOWN_WAIT_TIME: 2 * 1000 // ms
 }

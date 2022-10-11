@@ -31,6 +31,10 @@ app.get('/description', (req, res) => {
 	res.sendFile(path.join(rootDir, 'webclient/views/description.html'))
 })
 
+app.get('/offline', (req, res) => {
+	res.sendFile(path.join(rootDir, 'webclient/views/offline.html'))
+})
+
 app.use(appErrorListener)
 
 export { app }
