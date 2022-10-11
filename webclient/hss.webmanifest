@@ -1,20 +1,31 @@
 {
-    "name": "Human Sound Sculpture",
-    "short_name": "HSS",
-    "description": "Human Sound Sculpture - a public performance art piece.",
-    "display": "fullscreen",
-    "background_color": "#293f50",
-    "icons": [
-	{
-	    "src": "/icons/hssIcon_512x512.png",
-	    "sizes": "512x512",
-	    "type": "image/png"
-	},
-	{
-	    "src": "/icons/hssIcon_192x192.png",
-	    "sizes": "192x192",
-	    "type": "image/png"
-	}
-    ],
-    "start_url": "/"
+  "name": "Human Sound Sculpture",
+  "short_name": "HSS",
+  "description": "Human Sound Sculpture - a public performance art piece.",
+  "display": "standalone",
+  "background_color": "#293f50",
+  "icons": [
+    {
+      "src": "/icons/hssIcon_1024x1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/hssIcon_512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/hssIcon_384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/hssIcon_192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/"
 }
