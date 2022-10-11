@@ -15,6 +15,7 @@
 
 % Background color
 \definecolor{background}{HTML}{293F50}
+\definecolor{darkgray}{HTML}{A9A9A9}
 
 % Tikz background rectangle side length
 \def\outerSide{4.05cm}
@@ -30,7 +31,7 @@
   % Background.
   \fill [color=background] (0,0) rectangle (\outerSide,\outerSide);
   %
-  \fill [color=gray!35, rounded corners=2.4cm]
+  \fill [color=darkgray, rounded corners=2.4cm]
   ($(center) - (deviation)$) rectangle ($(center) + (deviation)$);
 \end{tikzpicture}
 \end{document}
