@@ -15,7 +15,7 @@ describe('Tests for sound.mjs.', function () {
   beforeEach(function () {
     global.window = {}
   })
-  
+
   describe("Class 'WaveShaper'.", function () {
     let waveshaper
     let freq, amp, dur
