@@ -1,0 +1,15 @@
+# node
+.nyc_output/
+coverage/
+node_modules/
+
+# TLS
+certs/
+
+# XeLaTeX
+**/*.aux
+**/*.log
+**/*.pdf
+
+#
+**/*.*~
