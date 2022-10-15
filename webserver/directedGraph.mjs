@@ -86,7 +86,18 @@ class DirectedGraph {
     return this.adj(startVertex).includes(endVertex)
   }
 
-  *randomWalk () {
+  *randomWalk (startVertex = 0, steps = 10) {
+    let currentStep = 0
+    let currentVertex = startVertex
+
+    while (currentStep++ < steps) {
+      const nextVertices = this.adj(currentVertex)
+
+      if (nextVertices.length === 0) { return -1 }
+
+      currentVertex = nextVertices[Math.floor(Math.random() * nextVertices.length)]
+      yield currentVertex
+    }
   }
 }
 

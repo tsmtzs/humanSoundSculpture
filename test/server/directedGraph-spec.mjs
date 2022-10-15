@@ -229,4 +229,27 @@ describe('Tests for the class DirectedGraph', function () {
       expect(graph.adj(startVertex).filter(elem => elem === startVertex).length).to.equal(2)
     })
   })
+
+  describe.skip("Tests for method 'randomWalk'.", function () {
+    let order
+    let graph
+
+    beforeEach(function () {
+      order = 10
+      graph = new DirectedGraph(order)
+      const adjacencyList = [
+  	[1],
+  	[1, 3],
+  	[0, 4],
+  	[2, 4, 4],
+  	[]
+      ]
+
+      adjacencyList.forEach((nextVertices, i) => {
+  	nextVertices.forEach(nextVertex => {
+  	  graph.addEdge(i, nextVertex)
+  	})
+      })
+    })
+  })
 })
