@@ -109,66 +109,6 @@ describe('Tests for listener functions.', function () {
     })
   })
 
-  describe.skip("Function 'getWsMsgListener'.", function () {
-    let listener
-    let sclang
-    let oscPath
-    let rootDir
-    let execStub
-    let exitStub
-
-    before(function () {
-      oscPath = '/test'
-      rootDir = 'test'
-    })
-
-    beforeEach(function () {
-      execStub = sinon.stub(child_process, 'exec')
-      exitStub = sinon.stub(process, 'exit')
-      sclang = {
-	send: sinon.fake()
-      }
-
-      listener = getWsMsgListener(sclang, oscPath, rootDir)
-    })
-
-    afterEach(() => {
-      sinon.restore()
-      execStub.reset()
-      exitStub.reset()
-    })
-
-    it("Should return a function.", function () {
-      expect(listener instanceof Function).to.be.true
-    })
-
-    it("The returned function, if called with argument 'shutdown' should call the 'exec' method of 'child_process'.", function () {
-      listener('shutdown')
-
-      expect(execStub.calledOnce).to.be.true
-
-      const args = execStub.args[0]
-      expect(args[0]).to.equal('bin/killHSS.sh')
-      expect(args[1].cwd).to.equal(rootDir)
-
-      const errorCallback = args[2]
-      expect(() => { errorCallback(1) }).to.throw()
-    })
-
-    it("The returned function, if called with argument 'shutdown' should send the message 'exit' to 'process'.", function () {
-      listener('shutdown')
-
-      expect(exitStub.calledOnce).to.be.true
-    })
-
-    it("The returned function if called with argument different than 'shutdown' should call the 'send' method of the first argument of 'getWsMsgListener'.", function () {
-      const msg = 'other'
-      listener(msg)
-
-      expect(sclang.send.calledOnceWith(oscPath, msg)).to.be.true
-    })
-  })
-
   describe("Function 'getWsMsgListener'.", function () {
     let listener
     let worker
@@ -199,8 +139,15 @@ describe('Tests for listener functions.', function () {
       expect(listener instanceof Function).to.be.true
     })
 
+    it("The returned function when called should call the 'postMessage' method of the first argument of 'getWorkerMsgListener'.", function () {
+      const msg = { type: 'other' }
+      listener(JSON.stringify(msg))
+
+      expect(worker.postMessage.calledOnceWith(msg)).to.be.true
+    })
+
     it("The returned function, if called with argument 'shutdown' should call the 'exec' method of 'child_process'.", function () {
-      listener('shutdown')
+      listener(JSON.stringify({ type: 'shutdown' }))
 
       expect(execStub.calledOnce).to.be.true
 
@@ -213,16 +160,9 @@ describe('Tests for listener functions.', function () {
     })
 
     it("The returned function, if called with argument 'shutdown' should send the message 'exit' to 'process'.", function () {
-      listener('shutdown')
+      listener(JSON.stringify({ type: 'shutdown' }))
 
       expect(exitStub.calledOnce).to.be.true
-    })
-
-    it("The returned function if called with argument different than 'shutdown' should call the 'postMessage' method of the first argument of 'getWorkerMsgListener'.", function () {
-      const msg = 'other'
-      listener(msg)
-
-      expect(worker.postMessage.calledOnceWith(msg)).to.be.true
     })
   })
 

@@ -6,7 +6,7 @@ import { parentPort } from 'node:worker_threads'
 import { setTimeout } from 'node:timers'
 
 parentPort.on('message', msg => {
-  console.log(`Worker got msg: \n\t${msg}`)
+  console.log(`Worker got msg: \n\t${msg.type}`)
 })
 
 const delta = 5000

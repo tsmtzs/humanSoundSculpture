@@ -12,7 +12,7 @@ const addStartBtnPointerdownListeners = event => {
   const startBtn = document.querySelector(`#${PARAMETERS.ELEMENT_ID.START_BTN}`)
 
   startBtn.addEventListener('pointerdown', event => {
-    socket.send(startBtn.textContent)
+    socket.send(JSON.stringify({ type: startBtn.textContent }))
   })
   startBtn.addEventListener('pointerdown', event => {
     startBtn.textContent = startBtn.textContent === 'play' ? 'stop' : 'play'
@@ -26,7 +26,7 @@ const addShutdownBtnPointerEventListeners = event => {
 
   shutdownBtn.addEventListener('pointerdown', event => {
     id = setTimeout(() => {
-      socket.send('shutdown')
+      socket.send(JSON.stringify({ type: 'shutdown' }))
       shutdownBtn.textContent = 'HSS ended'
     },
     PARAMETERS.SHUTDOWN_WAIT_TIME
