@@ -22,10 +22,30 @@ const getOscMsgListener = (msgHandler, webSocketServer) => msg => {
 }
 
 const wsErrorListener = error => {
-	console.error('Something went wrong in WebSockets\n%d', error.stack)
+  console.error('Something went wrong in WebSockets\n%d', error.stack)
 }
 
-const getWsMsgListener = (sclang, oscPath, rootDir) => msg => {
+// const getWsMsgListener = (sclang, oscPath, rootDir) => msg => {
+//   const data = msg.toString()
+//   console.log('Client message: ', data)
+//   if (data === 'shutdown') {
+//     // On message 'shutdown' execute file 'killHSS.sh
+//     // OR USE sh /usr/bin/shutdown now
+//     child_process.exec('bin/killHSS.sh', { cwd: rootDir, shell: 'bash' }, (err, stdout, stderr) => {
+//       if (err) {
+//         throw new Error('Exec error')
+//       }
+
+//       console.log('Script killHSS.sh ecexuted')
+//     })
+//     console.log('PC is shutting down!')
+//     process.exit()
+//   } else {
+//     sclang.send(oscPath, data)
+//   }
+// }
+
+const getWsMsgListener = (worker, rootDir) => msg => {
   const data = msg.toString()
   console.log('Client message: ', data)
   if (data === 'shutdown') {
@@ -41,7 +61,7 @@ const getWsMsgListener = (sclang, oscPath, rootDir) => msg => {
     console.log('PC is shutting down!')
     process.exit()
   } else {
-    sclang.send(oscPath, data)
+    worker.postMessage(data)
   }
 }
 
@@ -58,10 +78,11 @@ const oscMsgHandler = aWebSocketServer => {
 }
 
 export {
-	appErrorListener,
-	getOscMsgListener,
-	wsErrorListener,
-	getWsMsgListener,
-	getWsConnectionListener,
-	oscMsgHandler
+  appErrorListener,
+  getOscMsgListener,
+  wsErrorListener,
+  getWsMsgListener,
+  getWsConnectionListener,
+  oscMsgHandler
 }
+
