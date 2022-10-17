@@ -6,10 +6,23 @@ import { parentPort } from 'node:worker_threads'
 import { setTimeout } from 'node:timers'
 import { DirectedGraph } from './directedGraph.mjs'
 
-// 0 -> rest, 1 -> C, 2 -> C# etc.
-const notes = [0, 11, 10, 1, 12, 4, 5, 2, 3, 7, 6, 9, 8]
-const amps = [0.35, 0.45, 0.35, 0.5, 0.35, 0.75, 0.35, 1, 0.35, 0.75, 0.35, 0.5, 0.35]
-const durs = [1, 0.5, 1, 2 / 3, 1, 0.75, 1, 5 / 6, 1, 0.75, 1, 2 / 3, 1]
+// freqs[0] -> C, freqs[1] -> C#, etc.
+const freqs = [
+  [523.2511306012, 1046.5022612024, 2093.0045224048],
+  [554.36526195374, 1108.7305239075, 2217.461047815],
+  [587.32953583482, 1174.6590716696, 2349.3181433393],
+  [622.25396744416, 1244.5079348883, 2489.0158697766],
+  [659.25511382574, 1318.5102276515, 2637.020455303],
+  [698.45646286601, 1396.912925732, 2793.825851464],
+  [739.98884542327, 1479.9776908465, 2959.9553816931],
+  [783.9908719635, 1567.981743927, 3135.963487854],
+  [830.60939515989, 1661.2187903198, 3322.4375806396],
+  [880, 1760, 3520],
+  [932.32752303618, 1864.6550460724, 3729.3100921447],
+  [987.76660251225, 1975.5332050245, 3951.066410049]
+]
+const amps = [0.35, 0.45, 0.35, 0.5, 0.35, 0.75, 0.35, 1, 0.35, 0.75, 0.35, 0.5]
+const durs = [1, 0.5, 1, 2 / 3, 1, 0.75, 1, 5 / 6, 1, 0.75, 1, 2 / 3]
 
 let ampMultiplier = 1.0
 let durMultiplier = 21
@@ -31,9 +44,12 @@ const adjacencyList = [
   [1, 2, 7, 8, 10, 12],
   [0, 2, 3, 8, 9, 11]
 ]
-const graph = new DirectedGraph(adjacencyList.length)
 
-adjacencyList.forEach((endVertices, startVertex)  => {
+const graph = new DirectedGraph(adjacencyList.length)
+const startVertice = 1
+const walk = graph.randomWalk(startVertice, Infinity)
+
+adjacencyList.forEach((endVertices, startVertex) => {
   endVertices.forEach(vertex => {
     graph.addEdge(startVertex, vertex)
   })
@@ -49,7 +65,7 @@ const msgListener = port => msg => {
       console.log('Worker got msg SHUTDOWN')
       port.close()
       process.exit()
-    },
+    }
   }
 
   // console.log('Worker', msg.type)
@@ -58,14 +74,28 @@ const msgListener = port => msg => {
 
 parentPort.on('message', msgListener(parentPort))
 
-const delta = 5000
-let id
-
-const loop = () => {
-  parentPort.postMessage({ type: 'msg', data: Math.random() })
-  setTimeout(loop, delta)
+function wait (ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-loop()
+async function randomTransition () {
+  for (const vertex of walk) {
+    if (vertex === -1) return
+
+    const dur = durs[vertex]
+
+    if (vertex !== 0) {
+      const freq = freqs[vertex - 1][Math.floor(Math.random() * 3)]
+      const amp = amps[vertex - 1]
+
+      parentPort.postMessage({ type: 'msg', data: [freq, amp, dur] })
+    }
+
+    const delta = dur * (0.75 + Math.random())
+    await wait(delta * 1000)
+  }
+}
+
+randomTransition()
 
 console.log('Inside WORKER')

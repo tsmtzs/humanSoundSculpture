@@ -50,7 +50,7 @@ server.listen({ port: webServerPort, host: ip }, () => { console.log('Server lis
 
 const worker = new Worker(workerURL)
 
-worker.on('message', msg => { console.log('Received msg from worker', msg, msg.data) })
+worker.on('message', msg => { console.log('Received msg from worker', msg) })
 worker.on('error', console.error)
 worker.on('exit', code => {
   if (code !== 0) {
