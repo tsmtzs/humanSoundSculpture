@@ -57,12 +57,17 @@ adjacencyList.forEach((endVertices, startVertex) => {
 
 console.log('Graph', graph.order, graph.size, graph.adj(0))
 
-const msgListener = port => msg => {
+const getMsgListener = port => msg => {
   const msgHandler = {
-    play: () => console.log('Worker got msg PLAY'),
-    stop: () => console.log('Worker got msg STOP'),
+    play: () => {
+      port.postMessage({ type: 'action', data: ['play'] })
+    },
+    stop: () => {
+      port.postMessage({ type: 'action', data: ['stop'] })
+    },
     shutdown: () => {
       console.log('Worker got msg SHUTDOWN')
+      port.postMessage({ type: 'action', data: ['shutdown'] })
       port.close()
       process.exit()
     }
@@ -72,7 +77,7 @@ const msgListener = port => msg => {
   msgHandler[msg.type]()
 }
 
-parentPort.on('message', msgListener(parentPort))
+parentPort.on('message', getMsgListener(parentPort))
 
 function wait (ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -82,7 +87,7 @@ async function randomTransition () {
   for (const vertex of walk) {
     if (vertex === -1) return
 
-    const dur = durs[vertex]
+    const dur = durs[vertex - 1] * 21
 
     if (vertex !== 0) {
       const freq = freqs[vertex - 1][Math.floor(Math.random() * 3)]
@@ -91,7 +96,7 @@ async function randomTransition () {
       parentPort.postMessage({ type: 'note', data: [freq, amp, dur] })
     }
 
-    const delta = dur * (0.75 + Math.random())
+    const delta = dur * (0.75 + Math.random() * 0.4)
     await wait(delta * 1000)
   }
 }

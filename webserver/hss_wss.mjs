@@ -21,7 +21,6 @@ class HSS_WSS extends WebSocketServer {
 	  .filter(client => client.readyState === WebSocket.OPEN)
     const size = validClients.length
 
-
     const client = validClients[Math.floor(Math.random() * size)]
 
     if (client) {

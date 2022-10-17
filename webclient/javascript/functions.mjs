@@ -21,8 +21,8 @@ const getRemoveElementListener = element => event => {
 
 const getWsMsgListener = msgHandlerObj => message => {
   const msg = JSON.parse(message.data)
-  msgHandlerObj[msg.type](...msg.args)
-  // console.log('Websocket message: ', msg.args, msg.type, msg)
+  msgHandlerObj[msg.type](...msg.data)
+  // console.log('Websocket message: ', msgHandlerObj)
 }
 
 export {
