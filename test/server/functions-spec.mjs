@@ -15,10 +15,9 @@ import child_process from 'child_process'
 
 import {
   appErrorListener,
-  getOscMsgListener,
+  getWorkerMsgListener,
   getWsMsgListener,
-  getWsConnectionListener,
-  oscMsgHandler
+  getWsConnectionListener
 } from '../../webserver/functions.mjs'
 
 describe('Tests for listener functions.', function () {
@@ -62,24 +61,21 @@ describe('Tests for listener functions.', function () {
     })
   })
 
-  describe("Function 'getOscMsgListener'.", function () {
+  describe("Function 'getWorkerMsgListener'.", function () {
     let listener
-    let msgHandler
     let webSocketServer
     let msg
 
     before(function () {
-      msg = ['test', 1, 2, 3]
-      webSocketServer = { }
+      msg = { type: 'action', data: [1, 2, 3] }
     })
 
     beforeEach(function () {
-      msgHandler = {
-	test: sinon.fake()
+      webSocketServer = {
+	broadcast: sinon.fake(),
+	sendToRandomClient: sinon.fake()
       }
-      sinon.spy(Object, 'assign')
-
-      listener = getOscMsgListener(msgHandler, webSocketServer)
+      listener = getWorkerMsgListener(webSocketServer)
     })
 
     afterEach(() => {
@@ -90,22 +86,19 @@ describe('Tests for listener functions.', function () {
       expect(listener instanceof Function).to.be.true
     })
 
-    it("The returned function, when called, should call the 'assign' method of 'Object', passing an object with property 'type' as first argument, and an object with property 'args' as second argument.", function () {
+    it("The returned function, when called passing an object with 'type: action', should call the method 'broadcast' of the first argument of 'getOscListener'.", function () {
       listener(msg)
 
-      expect(Object.assign.calledOnce).to.be.true
-
-      const args = Object.assign.args[0]
-      expect(args[0].type).to.equal(msg[0])
-      expect(args[1].args instanceof Array).to.be.true
+      expect(webSocketServer['broadcast'].calledOnce).to.be.true
+      expect(webSocketServer['broadcast'].firstArg).to.equal(JSON.stringify(msg))
     })
 
-    it("The returned function, when called, should call a method of the first argument of 'getOscListener'.", function () {
+    it("The returned function, when called passing an object with 'type: note', should call the method 'sendToRandomClient' of the first argument of 'getOscListener'.", function () {
+      msg.type = 'note'
       listener(msg)
 
-      expect(msgHandler['test'].calledOnce).to.be.true
-      expect(typeof msgHandler['test'].firstArg).to.equal('string')
-      expect(msgHandler['test'].lastArg).to.equal(webSocketServer)
+      expect(webSocketServer['sendToRandomClient'].calledOnce).to.be.true
+      expect(webSocketServer['sendToRandomClient'].firstArg).to.equal(JSON.stringify(msg))
     })
   })
 
@@ -199,40 +192,6 @@ describe('Tests for listener functions.', function () {
     it("The returned function, when called, should set the 'onerror' property of its argument.", function () {
       listener(webSocket)
       expect(webSocket.onerror).to.equal(errorListener)
-    })
-  })
-
-  describe("Function 'oscMsgHandler'.", function () {
-    let handler
-    let webSocketServer
-
-    beforeEach(function () {
-      webSocketServer = {
-	broadcast: sinon.fake(),
-	sendToRandomClient: sinon.fake()
-      }
-      handler = oscMsgHandler(webSocketServer)
-    })
-
-    afterEach(function () {
-      sinon.restore()
-    })
-
-    it("When called should return an object with keys '/action' and '/note'.", function () {
-      expect(handler['/action']).to.not.be.undefined
-      expect(handler['/note']).to.not.be.undefined
-    })
-
-    it("When the message '/action' is send to the returned object, the method 'broadcast' of function's argument should be called.", function () {
-      const data = 'msg'
-      handler['/action'](data)
-      expect(webSocketServer.broadcast.calledOnceWith(data)).to.be.true
-    })
-
-    it("When the message '/note' is send to the returned object, the method 'sendToRandomClient' of function's argument should be called.", function () {
-      const data = 'msg'
-      handler['/note'](data)
-      expect(webSocketServer.sendToRandomClient.calledOnceWith(data)).to.be.true
     })
   })
 })

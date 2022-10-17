@@ -88,7 +88,7 @@ async function randomTransition () {
       const freq = freqs[vertex - 1][Math.floor(Math.random() * 3)]
       const amp = amps[vertex - 1]
 
-      parentPort.postMessage({ type: 'msg', data: [freq, amp, dur] })
+      parentPort.postMessage({ type: 'note', data: [freq, amp, dur] })
     }
 
     const delta = dur * (0.75 + Math.random())
