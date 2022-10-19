@@ -1,7 +1,7 @@
 // ////////////////////////////////////////////////////////////
 // Human Sound Sculpture
 //
-// This object handles the succession of the notes of the piece.
+// This object handles the succession of the notes.
 // ////////////////////////////////////////////////////////////
 class NoteWalk {
   freqs
@@ -10,11 +10,13 @@ class NoteWalk {
   ampMultiplier
   durMultiplier
   delta
+  startVertex
+  steps
   #isNotPlaying = true
   #graph
   #port
 
-  constructor ({freqs, amps, durs, ampMultiplier, durMultiplier, delta, port, graph } = {}) {
+  constructor ({freqs, amps, durs, ampMultiplier, durMultiplier, delta, port, graph, startVertex, steps } = {}) {
     if (port === undefined || graph === undefined) {
       throw new Error("You must pass a MessagePort with the key 'port', and a DirectedGraph with the key 'graph'.")
     }
@@ -28,11 +30,16 @@ class NoteWalk {
 
     this.#graph = graph
     this.#port = port
+
+    this.startVertex = startVertex ?? 1
+    this.steps = steps ?? Infinity
   }
 
   play (startVertex = 1, steps = Infinity) {
     if (this.#isNotPlaying) {
-      const walk = this.#graph.randomWalk(startVertex, steps)
+      const start = startVertex ?? this.startVertex
+      const length = steps ?? this.steps
+      const walk = this.#graph.randomWalk(start, steps)
 
       this.#isNotPlaying = false
       this.#startRandomWalk(walk)
