@@ -5,6 +5,7 @@
 import { parentPort } from 'node:worker_threads'
 import { setTimeout } from 'node:timers'
 import { DirectedGraph } from './directedGraph.mjs'
+import { NoteWalk } from './noteWalk.mjs'
 
 // freqs[0] -> C, freqs[1] -> C#, etc.
 const freqs = [
@@ -25,7 +26,7 @@ const amps = [0.35, 0.45, 0.35, 0.5, 0.35, 0.75, 0.35, 1, 0.35, 0.75, 0.35, 0.5]
 const durs = [1, 0.5, 1, 2 / 3, 1, 0.75, 1, 5 / 6, 1, 0.75, 1, 2 / 3]
 
 let ampMultiplier = 1.0
-let durMultiplier = 21
+let durMultiplier = 1.0
 let deltaMultiplier = Math.random()
 
 // The adjacency list defines a Paley graph of order 13.
@@ -46,8 +47,8 @@ const adjacencyList = [
 ]
 
 const graph = new DirectedGraph(adjacencyList.length)
-const startVertice = 1
-const walk = graph.randomWalk(startVertice, Infinity)
+const startVertex = 1
+const walk = graph.randomWalk(startVertex, Infinity)
 
 adjacencyList.forEach((endVertices, startVertex) => {
   endVertices.forEach(vertex => {
@@ -79,28 +80,19 @@ const getMsgListener = port => msg => {
 
 parentPort.on('message', getMsgListener(parentPort))
 
-function wait (ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
+const delta = dur => dur * ( 1 + Math.random()) * 0.5
+const noteWalk = new NoteWalk({ freqs, amps, durs, ampMultiplier, durMultiplier, delta, port: parentPort, graph })
 
-async function randomTransition () {
-  for (const vertex of walk) {
-    if (vertex === -1) return
+noteWalk.play(startVertex, Infinity)
 
-    const dur = durs[vertex - 1] * 21
+setTimeout(() => {
+  console.log('After 5s')
+  noteWalk.stop()
+}, 5 * 1000)
 
-    if (vertex !== 0) {
-      const freq = freqs[vertex - 1][Math.floor(Math.random() * 3)]
-      const amp = amps[vertex - 1]
-
-      parentPort.postMessage({ type: 'note', data: [freq, amp, dur] })
-    }
-
-    const delta = dur * (0.75 + Math.random() * 0.4)
-    await wait(delta * 1000)
-  }
-}
-
-randomTransition()
+setTimeout(() => {
+  console.log('After 8s')
+  noteWalk.play(1, 10)
+}, 8 * 1000)
 
 console.log('Inside WORKER')
