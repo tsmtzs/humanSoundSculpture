@@ -59,7 +59,7 @@ adjacencyList.forEach((endVertices, startVertex) => {
 const delta = dur => dur * ( 1 + Math.random()) * 0.5
 const noteWalk = new NoteWalk({ freqs, amps, durs, ampMultiplier, durMultiplier, delta, port: parentPort, graph, startVertex, steps })
 
-const getMsgListener = (port, noteWalk) => msg => {
+const getMsgListener = (port, noteWalk) => {
   const msgHandler = {
     play: () => {
       port.postMessage({ type: 'action', data: ['play'] })
@@ -67,9 +67,9 @@ const getMsgListener = (port, noteWalk) => msg => {
     },
     stop: () => {
       port.postMessage({ type: 'action', data: ['stop'] })
+      noteWalk.stop()
     },
     shutdown: () => {
-      console.log('Worker got msg SHUTDOWN')
       port.postMessage({ type: 'action', data: ['shutdown'] })
       noteWalk.stop()
       port.close()
@@ -77,22 +77,9 @@ const getMsgListener = (port, noteWalk) => msg => {
     }
   }
 
-  // console.log('Worker', msg.type)
-  msgHandler[msg.type]()
+  return msg => {
+    msgHandler[msg.type]()
+  }
 }
 
-parentPort.on('message', getMsgListener(parentPort))
-
-noteWalk.play()
-
-// setTimeout(() => {
-//   console.log('After 5s')
-//   noteWalk.stop()
-// }, 5 * 1000)
-
-// setTimeout(() => {
-//   console.log('After 8s')
-//   noteWalk.play()
-// }, 8 * 1000)
-
-console.log('Inside WORKER')
+parentPort.on('message', getMsgListener(parentPort, noteWalk))
