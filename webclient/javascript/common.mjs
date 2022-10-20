@@ -51,6 +51,9 @@ const addTestSoundBtnListeners = event => {
   soundTestButton.addEventListener('pointerup', event => {
     synth.stop()
   })
+  soundTestButton.addEventListener('pointerleave', event => {
+    synth.stop()
+  })
 }
 
 const wsMsgHandler = {
