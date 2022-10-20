@@ -8,6 +8,7 @@
 // journalctl -u hss-web-server -f
 // in a terminal to see log messages.
 // ////////////////////////////////////////////////////////////
+import { PARAMETERS } from './parameters.mjs'
 import fs from 'fs'
 import path from 'path'
 import process from 'process'
@@ -29,7 +30,6 @@ const credentials = {
   key: fs.readFileSync(path.join(rootDir, 'certs/hss-key.pem'), 'utf8'),
   cert: fs.readFileSync(path.join(rootDir, 'certs/hss-crt.pem'), 'utf8')
 }
-const PARAMETERS = JSON.parse(fs.readFileSync(path.join(rootDir, 'webserver/parameters.json'), 'utf8'))
 
 const ip = argv.ip ?? PARAMETERS.IP ?? 'localhost'
 const webServerPort = argv.port ?? PARAMETERS.WEB_SERVER_PORT ?? 8080

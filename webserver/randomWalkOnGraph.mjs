@@ -2,13 +2,39 @@
 // Human Sound Sculpture
 //
 // ////////////////////////////////////////////////////////////
+import { PARAMETERS } from './parameters.mjs'
 import { parentPort } from 'node:worker_threads'
 import { setTimeout } from 'node:timers'
 import { DirectedGraph } from './directedGraph.mjs'
 import { NoteWalk } from './noteWalk.mjs'
 
+// The adjacency list defines a Paley graph of order 13.
+const adjacencyList = PARAMETERS.NOTE_WALK.ADJACENCY_LIST
+      ?? [
+	[1, 3, 4, 9, 10, 12],
+	[0, 2, 4, 5, 10, 11],
+	[1, 3, 5, 6, 11, 12],
+	[0, 2, 4, 6, 7, 12],
+	[0, 1, 3, 5, 7, 8],
+	[1, 2, 4, 6, 8, 9],
+	[2, 3, 5, 7, 9, 10],
+	[3, 4, 6, 8, 10, 11],
+	[4, 5, 7, 9, 11, 12],
+	[0, 5, 6, 8, 10, 12],
+	[0, 1, 6, 7, 9, 11],
+	[1, 2, 7, 8, 10, 12],
+	[0, 2, 3, 8, 9, 11]
+      ]
+const graph = new DirectedGraph(adjacencyList.length)
+
+adjacencyList.forEach((endVertices, startVertex) => {
+  endVertices.forEach(vertex => {
+    graph.addEdge(startVertex, vertex)
+  })
+})
+
 // freqs[0] -> C, freqs[1] -> C#, etc.
-const freqs = [
+const freqs = PARAMETERS.NOTE_WALK.FREQS ?? [
   [523.2511306012, 1046.5022612024, 2093.0045224048],
   [554.36526195374, 1108.7305239075, 2217.461047815],
   [587.32953583482, 1174.6590716696, 2349.3181433393],
@@ -22,41 +48,13 @@ const freqs = [
   [932.32752303618, 1864.6550460724, 3729.3100921447],
   [987.76660251225, 1975.5332050245, 3951.066410049]
 ]
-const amps = [0.35, 0.45, 0.35, 0.5, 0.35, 0.75, 0.35, 1, 0.35, 0.75, 0.35, 0.5]
-const durs = [1, 0.5, 1, 2 / 3, 1, 0.75, 1, 5 / 6, 1, 0.75, 1, 2 / 3]
-
-let ampMultiplier = 1.0
-let durMultiplier = 1.0
-let deltaMultiplier = Math.random()
-
-// The adjacency list defines a Paley graph of order 13.
-const adjacencyList = [
-  [1, 3, 4, 9, 10, 12],
-  [0, 2, 4, 5, 10, 11],
-  [1, 3, 5, 6, 11, 12],
-  [0, 2, 4, 6, 7, 12],
-  [0, 1, 3, 5, 7, 8],
-  [1, 2, 4, 6, 8, 9],
-  [2, 3, 5, 7, 9, 10],
-  [3, 4, 6, 8, 10, 11],
-  [4, 5, 7, 9, 11, 12],
-  [0, 5, 6, 8, 10, 12],
-  [0, 1, 6, 7, 9, 11],
-  [1, 2, 7, 8, 10, 12],
-  [0, 2, 3, 8, 9, 11]
-]
-
-const graph = new DirectedGraph(adjacencyList.length)
-const startVertex = 1
-const steps = Infinity
-
-adjacencyList.forEach((endVertices, startVertex) => {
-  endVertices.forEach(vertex => {
-    graph.addEdge(startVertex, vertex)
-  })
-})
-
-const delta = dur => dur * ( 1 + Math.random()) * 0.5
+const amps = PARAMETERS.NOTE_WALK.AMPS ?? [0.35, 0.45, 0.35, 0.5, 0.35, 0.75, 0.35, 1, 0.35, 0.75, 0.35, 0.5]
+const durs = PARAMETERS.NOTE_WALK.DURS ?? [1, 0.5, 1, 2 / 3, 1, 0.75, 1, 5 / 6, 1, 0.75, 1, 2 / 3]
+const ampMultiplier = PARAMETERS.NOTE_WALK.AMP_MULTIPLIER ?? 1.0
+const durMultiplier = PARAMETERS.NOTE_WALK.DUR_MULTIPLIER ?? 1.0
+const delta = PARAMETERS.NOTE_WALK.DELTA ?? (dur => dur * ( 1 + Math.random()) * 0.5)
+const startVertex = PARAMETERS.NOTE_WALK.START_VERTEX ?? 1
+const steps = PARAMETERS.NOTE_WALK.STEPS ?? Infinity
 const noteWalk = new NoteWalk({ freqs, amps, durs, ampMultiplier, durMultiplier, delta, port: parentPort, graph, startVertex, steps })
 
 const getMsgListener = (port, noteWalk) => {
