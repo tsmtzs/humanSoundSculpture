@@ -13,22 +13,28 @@ const appErrorListener = (err, req, res, next) => {
   res.status(500).send('Oops! Something went wrong.')
 }
 
-// OSC messages: SuperCollider => web server
-const getOscMsgListener = (msgHandler, webSocketServer) => msg => {
-  const msgObj = { type: msg[0] }
-  Object.assign(msgObj, { args: msg.slice(1) })
-  msgHandler[msgObj.type](JSON.stringify(msgObj), webSocketServer)
-  console.log('Recieved SC message:\n', msgObj)
+const getWorkerMsgListener = aWebSocketServer => {
+  const msgHandler = {
+    action: data => aWebSocketServer.broadcast(data),
+    note: data => aWebSocketServer.sendToRandomClient(data)
+  }
+
+  return msg => {
+    msgHandler[msg.type](JSON.stringify(msg))
+    console.log('Recieved worker message: ', msg)
+  }
 }
 
 const wsErrorListener = error => {
-	console.error('Something went wrong in WebSockets\n%d', error.stack)
+  console.error('Something went wrong in WebSockets\n%d', error.stack)
 }
 
-const getWsMsgListener = (sclang, oscPath, rootDir) => msg => {
-  const data = msg.toString()
-  console.log('Client message: ', data)
-  if (data === 'shutdown') {
+const getWsMsgListener = (worker, rootDir) => msg => {
+  const data = JSON.parse(msg)
+  // console.log('Client message: ', data)
+  worker.postMessage(data)
+
+  if (data.type === 'shutdown') {
     // On message 'shutdown' execute file 'killHSS.sh
     // OR USE sh /usr/bin/shutdown now
     child_process.exec('bin/killHSS.sh', { cwd: rootDir, shell: 'bash' }, (err, stdout, stderr) => {
@@ -36,12 +42,10 @@ const getWsMsgListener = (sclang, oscPath, rootDir) => msg => {
         throw new Error('Exec error')
       }
 
-      console.log('Script killHSS.sh ecexuted')
+      // console.log('Script killHSS.sh ecexuted')
     })
-    console.log('PC is shutting down!')
+    // console.log('PC is shutting down!')
     process.exit()
-  } else {
-    sclang.send(oscPath, data)
   }
 }
 
@@ -50,18 +54,10 @@ const getWsConnectionListener = (errorListener, msgListener) => aWebSocket => {
   aWebSocket.onerror = errorListener
 }
 
-const oscMsgHandler = aWebSocketServer => {
-  return {
-    '/action': data => aWebSocketServer.broadcast(data),
-    '/note': data => aWebSocketServer.sendToRandomClient(data)
-  }
-}
-
 export {
-	appErrorListener,
-	getOscMsgListener,
-	wsErrorListener,
-	getWsMsgListener,
-	getWsConnectionListener,
-	oscMsgHandler
+  appErrorListener,
+  getWorkerMsgListener,
+  wsErrorListener,
+  getWsMsgListener,
+  getWsConnectionListener
 }

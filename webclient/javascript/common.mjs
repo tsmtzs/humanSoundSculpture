@@ -54,13 +54,13 @@ const addTestSoundBtnListeners = event => {
 }
 
 const wsMsgHandler = {
-  '/note': (freq, amp, dur) => {
+  note: (freq, amp, dur) => {
     WaveShaper.of({ freq, amp, dur, wave: shaperFunction, context: audioContext })
       .play()
   },
-  // '/action': do something on messages of type 'start', 'stop', 'end', 'shutdown'.
+  // 'action: do something on messages of type 'start', 'stop', 'end', 'shutdown'.
   // Do nothing for now.
-  '/action': () => {}
+  action: () => {}
 }
 
 const addWsMsgListenerTo = aWebSocket => {
