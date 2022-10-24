@@ -62,25 +62,15 @@ if [ $(1) != $(2) ]; then \
 fi
 endef
 
+VPATH = src/conf:src/systemd
+
 .PHONY: all
 
 all : systemd/10-$(WIFI_INTERFACE).network conf/hostapd-$(WIFI_INTERFACE).conf \
 	webserver public certs/hss-key.pem
 
-systemd/10-$(WIFI_INTERFACE).network : systemd
-	@$(call renameIfNotEqual,$(wildcard $</10*.network),$@)
-
-conf/hostapd-$(WIFI_INTERFACE).conf : conf
-	@$(call renameIfNotEqual,$(wildcard $</hostapd-*.conf),$@)
-
 webserver : $(CURDIR)/src/webserver/*.js
 	@$(call mkdirAndCopySetVars,webserver)
-
-systemd : $(CURDIR)/src/systemd/*
-	@$(call mkdirAndCopySetVars,systemd)
-
-conf : $(CURDIR)/src/conf/*
-	@$(call mkdirAndCopySetVars,conf)
 
 public : $(CURDIR)/src/public/*
 	@mkdir public; \
@@ -93,8 +83,27 @@ public : $(CURDIR)/src/public/*
 	  fi; \
 	done
 
-certs :
-	@mkdir certs
+
+systemd/10-$(WIFI_INTERFACE).network : 10-wifi.network systemd
+	envsubst < $< > $@
+
+systemd/dhcpd4@.service : dhcpd4@.service systemd
+	envsubst < $< > $@
+
+systemd/hostapd@.service : hostapd@.service systemd
+	envsubst < $< > $@
+
+systemd/hss-web-server.service : hss-web-server.service systemd
+	envsubst < $< > $@
+
+conf/dhcpd.conf : dhcpd.conf conf
+	envsubst < $< > $@
+
+conf/hostapd-$(WIFI_INTERFACE).conf: hostapd.conf conf
+	envsubst < $< > $@
+
+conf systemd certs:
+	@mkdir $@
 
 certs/hss-key.pem certs/hss-crt.pem &: certs
 	@mkcert -key-file $^/hss-key.pem -cert-file $^/hss-crt.pem localhost $(HSS_IP)
