@@ -1,6 +1,12 @@
+// ////////////////////////////////////////////////////////////
+// Human Sound Sculpture
+//    by Tassos Tsesmetzis
+// ////////////////////////////////////////////////////////////
+import { ORIGIN } from './origin.mjs'
+
 const PARAMETERS = {
-  IP: "192.168.10.6",
-  WEB_SERVER_PORT: 3000,
+  IP: ORIGIN.IP ?? "192.168.10.6",
+  WEB_SERVER_PORT: ORIGIN.PORT ?? 3000,
   NOTE_WALK: {
     ADJACENCY_LIST: [
       [1, 3, 4, 9, 10, 12],

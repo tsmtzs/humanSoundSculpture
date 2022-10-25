@@ -1,9 +1,9 @@
 # ####################################################################################################
 #	Human Sound Sculpture
 # ####################################################################################################
-SHELL = /bin/sh
+VPATH = src/conf:src/systemd:src/web
 
-export HSS_IP = 192.168.1.65
+export HSS_IP = 192.168.10.6
 export HSS_HTTP_PORT = 3000
 
 # Find the name of the wifi interface
@@ -43,46 +43,13 @@ export NODE_PATH := $(shell which node)
 export DHCP_PATH := $(shell which dhcpd)
 export HOSTAPD_PATH := $(shell which hostapd)
 
-# ####################################################################################################
-define copyAndSetVars =
-envsubst < $(1) > $(CURDIR)/$(2)/$$(basename $(1));
-endef
-
-define mkdirAndCopySetVars =
-mkdir $(CURDIR)/$(1); \
-dirName=$(1); \
-for file in $(CURDIR)/src/$(1)/*; do \
- $(call copyAndSetVars,$$file,$$dirName) \
-done
-endef
-
-define renameIfNotEqual =
-if [ $(1) != $(2) ]; then \
-  mv $(1) $(2); \
-fi
-endef
-
-VPATH = src/conf:src/systemd
-
 .PHONY: all
 
 all : systemd/10-$(WIFI_INTERFACE).network conf/hostapd-$(WIFI_INTERFACE).conf \
 	webserver public certs/hss-key.pem
 
-webserver : $(CURDIR)/src/webserver/*.js
-	@$(call mkdirAndCopySetVars,webserver)
-
-public : $(CURDIR)/src/public/*
-	@mkdir public; \
-	for file in $(CURDIR)/src/public/*; do \
-	  name=$$(basename $$file); \
-	  if [ -d $$file ]; then \
-	    $(call mkdirAndCopySetVars,public/$$name); \
-	  else \
-	    $(call copyAndSetVars,$$file,public) \
-	  fi; \
-	done
-
+webserver/origin.mjs webclient/javascript/origin.mjs: origin-src.mjs
+	envsubst < $< > $@
 
 systemd/10-$(WIFI_INTERFACE).network : 10-wifi-src.network systemd
 	envsubst < $< > $@
