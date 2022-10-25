@@ -84,22 +84,22 @@ public : $(CURDIR)/src/public/*
 	done
 
 
-systemd/10-$(WIFI_INTERFACE).network : 10-wifi.network systemd
+systemd/10-$(WIFI_INTERFACE).network : 10-wifi-src.network systemd
 	envsubst < $< > $@
 
-systemd/dhcpd4@.service : dhcpd4@.service systemd
+systemd/dhcpd4@.service : dhcpd4@-src.service systemd
 	envsubst < $< > $@
 
-systemd/hostapd@.service : hostapd@.service systemd
+systemd/hostapd@.service : hostapd@-src.service systemd
 	envsubst < $< > $@
 
-systemd/hss-web-server.service : hss-web-server.service systemd
+systemd/hss-web-server.service : hss-web-server-src.service systemd
 	envsubst < $< > $@
 
-conf/dhcpd.conf : dhcpd.conf conf
+conf/dhcpd.conf : dhcpd-src.conf conf
 	envsubst < $< > $@
 
-conf/hostapd-$(WIFI_INTERFACE).conf: hostapd.conf conf
+conf/hostapd-$(WIFI_INTERFACE).conf: hostapd-src.conf conf
 	envsubst < $< > $@
 
 conf systemd certs:
