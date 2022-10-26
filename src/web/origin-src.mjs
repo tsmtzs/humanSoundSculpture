@@ -3,8 +3,8 @@
 //    by Tassos Tsesmetzis
 // ////////////////////////////////////////////////////////////
 const ORIGIN = {
-  IP: '$HSS_IP',
-  PORT: $HSS_HTTP_PORT
+  IP: '${HSS_IP}',
+  PORT: ${HSS_HTTP_PORT}
 }
 
 export { ORIGIN }

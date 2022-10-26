@@ -12,13 +12,13 @@
 
 [Unit]
 Description=Human Sound Sculpture - Web server
-Documentation=file:$HSS_DIR/README.md
+Documentation=file:${HSS_DIR}/README.md
 Wants=network-online.target
 After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=$NODE_PATH $HSS_DIR/webserver/server.mjs --root-dir $HSS_DIR
+ExecStart=${NODE_PATH} ${HSS_DIR}/webserver/server.mjs --root-dir ${HSS_DIR}
 Restart=on-failure
 NoNewPrivileges=true
 ProtectSystem=strict

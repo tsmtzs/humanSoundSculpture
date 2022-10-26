@@ -3,14 +3,25 @@
 # ####################################################################################################
 VPATH = src/conf:src/systemd:src/web
 
-export HSS_IP = 192.168.10.6
-export HSS_HTTP_PORT = 3000
+# userHome should be the value of user's $HOME.
+# It is used in the target 'install' to copy
+# the web server user service file to ~/.config/systemd/user.
+# Since this target is build with superuser privileges,
+# $HOME will be /. Hence, defining
+#	userHome := $(shell echo $$HOME) WAN'T WORK
+userHome := /home/pi
+
+export HSS_HTTP_PORT := 3000
+export WIFI_NAME := pi
+export WIFI_COUNTRYCODE := GR
+
+export HSS_IP := $(shell ip addr show | grep -A 10 -e '\<w[[:alnum:]]\+' | grep -o '\<inet \([[:digit:]]\{1,3\}.\)\{3\}[[:digit:]]\{1,3\}' | cut -d ' ' -f 2)
 
 # Find the name of the wifi interface
 # with the shell command
 #     ip link show
 # Normaly, the name should start with a 'w'.
-export WIFI_INTERFACE = wlan0
+export WIFI_INTERFACE := $(shell ip link show | grep -o -e '\<w[[:alnum:]]\+')
 
 # The mac address of the wifi interface, can
 # be found with the shell command
@@ -20,18 +31,7 @@ export WIFI_INTERFACE = wlan0
 # will print the MAC address on the second line.
 # It is a series of hexadecimal bytes
 # separated by colons just after `link/ether`.
-export WIFI_MACADDRESS = b8:27:eb:1e:2c:8d
-
-export WIFI_NAME = pi
-export WIFI_COUNTRYCODE = GR
-
-# userHome should be the value of user's $HOME.
-# It is used in the target 'install' to copy
-# the web server user service file to ~/.config/systemd/user.
-# Since this target is build with superuser privileges,
-# $HOME will be /. Hence, defining
-#	userHome := $(shell echo $$HOME) WAN'T WORK
-userHome := /home/pi
+export WIFI_MACADDRESS := $(shell ip addr show | grep -A 10 -e '\<w[[:alnum:]]' | grep -o '\<link/ether \([[:alnum:]]\{2\}:\)\{5\}[[:alnum:]]\{2\}' | cut -d ' ' -f 2)
 
 export HSS_DIR := $(CURDIR)
 
@@ -87,7 +87,7 @@ install : installTLSCert
 	&& cp -i systemd/10-$(WIFI_INTERFACE).network /lib/systemd/network/ \
 	&& cp -i systemd/dhcpd4@.service $$systemServiceDir \
 	&& cp -i systemd/hostapd@.service $$systemServiceDir \
-	&& cp -i $(CURDIR)/conf/dhcpd.conf /etc/dhcp/ \
+	&& cp -i conf/dhcpd.conf /etc/dhcp/ \
 	&& cp -i --preserve=all systemd/hss-web-server.service $(userHome)/.config/systemd/user/
 
 # install : installTLSCert
