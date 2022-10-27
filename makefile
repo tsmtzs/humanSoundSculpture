@@ -8,14 +8,14 @@ VPATH = src/conf:src/systemd:src/web
 # the web server user service file to ~/.config/systemd/user.
 # Since this target is build with superuser privileges,
 # $HOME will be /. Hence, defining
-#	userHome := $(shell echo $$HOME) WAN'T WORK
+#	userHome := $(shell echo $$HOME) WON'T WORK
 userHome := /home/pi
 
 export HSS_HTTP_PORT := 3000
 export WIFI_NAME := pi
 export WIFI_COUNTRYCODE := GR
 
-export HSS_IP := $(shell ip addr show | grep -A 10 -e '\<w[[:alnum:]]\+' | grep -o '\<inet \([[:digit:]]\{1,3\}.\)\{3\}[[:digit:]]\{1,3\}' | cut -d ' ' -f 2)
+export HSS_IP := 192.168.10.1
 
 # Find the name of the wifi interface
 # with the shell command
@@ -84,20 +84,13 @@ conf systemd certs:
 
 install : installTLSCert
 	@systemServiceDir=/lib/systemd/system/ \
+	userServiceDir=$(userHome)/.config/systemd/user; \
+	if [ ! -d  $$userServiceDir ]; then mkdir -p $$userServiceDir; fi \
 	&& cp -i systemd/10-$(WIFI_INTERFACE).network /lib/systemd/network/ \
 	&& cp -i systemd/dhcpd4@.service $$systemServiceDir \
 	&& cp -i systemd/hostapd@.service $$systemServiceDir \
 	&& cp -i conf/dhcpd.conf /etc/dhcp/ \
 	&& cp -i --preserve=all systemd/hss-web-server.service $(userHome)/.config/systemd/user/
-
-# install : installTLSCert
-# 	@systemdPath=$(CURDIR)/systemd; \
-# 	systemServiceDir=/lib/systemd/system/; \
-# 	cp -i $$systemdPath/10-$(WIFI_INTERFACE).network /lib/systemd/network/; \
-# 	cp -i $$systemdPath/dhcpd4@.service $$systemServiceDir; \
-# 	cp -i $$systemdPath/hostapd@.service $$systemServiceDir; \
-# 	cp -i $(CURDIR)/conf/dhcpd.conf /etc/dhcp/; \
-# 	cp -i --preserve=all $$systemdPath/hss-web-server.service $(userHome)/.config/systemd/user/;
 
 installTLSCert : certs/hss-key.pem certs/hss-crt.pem
 	@mkcert -install
@@ -105,17 +98,10 @@ installTLSCert : certs/hss-key.pem certs/hss-crt.pem
 uninstall :
 	@systemServiceDir=/lib/systemd/system \
 	&& rm -i /lib/systemd/network/10-$(WIFI_INTERFACE).network \
-	&& rm -i $$systemServiceDir/{dhcpd4@.service,hostapd@.service}.service \
-	&& rm /etc/dhcp/dhcpd-hss.conf \
-	&& rm -r $(userHome)/.config/systemd/user/hss-web-server.service
-
-
-# uninstall :
-# 	@systemServiceDir=/lib/systemd/system; \
-# 	rm -i /lib/systemd/network/10-$(WIFI_INTERFACE).network; \
-# 	rm -i $$systemServiceDir/{dhcpd4@.service,hostapd@.service,hss-web-server}.service; \
-# 	rm /etc/dhcp/dhcpd-hss.conf; \
-# 	rm -r $(userHome)/.config/systemd/user/hss-supercollider.service
+	&& rm -i $$systemServiceDir/dhcpd4@.service \
+	&& rm -i $$systemServiceDir/hostapd@.service \
+	&& rm -i /etc/dhcp/dhcpd.conf \
+	&& rm $(userHome)/.config/systemd/user/hss-web-server.service
 
 clean :
 	@rm -r webserver/origin.mjs systemd conf certs webclient/javascript/origin.mjs
