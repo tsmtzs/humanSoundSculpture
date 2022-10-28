@@ -10,5 +10,5 @@
 Name=${WIFI_INTERFACE}
 
 [Network]
-Address=${HSS_NETWORK}0/24
+Address=${HSS_IP}/24
 # DHCPServer=yes

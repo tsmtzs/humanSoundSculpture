@@ -11,11 +11,11 @@ VPATH = src/conf:src/systemd:src/web
 #	userHome := $(shell echo $$HOME) WON'T WORK
 userHome := /home/pi
 
-export HSS_HTTP_PORT := 3000
+export HSS_HTTP_PORT := 443
 export WIFI_NAME := pi
 export WIFI_COUNTRYCODE := GR
 
-export HSS_IP := 192.168.10.1
+export HSS_IP := 192.168.1.1
 
 # Find the name of the wifi interface
 # with the shell command
@@ -83,25 +83,20 @@ conf systemd certs:
 .PHONY: install installTLSCert uninstall clean
 
 install : installTLSCert
-	@systemServiceDir=/lib/systemd/system/ \
-	userServiceDir=$(userHome)/.config/systemd/user; \
-	if [ ! -d  $$userServiceDir ]; then mkdir -p $$userServiceDir; fi \
-	&& cp -i systemd/10-$(WIFI_INTERFACE).network /lib/systemd/network/ \
-	&& cp -i systemd/dhcpd4@.service $$systemServiceDir \
-	&& cp -i systemd/hostapd@.service $$systemServiceDir \
-	&& cp -i conf/dhcpd.conf /etc/dhcp/ \
-	&& cp -i --preserve=all systemd/hss-web-server.service $(userHome)/.config/systemd/user/
+	@systemServiceDir=/lib/systemd/system/; \
+	cp -i systemd/10-$(WIFI_INTERFACE).network /lib/systemd/network/; \
+	cp -i systemd/dhcpd4@.service systemd/hostapd@.service systemd/hss-web-server.service $$systemServiceDir; \
+	cp -i conf/dhcpd.conf /etc/dhcp/; \
+	cp -i conf/hostapd-$(WIFI_INTERFACE).conf /etc/hostapd/
 
 installTLSCert : certs/hss-key.pem certs/hss-crt.pem
 	@mkcert -install
 
-uninstall :
-	@systemServiceDir=/lib/systemd/system \
-	&& rm -i /lib/systemd/network/10-$(WIFI_INTERFACE).network \
-	&& rm -i $$systemServiceDir/dhcpd4@.service \
-	&& rm -i $$systemServiceDir/hostapd@.service \
-	&& rm -i /etc/dhcp/dhcpd.conf \
-	&& rm $(userHome)/.config/systemd/user/hss-web-server.service
 
+uninstall :
+	@systemServiceDir=/lib/systemd/system; \
+	rm -i /lib/systemd/network/10-$(WIFI_INTERFACE).network $$systemServiceDir/dhcpd4@.service \
+	$$systemServiceDir/hostapd@.service $$systemServiceDir/hss-web-server.service /etc/dhcp/dhcpd.conf \
+	/etc/hostapd/hostapd-$(WIFI_INTERFACE).conf
 clean :
 	@rm -r webserver/origin.mjs systemd conf certs webclient/javascript/origin.mjs
