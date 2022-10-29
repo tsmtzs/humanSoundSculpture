@@ -11,11 +11,11 @@ VPATH = src/conf:src/systemd:src/web
 #	userHome := $(shell echo $$HOME) WON'T WORK
 userHome := /home/pi
 
-export HSS_HTTP_PORT := 443
+export HSS_HTTP_PORT := 3000
 export WIFI_NAME := pi
 export WIFI_COUNTRYCODE := GR
 
-export HSS_IP := 192.168.1.1
+export HSS_IP := 192.168.10.6
 
 # Find the name of the wifi interface
 # with the shell command
@@ -91,7 +91,6 @@ install : installTLSCert
 
 installTLSCert : certs/hss-key.pem certs/hss-crt.pem
 	@mkcert -install
-
 
 uninstall :
 	@systemServiceDir=/lib/systemd/system; \

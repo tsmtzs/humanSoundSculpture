@@ -4,7 +4,8 @@
 // This file collects listener functions.
 // ////////////////////////////////////////////////////////////
 import process from 'process'
-import child_process from 'child_process'
+// import child_process from 'child_process'
+import { exec } from 'node:child_process'
 
 // Event listeners.
 // error handling - from https://expressjs.com/en/guide/error-handling.html
@@ -35,9 +36,14 @@ const getWsMsgListener = (worker, rootDir) => msg => {
   worker.postMessage(data)
 
   if (data.type === 'shutdown') {
-    // On message 'shutdown' execute file 'killHSS.sh
-    // OR USE sh /usr/bin/shutdown now
-    child_process.exec('bin/killHSS.sh', { cwd: rootDir, shell: 'bash' }, (err, stdout, stderr) => {
+    // On message 'shutdown', shutdown the computer.
+    // Current user should have sudo privileges for this to work.
+    // Type 'sudo visudo' in a terminal. An editor will open the
+    // file /etc/sudoers.
+    // Append at the end of this file:
+    // <USER> ALL=NOPASSWD: /usr/bin/systemctl poweroff,/usr/bin/systemctl reboot
+    // where <USER> is the current user.
+    exec('sudo systemctl poweroff', (err, stdout, stderr) => {
       if (err) {
         throw new Error('Exec error')
       }
