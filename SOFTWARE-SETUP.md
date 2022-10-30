@@ -16,7 +16,7 @@
 connect with their smartphone and visit the website of the piece. A
 dedicated computer assigns IP addresses to clients, runs the web server and
 generates note events. All software configuration should be
-done on this computer. We have used the `Raspberry Pi model B+` single board
+done on that computer. We have used the `Raspberry Pi model B+` single board
 computer with the `Raspberry Pi OS Lite` operating system. The following sections
 offer the details for setting up the piece.
 All commands assume the `Raspberry Pi OS`. They should work on every `Debian` based
@@ -49,7 +49,7 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo apt-get install isc-dhcp-server
 	```
 
-4. [`node.js`](https://nodejs.org/) (version `10.21.0`)
+4. [`node.js`](https://nodejs.org/) (version `16.18.0`)
 
 	`node.js` is a `JavaScript` runtime environment. The web server for *Human Sound Sculpture* is
 	developed on it. Install `node.js` with
@@ -58,61 +58,13 @@ All commands assume the `Raspberry Pi OS`. They should work on every `Debian` ba
 	sudo apt-get install nodejs
 	```
 
-5. [`SuperCollider`](https://supercollider.github.io/) (version `3.10.0`)
-
-	`SuperCollider` is an audio programming language. Follow this
-	[raspberry-installation](https://github.com/supercollider/supercollider/blob/develop/README_RASPBERRY_PI.md)
-	guide to install it on `Raspberry Pi`. *Human Sound Sculpture* utilizes only the `sclang`
-	`SuperCollider` language program.
-
-	The `SimpleNumber` method `betarand` is used to calculate some probabilities. It is an extension of the class
-	found in `sc3-plugins`.  Install the plugins by following the [sc3plugin-installation](https://supercollider.github.io/sc3-plugins/) guide.
-	Alternatively, you could download only the file
-	[ProbabilityDistributions.sc](https://github.com/supercollider/sc3-plugins/blob/dd092a20cb66fc976d47ad402be601985cb8bf84/source/LoopBufUGens/sc/classes/LJP%20Classes/ProbabilityDistributions.sc)
-	inside the `SuperCollider` user extension directory. This is, usually, `~/.local/share/SuperCollider/Extensions`. You can find it by calling
-	`Platform.userExtensionDir` from within the `SuperCollider` interpreter.
-
-	The class `PGraphWalk` is a extension of the language. It can be found in the github repository [sc-tsmtzs](https://github.com/tsmtzs/sc-tsmtzs).
-	Clone the repository inside the `SuperCollider` user extension directory.
-
-6. [`mkcert`](https://github.com/FiloSottile/mkcert) (version `1.4.3`)
+6. [`openssl`](https://www.openssl.org/) (version `1.1.1n`)
 
 	The website of the piece is served on a local TLS network. You can create a TLS certificate
-	with the program `mkcert`. To install it follow the directions found in [mkcert-installation](https://github.com/FiloSottile/mkcert#installation).
-
-	Another way, although not recommended (read *use at your own risk*), to install `mkcert` is to download the binaries:
-
-	1. Find the `CPU` architecture
+	with the program `openssl`. Install it with the command
 
 	```bash
-	dpkg --print-architecture
-	```
-
-	This will, probably, print `armhf` on `Raspberry Pi 3`.
-
-	2. Change directory to `/usr/bin/`
-
-	```bash
-	cd /usr/bin
-	```
-
-	3. Direct to [mkcert pre-build binaries](https://github.com/FiloSottile/mkcert/releases) and download the
-	one that matches the output of `dpkg`. We will download the file `mkcert-v1.4.3-linux-arm`
-
-	```bash
-	sudo wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-linux-arm
-	```
-
-	4. Rename the binary file as `mkcert`
-
-	```bash
-	sudo mv mkcert-v1.4.3-linux-arm mkcert
-	```
-
-	5. Change `mkcert`'s mode
-
-	```bash
-	sudo chmod a=rx mkcert
+	sudo apt-get install openssl
 	```
 
 ## Clone the `humanSoundSculpture` repository
