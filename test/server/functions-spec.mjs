@@ -11,7 +11,7 @@ import sinon from 'sinon'
 import pkg from 'chai'
 const { expect } = pkg
 
-import child_process from 'child_process'
+import child_process from 'node:child_process'
 
 import {
   appErrorListener,
@@ -99,63 +99,6 @@ describe('Tests for listener functions.', function () {
 
       expect(webSocketServer['sendToRandomClient'].calledOnce).to.be.true
       expect(webSocketServer['sendToRandomClient'].firstArg).to.equal(JSON.stringify(msg))
-    })
-  })
-
-  describe("Function 'getWsMsgListener'.", function () {
-    let listener
-    let worker
-    let rootDir
-    let execStub
-    let exitStub
-
-    before(function () {
-      rootDir = 'test'
-    })
-
-    beforeEach(function () {
-      execStub = sinon.stub(child_process, 'exec')
-      exitStub = sinon.stub(process, 'exit')
-      worker = {
-	postMessage: sinon.fake()
-      }
-      listener = getWsMsgListener(worker, rootDir)
-    })
-
-    afterEach(() => {
-      sinon.restore()
-      execStub.reset()
-      exitStub.reset()
-    })
-
-    it("Should return a function.", function () {
-      expect(listener instanceof Function).to.be.true
-    })
-
-    it("The returned function when called should call the 'postMessage' method of the first argument of 'getWorkerMsgListener'.", function () {
-      const msg = { type: 'other' }
-      listener(JSON.stringify(msg))
-
-      expect(worker.postMessage.calledOnceWith(msg)).to.be.true
-    })
-
-    it("The returned function, if called with argument 'shutdown' should call the 'exec' method of 'child_process'.", function () {
-      listener(JSON.stringify({ type: 'shutdown' }))
-
-      expect(execStub.calledOnce).to.be.true
-
-      const args = execStub.args[0]
-      expect(args[0]).to.equal('bin/killHSS.sh')
-      expect(args[1].cwd).to.equal(rootDir)
-
-      const errorCallback = args[2]
-      expect(() => { errorCallback(1) }).to.throw()
-    })
-
-    it("The returned function, if called with argument 'shutdown' should send the message 'exit' to 'process'.", function () {
-      listener(JSON.stringify({ type: 'shutdown' }))
-
-      expect(exitStub.calledOnce).to.be.true
     })
   })
 
