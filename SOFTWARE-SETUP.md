@@ -181,7 +181,7 @@ sudo visudo
 will open an editor with the file `/etc/sudoers` loaded. If user ID is `pi`, append at the end of this file the line
 
 ```
-pi ALL=NOPASSWD: /usr/bin/systemctl poweroff,/usr/bin/systemctl reboot
+pi ALL=NOPASSWD: /usr/bin/systemctl shutdown,/usr/bin/systemctl reboot
 ```
 
 ## Putting it all together

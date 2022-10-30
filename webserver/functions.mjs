@@ -41,9 +41,9 @@ const getWsMsgListener = (worker, rootDir) => msg => {
     // Type 'sudo visudo' in a terminal. An editor will open the
     // file /etc/sudoers.
     // Append at the end of this file:
-    // <USER> ALL=NOPASSWD: /usr/bin/systemctl poweroff,/usr/bin/systemctl reboot
+    // <USER> ALL=NOPASSWD: /usr/bin/systemctl shutdown,/usr/bin/systemctl reboot
     // where <USER> is the current user.
-    exec('sudo systemctl poweroff', (err, stdout, stderr) => {
+    exec('sudo systemctl shutdown', (err, stdout, stderr) => {
       if (err) {
         throw new Error('Exec error')
       }
