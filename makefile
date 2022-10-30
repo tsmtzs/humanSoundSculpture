@@ -46,14 +46,13 @@ define replaceVars =
 envsubst < $< > $@
 endef
 
-.PHONY: all
+.PHONY : all
 
 all : webserver/origin.mjs webclient/javascript/origin.mjs systemd/10-$(WIFI_INTERFACE).network \
 	systemd/dhcpd4@.service systemd/hostapd@.service systemd/hss-web-server.service \
-	conf/dhcpd.conf conf/hostapd-$(WIFI_INTERFACE).conf certs \
-	certs/hss-key.pem certs/hss-crt.pem
+	conf/dhcpd.conf conf/hostapd-$(WIFI_INTERFACE).conf
 
-webserver/origin.mjs webclient/javascript/origin.mjs: origin-src.mjs
+webserver/origin.mjs webclient/javascript/origin.mjs : origin-src.mjs
 	@$(replaceVars)
 
 systemd/10-$(WIFI_INTERFACE).network : 10-wifi-src.network systemd
@@ -71,26 +70,25 @@ systemd/hss-web-server.service : hss-web-server-src.service systemd
 conf/dhcpd.conf : dhcpd-src.conf conf
 	@$(replaceVars)
 
-conf/hostapd-$(WIFI_INTERFACE).conf: hostapd-src.conf conf
+conf/hostapd-$(WIFI_INTERFACE).conf : hostapd-src.conf conf
 	@$(replaceVars)
 
-certs/hss-key.pem certs/hss-crt.pem &: certs
-	@mkcert -key-file $</hss-key.pem -cert-file $</hss-crt.pem localhost $(HSS_IP)
+.PHONY: createCertificates
 
-conf systemd certs:
+createCertificates : certs
+	openssl req -newkey rsa:2048 -nodes -keyout $</hss-key.pem -x509 -days 365 -out $</hss-crt.pem
+
+conf systemd certs :
 	@mkdir $@
 
-.PHONY: install installTLSCert uninstall clean
+.PHONY : install uninstall clean cleanCertificates
 
-install : installTLSCert
+install :
 	@systemServiceDir=/lib/systemd/system/; \
 	cp -i systemd/10-$(WIFI_INTERFACE).network /lib/systemd/network/; \
 	cp -i systemd/dhcpd4@.service systemd/hostapd@.service systemd/hss-web-server.service $$systemServiceDir; \
 	cp -i conf/dhcpd.conf /etc/dhcp/; \
 	cp -i conf/hostapd-$(WIFI_INTERFACE).conf /etc/hostapd/
-
-installTLSCert : certs/hss-key.pem certs/hss-crt.pem
-	@mkcert -install
 
 uninstall :
 	@systemServiceDir=/lib/systemd/system; \
@@ -98,4 +96,7 @@ uninstall :
 	$$systemServiceDir/hostapd@.service $$systemServiceDir/hss-web-server.service /etc/dhcp/dhcpd.conf \
 	/etc/hostapd/hostapd-$(WIFI_INTERFACE).conf
 clean :
-	@rm -r webserver/origin.mjs systemd conf certs webclient/javascript/origin.mjs
+	@rm -r webserver/origin.mjs systemd conf webclient/javascript/origin.mjs
+
+cleanCertificates :
+	@rm -ir certs/
