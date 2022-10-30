@@ -4,26 +4,25 @@
 // ////////////////////////////////////////////////////////////
 import { PARAMETERS } from './parameters.mjs'
 import { parentPort } from 'node:worker_threads'
-import { setTimeout } from 'node:timers'
 import { DirectedGraph } from './directedGraph.mjs'
 import { NoteWalk } from './noteWalk.mjs'
 
 // The adjacency list defines a Paley graph of order 13.
-const adjacencyList = PARAMETERS.NOTE_WALK.ADJACENCY_LIST
-      ?? [
-	[1, 3, 4, 9, 10, 12],
-	[0, 2, 4, 5, 10, 11],
-	[1, 3, 5, 6, 11, 12],
-	[0, 2, 4, 6, 7, 12],
-	[0, 1, 3, 5, 7, 8],
-	[1, 2, 4, 6, 8, 9],
-	[2, 3, 5, 7, 9, 10],
-	[3, 4, 6, 8, 10, 11],
-	[4, 5, 7, 9, 11, 12],
-	[0, 5, 6, 8, 10, 12],
-	[0, 1, 6, 7, 9, 11],
-	[1, 2, 7, 8, 10, 12],
-	[0, 2, 3, 8, 9, 11]
+const adjacencyList = PARAMETERS.NOTE_WALK.ADJACENCY_LIST ??
+      [
+        [1, 3, 4, 9, 10, 12],
+        [0, 2, 4, 5, 10, 11],
+        [1, 3, 5, 6, 11, 12],
+        [0, 2, 4, 6, 7, 12],
+        [0, 1, 3, 5, 7, 8],
+        [1, 2, 4, 6, 8, 9],
+        [2, 3, 5, 7, 9, 10],
+        [3, 4, 6, 8, 10, 11],
+        [4, 5, 7, 9, 11, 12],
+        [0, 5, 6, 8, 10, 12],
+        [0, 1, 6, 7, 9, 11],
+        [1, 2, 7, 8, 10, 12],
+        [0, 2, 3, 8, 9, 11]
       ]
 const graph = new DirectedGraph(adjacencyList.length)
 
@@ -52,7 +51,7 @@ const amps = PARAMETERS.NOTE_WALK.AMPS ?? [0.35, 0.45, 0.35, 0.5, 0.35, 0.75, 0.
 const durs = PARAMETERS.NOTE_WALK.DURS ?? [1, 0.5, 1, 2 / 3, 1, 0.75, 1, 5 / 6, 1, 0.75, 1, 2 / 3]
 const ampMultiplier = PARAMETERS.NOTE_WALK.AMP_MULTIPLIER ?? 1.0
 const durMultiplier = PARAMETERS.NOTE_WALK.DUR_MULTIPLIER ?? 1.0
-const delta = PARAMETERS.NOTE_WALK.DELTA ?? (dur => dur * ( 1 + Math.random()) * 0.5)
+const delta = PARAMETERS.NOTE_WALK.DELTA ?? (dur => dur * (1 + Math.random()) * 0.5)
 const startVertex = PARAMETERS.NOTE_WALK.START_VERTEX ?? 1
 const steps = PARAMETERS.NOTE_WALK.STEPS ?? Infinity
 const noteWalk = new NoteWalk({ freqs, amps, durs, ampMultiplier, durMultiplier, delta, port: parentPort, graph, startVertex, steps })

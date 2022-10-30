@@ -116,10 +116,9 @@ describe('Tests for functions.mjs', function () {
     it("The returned function when called with the 'message' argument, should call a property of the argument 'msgHandler' of 'getWsMsgListener'.", function () {
       const arg1 = 1
       const arg2 = 2
-      const msg = JSON.stringify({
-	type: 'test',
-	data: [arg1, arg2]
-      })
+      const msg = {
+	data: JSON.stringify({ type: 'test', data: [arg1, arg2] })
+      }
       listener(msg)
       expect(msgHandler['test'].calledOnce).to.be.true
       expect(msgHandler['test'].firstArg).to.equal(arg1)

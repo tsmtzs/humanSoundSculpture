@@ -111,8 +111,8 @@ class WaveShaper {
       this.#gain.disconnect()
       this.#index.disconnect()
     },
-	       time * 1000
-	      )
+    time * 1000
+    )
   }
 
   #toggleIsPlaying () {

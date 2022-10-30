@@ -16,7 +16,7 @@ class NoteWalk {
   #graph
   #port
 
-  constructor ({freqs, amps, durs, ampMultiplier, durMultiplier, delta, port, graph, startVertex, steps } = {}) {
+  constructor ({ freqs, amps, durs, ampMultiplier, durMultiplier, delta, port, graph, startVertex, steps } = {}) {
     if (port === undefined || graph === undefined) {
       throw new Error("You must pass a MessagePort with the key 'port', and a DirectedGraph with the key 'graph'.")
     }
@@ -39,7 +39,7 @@ class NoteWalk {
     if (this.#isNotPlaying) {
       const start = startVertex ?? this.startVertex
       const length = steps ?? this.steps
-      const walk = this.#graph.randomWalk(start, steps)
+      const walk = this.#graph.randomWalk(start, length)
 
       this.#isNotPlaying = false
       this.#startRandomWalk(walk)
@@ -53,10 +53,10 @@ class NoteWalk {
       const dur = this.durs[vertex - 1] * this.durMultiplier
 
       if (vertex !== 0) {
-	const freq = this.freqs[vertex - 1][Math.floor(Math.random() * 3)]
-	const amp = this.amps[vertex - 1] * this.ampMultiplier
+        const freq = this.freqs[vertex - 1][Math.floor(Math.random() * 3)]
+        const amp = this.amps[vertex - 1] * this.ampMultiplier
 
-	this.#port.postMessage({ type: 'note', data: [freq, amp, dur] })
+        this.#port.postMessage({ type: 'note', data: [freq, amp, dur] })
       }
 
       await this.#wait(this.delta(dur) * 1000)

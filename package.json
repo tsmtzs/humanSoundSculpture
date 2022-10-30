@@ -5,16 +5,16 @@
   "scripts": {
     "test-client": "c8 mocha test/client/*.mjs",
     "test-server": "c8 mocha test/server/*-spec.mjs",
-    "lint": "standard webserver/*.js public/javascript/*",
+    "lint": "standard webserver/*.mjs webclient/javascript/*.mjs",
     "create-cert": "openssl req -newkey rsa:2048 -nodes -keyout hss-key.pem -x509 -days 365 -out hss-crt.pem",
     "start-dev": "node webserver/server.mjs"
   },
   "author": "Tassos Tsesmetzis",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.1",
-    "minimist": "^1.2.6",
-    "ws": "^8.8.1"
+    "express": "^4.18.2",
+    "minimist": "^1.2.7",
+    "ws": "^8.10.0"
   },
   "repository": {
     "type": "git",
@@ -24,8 +24,8 @@
     "c8": "^7.12.0",
     "chai": "^4.3.6",
     "chai-http": "^4.3.0",
-    "mocha": "^10.0.0",
-    "sinon": "^14.0.0",
-    "standard": "^14.3.4"
+    "mocha": "^10.1.0",
+    "sinon": "^14.0.1",
+    "standard": "^17.0.0"
   }
 }

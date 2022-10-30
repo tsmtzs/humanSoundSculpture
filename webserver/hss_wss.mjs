@@ -18,7 +18,7 @@ class HSS_WSS extends WebSocketServer {
   // Send data (a note) to a random client.
   sendToRandomClient (data) {
     const validClients = Array.from(this.clients)
-	  .filter(client => client.readyState === WebSocket.OPEN)
+      .filter(client => client.readyState === WebSocket.OPEN)
     const size = validClients.length
 
     const client = validClients[Math.floor(Math.random() * size)]
