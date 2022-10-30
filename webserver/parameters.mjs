@@ -5,7 +5,7 @@
 import { ORIGIN } from './origin.mjs'
 
 const PARAMETERS = {
-  IP: ORIGIN.IP ?? "192.168.10.6",
+  IP: ORIGIN.IP ?? '192.168.10.6',
   WEB_SERVER_PORT: ORIGIN.PORT ?? 3000,
   NOTE_WALK: {
     ADJACENCY_LIST: [
@@ -44,7 +44,7 @@ const PARAMETERS = {
     DURS: [1, 0.5, 1, 2 / 3, 1, 0.75, 1, 5 / 6, 1, 0.75, 1, 2 / 3],
     AMP_MULTIPLIER: 1.0,
     DUR_MULTIPLIER: 1.0,
-    DELTA: (dur => dur * (1 + Math.random()) * 0.5)
+    DELTA: dur => dur * (1 + Math.random()) * 0.5
   }
 }
 

@@ -30,7 +30,7 @@ class DirectedGraph {
     this.#addToEdgeNo(1)
   }
 
-  #throwWhenArgumentsInvalid(arg1, arg2) {
+  #throwWhenArgumentsInvalid (arg1, arg2) {
     if (this.#argumentsUndefined(arg1, arg2)) {
       throw new Error('This method accepts two arguments.')
     }
@@ -40,7 +40,7 @@ class DirectedGraph {
     }
   }
 
-  #argumentsUndefined(...args) {
+  #argumentsUndefined (...args) {
     return args.some(arg => arg === undefined)
   }
 
@@ -48,7 +48,7 @@ class DirectedGraph {
     return args.some(arg => this.#isNotNoNegativeInteger(arg) || (arg >= this.#vertices))
   }
 
-  #isNotNoNegativeInteger(aNumber) {
+  #isNotNoNegativeInteger (aNumber) {
     return aNumber === undefined || aNumber < 0 || (aNumber - Math.floor(aNumber) > 0)
   }
 
@@ -86,7 +86,7 @@ class DirectedGraph {
     return this.adj(startVertex).includes(endVertex)
   }
 
-  *randomWalk (startVertex = 0, steps = 10) {
+  * randomWalk (startVertex = 0, steps = 10) {
     let currentStep = 0
     let currentVertex = startVertex
 
