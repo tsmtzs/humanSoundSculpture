@@ -57,8 +57,8 @@ paleyStream = PGraphWalk( transitionProbs, (..12), startVertex ).asStream;
 	Pbind(
 		\instrument, 'sync2',
 		\paley, Pfunc { paleyStream.next },
-		\note, Pfunc {| ev |
-			~notes[ ev.paley ]
+		\midinote, Pfunc {| ev |
+			(ev.paley == 0).if({ Rest }, { 72 + ~notes[ev.paley] + [0, 12].choose })
 		},
 		\dur, Pfunc {| ev |
 			~durs[ ev.paley ] * ~durMul;
@@ -66,33 +66,20 @@ paleyStream = PGraphWalk( transitionProbs, (..12), startVertex ).asStream;
 		\amp, Pfunc {| ev |
 			~amps[ ev.paley ]  * ~ampMul
 		},
-		\pan, Pfunc {1.0.rand2},
-		\octave, Pfunc {| ev |
-			var vertex, args;
-			vertex = ev.paley / 12;
-			args = [ ev.server, ev.pan ];
-			~minOctave.( currentEnvironment, *args )
-			.betarand(
-				~maxOctave.( currentEnvironment, *args ),
-				prob1.map( vertex ),
-				prob2.map( vertex )
-			).floor
-		},
+		\pan, Pfunc { 1.0.rand2 },
 		\delta, Pkey(\dur) * Pfunc { |ev| ~deltaMul.value.debug("DeltaMul inside Penvir") }
+		// \legato, Pfunc { |ev| ~deltaMul.value.debug("legato inside Penvir") }
 	)
 )
 )
 
 ~pattern.play
 
-~hss.push;
-~deltaMul = { [ 0.1.rrand(0.4), 0.65.rrand(0.8), 0.8.rrand(1.05) ].wchoose([0.25, 0.5, 0.25]) };
-~deltaMul = {0.1.rrand(0.2)};
-~ampMul = ~amps.maxItem.reciprocal * 0.9;
-~durMul = 22;
-~minOctave = 6;
-~maxOctave = 7;
-currentEnvironment.pop;
+~hss.amps = [0.0, 0.35, 0.45, 0.35, 0.5, 0.35, 0.75, 0.35, 1, 0.35, 0.75, 0.35, 0.5] * 0.25;
+~hss.deltaMul = { [ 0.1.rrand(0.3), 0.5.rrand(0.7), 0.8.rrand(1.0) ].wchoose([0.3, 0.5, 0.2]) };
+~hss.deltaMul = {0.1.rrand(0.2)};
+~hss.ampMul = ~amps.maxItem.reciprocal * 0.9;
+~hss.durMul = 26;
 
 // Record
 (
