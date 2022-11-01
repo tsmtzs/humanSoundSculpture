@@ -1,0 +1,30 @@
+# ##################################################
+#		Human Sound Sculpture
+#
+# A systemd user service file for starting the web server
+# of the piece.
+# Save this file under ~/.config/systemd/user/
+#		see: man systemd.unit for paths
+#
+# Start the service with
+#		systemctl --user start hss-web-server.service
+# ##################################################
+
+[Unit]
+Description=Human Sound Sculpture - Web server
+Documentation=file:${HSS_DIR}/README.md
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=${NODE_PATH} ${HSS_DIR}/webserver/server.mjs --root-dir ${HSS_DIR}
+Restart=on-failure
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ProtectKernelTunables=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=default.target

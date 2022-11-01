@@ -6,41 +6,32 @@
 % Convert the output pdf file to png:
 % pdftoppm -f <first-page> -l <last-page> -r 720 -png hssIcon.pdf hssIcon
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\documentclass[12pt,a4page]{article}
-\usepackage{fontspec}
-\usepackage{xunicode}
-\usepackage{xltxtra}
-\usepackage{xgreek}
+\documentclass[tikz]{standalone}
 \usepackage{xcolor}
 
-\setmainfont[Mapping=tex-text]{Linux Biolinum O}
-
-% Package geometry. Set text area dimensions.
-\usepackage[paperwidth=3.5cm,paperheight=3.5cm,margin={0.1cm,0.1cm},ignoreall,centering]{geometry}
-
-\usepackage{tikz}
 \usetikzlibrary{calc}
 
 \pagestyle{empty}
 
 % Background color
 \definecolor{background}{HTML}{293F50}
+\definecolor{darkgray}{HTML}{A9A9A9}
 
 % Tikz background rectangle side length
-\def\outerSide{3.3}
+\def\outerSide{4.05cm}
 % Center rectangle side length
-\def\centerDeviation{1}
+\def\centerDeviation{0.95cm}
 
 \begin{document}
 \pagecolor{background}
 \centering
 \begin{tikzpicture}
-  \coordinate (center) at ($0.5*(\paperwidth,\paperheight)$);
+  \coordinate (center) at ($0.5*(\outerSide,\outerSide)$);
   \coordinate (deviation) at (\centerDeviation,\centerDeviation);
   % Background.
   \fill [color=background] (0,0) rectangle (\outerSide,\outerSide);
   %
-  \fill [color=gray!35, rounded corners=2.4cm]
+  \fill [color=darkgray, rounded corners=2.4cm]
   ($(center) - (deviation)$) rectangle ($(center) + (deviation)$);
 \end{tikzpicture}
 \end{document}

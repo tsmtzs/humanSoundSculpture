@@ -9,6 +9,43 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 ### Removed
 
+## [4.0.0] - 2022-11-01
+### Added
+- Files `webclient/javascript/common.mjs`, `webclient/javascript/conductor.mjs`, `webclient/javascript/functions.mjs`, `webclient/javascript/index.mjs`, `webclient/javascript/parameters.mjs`, `webclient/javascript/player.mjs`.
+	A redesign of `JavaScript` code from the deleted `hss.mjs` file.
+- File `webclient/javascript/sound.mjs`.
+	Class `WaveShaper` is a re-write of the class `Sound` from the deleted `src/public/javascript/sound.mjs` file.
+- File `src/web/origin-src.mjs`.
+	This is used by `make` to generate `webserver/origin.mjs` and `webclient/origin.mjs`. It defines an object with properties `IP` and `PORT`.
+- File `webclient/views/offline.html`.
+	This page is served by service worker when the client is offline.
+- File `webserver/app.mjs`.
+	`Express` app separated from web server.
+- Files `webserver/functions.mjs`, `webserver/parameters.mjs`.
+- Files `webserver/noteWalk.mjs`, `webserver/randomWalkOnGraph.mjs`, `webserver/directedGraph.mjs`.
+	These files are used in a `node` worker thread. They define and handle a random walk on a graph that produces the note sequence. They replace the `SuperCollider` event stream which was responsible for the generation of sound events.
+### Changed
+- File `src/conf/dhcpd.conf` renamed as `src/conf/dhcpd-src.conf`.
+	Fixed address for the host `hssComputer` changed to `${HSS_IP}`.
+- FIle `src/conf/hostapd-wlan0.conf` renamed as `src/conf/hostapd-src.conf`.
+- File `src/systemd/10-wlan0.network` renamed as `src/systemd/10-wifi-src.network`.
+- File `src/systemd/dhcpd4@.service` renamed as `src/systemd/dhcpd4@-src.service`.
+- File `src/systemd/hostapd@.service` renamed as `src/systemd/hostapd@-src.service`.
+	The `hostapd` process reads the configuration file from `/etc/hostapd/`.
+- File `src/systemd/hss-web-server.service` renamed as `src/systemd/hss-web-server-src.service`.
+- Files `src/public/hss.webmanifest`, `src/public/icons/`, `src/public/styles.css`, `src/public/views/`, `src/public/sw.js` moved under `webclient`.
+	Buttons in pages `conductor.html` and `player.mjs` arranged using the `flexbox` layout model. Code refinements.
+- File `tex/hssIcon.tex`.
+	The `standalone` document class is used. Code refinements.
+- File `makefile`.
+	Largely re-written.
+### Removed
+- File `bin/killHSS.sh`.
+- Directory `src/public/javascript`.
+- File `src/systemd/hss-supercollider.service`.
+- Files `supercollider/HelpSource/`, `supercollider/hssEvent.scd`, `supercollider/humanSoundSculpture.scd`.
+	`SuperCollider` is not a dependence for the piece.
+
 ## [3.1.1] - 2021-08-11
 ### Changed
 - `Node.js` package `node-osc` upgraded to version `5.2.3`.

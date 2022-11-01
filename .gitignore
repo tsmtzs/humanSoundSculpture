@@ -1,0 +1,21 @@
+# node
+.nyc_output/
+coverage/
+node_modules/
+webserver/origin.mjs
+webclient/javascript/origin.mjs
+
+# Local directories
+conf/
+systemd/
+
+# TLS
+certs/
+
+# XeLaTeX
+**/*.aux
+**/*.log
+**/*.pdf
+
+#
+**/*.*~
