@@ -50,11 +50,12 @@ class NoteWalk {
     for (const vertex of walk) {
       if (this.#isNotPlaying || vertex === -1) return
 
-      const dur = this.durs[vertex - 1] * this.durMultiplier
+      const dur = this.durs[vertex] * this.durMultiplier
 
-      if (vertex !== 0) {
-        const freq = this.freqs[vertex - 1][Math.floor(Math.random() * 3)]
-        const amp = this.amps[vertex - 1] * this.ampMultiplier
+      if (vertex !== 12) {
+	const octaves = this.freqs[vertex]
+        const freq = octaves[Math.floor(Math.random() * octaves.length)]
+        const amp = this.amps[vertex] * this.ampMultiplier
 
         this.#port.postMessage({ type: 'note', data: [freq, amp, dur] })
       }
