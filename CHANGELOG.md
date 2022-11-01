@@ -9,7 +9,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 ### Removed
 
-## [4.0.0] - 2022-10-31
+## [4.0.0] - 2022-11-01
 ### Added
 - Files `webclient/javascript/common.mjs`, `webclient/javascript/conductor.mjs`, `webclient/javascript/functions.mjs`, `webclient/javascript/index.mjs`, `webclient/javascript/parameters.mjs`, `webclient/javascript/player.mjs`.
 	A redesign of `JavaScript` code from the deleted `hss.mjs` file.
