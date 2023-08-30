@@ -11,7 +11,7 @@ VPATH = src/conf:src/systemd:src/web
 #	userHome := $(shell echo $$HOME) WON'T WORK
 userHome := /home/pi
 
-export HSS_IP := 192.168.10.6
+export HSS_IP := 192.168.10.2
 export HSS_HTTP_PORT := 3000
 export WIFI_NAME := pi
 export WIFI_COUNTRYCODE := GR
