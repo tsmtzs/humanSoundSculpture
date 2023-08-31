@@ -9,6 +9,33 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 ### Removed
 
+## [4.1.0] - 2023-08-31
+### Changed
+	- File `src/public/styles.css`:
+		- Selector `:root`:
+			- Declaration for `--normal-font-size` removed.
+			- Declaration `--font-color` added.
+		- `html`:
+			- Declarations for `font-family`, `height` added.
+		- `body`:
+			- Declarations for `height`, `margin`, `padding` added.
+			- `color` value changed.
+		- `#flex-container`:
+			- Value of `height` changed.
+		- `button`:
+			- Values of `color`, `border` changed.
+			- Declarations for `height`, `max-height`, `min-width`, `max-width`, `font-size` added.
+		- `section`:
+			- `max-width` changed.
+			- `margin-*` replaced by `margin`.
+		- Rulesets for `section h2 + p`, `a:hover, a:active`, `@media` added.
+		- `section p`:
+			- `margin-*` replaced by `margin`.
+	- Files `webclient/views/*.html`:
+            - A `meta` element width `name=description` added to `head`.
+            - A `header` element added to `body` with the `h1` element as a child.
+			- Types corrected in `webclient/views/description.html`.
+
 ## [4.0.0] - 2022-11-01
 ### Added
 - Files `webclient/javascript/common.mjs`, `webclient/javascript/conductor.mjs`, `webclient/javascript/functions.mjs`, `webclient/javascript/index.mjs`, `webclient/javascript/parameters.mjs`, `webclient/javascript/player.mjs`.
