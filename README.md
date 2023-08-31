@@ -8,7 +8,7 @@
 	   People with wooden faces. Moving towards the same point.
 	   One behind the other. Close enough or far apart.
 
-	   Time stands still.
+	   Time at a standstill.
 ```
 
 A group of people arranged in a line is moving towards a point. The spectator faces a snapshot of this proccess. The ambient soundscape is part of the piece. Along with it, a random endless sequence of notes unfolds. This sequence is distributed over the smartphone devices of the performers.
@@ -20,7 +20,7 @@ The performance simply starts and lasts as long as the performers have decided. 
 *Human Sound Sculpture*, despite it's static form, deals with motion. The relentless motion of *Time*. Which interwines with the footsteps of passers-by. With the roar of the city. With the thoughts, dreams, memories and aspirations of the people that stand frozen in the row.
 
 ## Technicalities
-Each performer of *Human Sound Sculpture* carries a smartphone. This device is used as a loudspeaker and should be as less visible as possible. It is connected to a local WIFI TLS network. Using the browser, each performer loads the website of the piece. She stays connected until performance ends. The steps of connecting to the network and loading the website must be done before performance starts and is not part of the piece.
+Each performer of *Human Sound Sculpture* carries a smartphone. This device is used as a loudspeaker and should be as less visible as possible. It is connected to a local WIFI TLS network. Using the browser, each performer loads the website of the piece. She stays connected until performance ends. The steps of connecting to the network and loading the website must be done before performance starts and are not part of the piece.
 
 The website is not accessible throught the `Internet`. Rather, it is served on a local network. The web server process runs on a dedicated computer. A portable solution, like a `Rasberry Pi` with a USB power bank, is preferred since it can fit inside a bag or a pocket. This computer should host a `Linux` environment with the `systemd` service manager. Also, utilizes `hostapd` to enable the network interface card to act as an access point.
 

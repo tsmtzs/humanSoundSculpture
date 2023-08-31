@@ -39,7 +39,7 @@
 	sudo apt-get install isc-dhcp-server
 	```
 
-4. [`node.js`](https://nodejs.org/) (version `16.18.0`)
+4. [`node.js`](https://nodejs.org/) (version `20.5.0`)
 
 	`node.js` is a `JavaScript` runtime environment. The web server for *Human Sound Sculpture* is
 	developed on it. Install `node.js` with
@@ -48,7 +48,7 @@
 	sudo apt-get install nodejs
 	```
 
-6. [`openssl`](https://www.openssl.org/) (version `1.1.1n`)
+6. [`openssl`](https://www.openssl.org/) (version `3.1.2`)
 
 	The website of the piece is served on a local TLS network. You can create a TLS certificate with the program `openssl`. Install it with the command
 
@@ -77,7 +77,7 @@ First, change directory to `humanSoundSculpture`
 cd humanSoundSculpture
 ```
 
-This project uses the packages [`express`](https://expressjs.com/) (version `4.18.2`), [`minimist`](https://github.com/minimistjs/minimist) and [`ws`](https://github.com/websockets/ws) (version `8.10.0`). Install the required packages with
+This project uses the packages [`express`](https://expressjs.com/) (version `4.18.2`), [`minimist`](https://github.com/minimistjs/minimist) (version `1.2.8`) and [`ws`](https://github.com/websockets/ws) (version `8.13.0`). Install the required packages with
 
 ```bash
 npm install
