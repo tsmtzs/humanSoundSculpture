@@ -1,5 +1,5 @@
 # Preparation
-Performers of *Human Sound Sculpture* use a smartphone device to connect to a local WIFI TLS network. By using the browser they direct to the website of the piece. Recent versions of the most well-known browsers should work. In general, the website should work on every browser that supports the `WebSocket` protocol and the `Web Audio API`.
+Performers of *Human Sound Sculpture* use a smartphone device to connect to a local WIFI TLS network. By using the browser they direct to the website of the piece. Recent versions of the most well-known browsers should work fine. In general, the website should work on every browser that supports the `WebSocket` protocol and the `Web Audio API`.
 
 Performers direct to the website by typing the `IP` address and the `HTTP` port inside the address bar. So, if the `IP` is `192.168.100.1` and the port is `3000`, they should type `https://192.168.100.1:3000`. Performers should be informed that the browser will show the warning
 ```
