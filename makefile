@@ -1,16 +1,26 @@
 # ####################################################################################################
 #	Human Sound Sculpture
 # ####################################################################################################
-SHELL = /bin/sh
+VPATH = src/conf:src/systemd:src/web
 
-export HSS_IP = 192.168.1.65
-export HSS_HTTP_PORT = 3000
+# userHome should be the value of user's $HOME.
+# It is used in the target 'install' to copy
+# the web server user service file to ~/.config/systemd/user.
+# Since this target is build with superuser privileges,
+# $HOME will be /. Hence, defining
+#	userHome := $(shell echo $$HOME) WON'T WORK
+userHome := /home/pi
+
+export HSS_IP := 192.168.10.2
+export HSS_HTTP_PORT := 3000
+export WIFI_NAME := pi
+export WIFI_COUNTRYCODE := GR
 
 # Find the name of the wifi interface
 # with the shell command
 #     ip link show
 # Normaly, the name should start with a 'w'.
-export WIFI_INTERFACE = wlan0
+export WIFI_INTERFACE := $(shell ip link show | grep -o -e '\<w[[:alnum:]]\+')
 
 # The mac address of the wifi interface, can
 # be found with the shell command
@@ -20,107 +30,72 @@ export WIFI_INTERFACE = wlan0
 # will print the MAC address on the second line.
 # It is a series of hexadecimal bytes
 # separated by colons just after `link/ether`.
-export WIFI_MACADDRESS = b8:27:eb:1e:2c:8d
-
-export WIFI_NAME = pi
-export WIFI_COUNTRYCODE = GR
-
-# userHome should be the value of user's $HOME.
-# It is used in the target 'install' to copy
-# the SuperCollider user service file to ~/.config/systemd/user.
-# Since this target is build with superuser privileges,
-# $HOME will be /. Hence, defining
-#	userHome := $(shell echo $$HOME) WAN'T WORK
-userHome := /home/pi
+export WIFI_MACADDRESS := $(shell ip addr show | grep -A 10 -e '\<w[[:alnum:]]' | grep -o '\<link/ether \([[:alnum:]]\{2\}:\)\{5\}[[:alnum:]]\{2\}' | cut -d ' ' -f 2)
 
 export HSS_DIR := $(CURDIR)
 
 # The three leftmost bytes of the IP (assuming an IPv4 24 bit netmask).
 export HSS_NETWORK := $(shell expr $(HSS_IP) : '\(\([0-9]\{1,3\}\.\)\{3\}\)')
 
-export SCLANG_PATH := $(shell which sclang)
 export NODE_PATH := $(shell which node)
 export DHCP_PATH := $(shell which dhcpd)
 export HOSTAPD_PATH := $(shell which hostapd)
 
-# ####################################################################################################
-define copyAndSetVars =
-envsubst < $(1) > $(CURDIR)/$(2)/$$(basename $(1));
+define replaceVars =
+envsubst < $< > $@
 endef
 
-define mkdirAndCopySetVars =
-mkdir $(CURDIR)/$(1); \
-dirName=$(1); \
-for file in $(CURDIR)/src/$(1)/*; do \
- $(call copyAndSetVars,$$file,$$dirName) \
-done
-endef
+.PHONY : all
 
-define renameIfNotEqual =
-if [ $(1) != $(2) ]; then \
-  mv $(1) $(2); \
-fi
-endef
+all : webserver/origin.mjs webclient/javascript/origin.mjs systemd/10-$(WIFI_INTERFACE).network \
+	systemd/dhcpd4@.service systemd/hostapd@.service systemd/hss-web-server.service \
+	conf/dhcpd.conf conf/hostapd-$(WIFI_INTERFACE).conf
 
-.PHONY: all
+webserver/origin.mjs webclient/javascript/origin.mjs : origin-src.mjs
+	@$(replaceVars)
 
-all : systemd/10-$(WIFI_INTERFACE).network conf/hostapd-$(WIFI_INTERFACE).conf \
-	webserver public certs/hss-key.pem
+systemd/10-$(WIFI_INTERFACE).network : 10-wifi-src.network systemd
+	@$(replaceVars)
 
-systemd/10-$(WIFI_INTERFACE).network : systemd
-	@$(call renameIfNotEqual,$(wildcard $</10*.network),$@)
+systemd/dhcpd4@.service : dhcpd4@-src.service systemd
+	@$(replaceVars)
 
-conf/hostapd-$(WIFI_INTERFACE).conf : conf
-	@$(call renameIfNotEqual,$(wildcard $</hostapd-*.conf),$@)
+systemd/hostapd@.service : hostapd@-src.service systemd
+	@$(replaceVars)
 
-webserver : $(CURDIR)/src/webserver/*.js
-	@$(call mkdirAndCopySetVars,webserver)
+systemd/hss-web-server.service : hss-web-server-src.service systemd
+	@$(replaceVars)
 
-systemd : $(CURDIR)/src/systemd/*
-	@$(call mkdirAndCopySetVars,systemd)
+conf/dhcpd.conf : dhcpd-src.conf conf
+	@$(replaceVars)
 
-conf : $(CURDIR)/src/conf/*
-	@$(call mkdirAndCopySetVars,conf)
+conf/hostapd-$(WIFI_INTERFACE).conf : hostapd-src.conf conf
+	@$(replaceVars)
 
-public : $(CURDIR)/src/public/*
-	@mkdir public; \
-	for file in $(CURDIR)/src/public/*; do \
-	  name=$$(basename $$file); \
-	  if [ -d $$file ]; then \
-	    $(call mkdirAndCopySetVars,public/$$name); \
-	  else \
-	    $(call copyAndSetVars,$$file,public) \
-	  fi; \
-	done
+.PHONY: createCertificates
 
-certs :
-	@mkdir certs
+createCertificates : certs
+	openssl req -newkey rsa:2048 -nodes -keyout $</hss-key.pem -x509 -days 365 -out $</hss-crt.pem
 
-certs/hss-key.pem certs/hss-crt.pem &: certs
-	@mkcert -key-file $^/hss-key.pem -cert-file $^/hss-crt.pem localhost $(HSS_IP)
+conf systemd certs :
+	@mkdir $@
 
-.PHONY: install installTLSCert uninstall clean
+.PHONY : install uninstall clean cleanCertificates
 
-install : all installTLSCert
-	@systemdPath=$(CURDIR)/systemd; \
-	systemServiceDir=/lib/systemd/system/; \
-	cp -i $$systemdPath/10-$(WIFI_INTERFACE).network /lib/systemd/network/; \
-	cp -i $$systemdPath/dhcpd4@.service $$systemServiceDir; \
-	cp -i $$systemdPath/hostapd@.service $$systemServiceDir; \
-	cp -i $$systemdPath/hss-web-server.service $$systemServiceDir; \
-	cp $(CURDIR)/conf/dhcpd.conf /etc/dhcp/; \
-	cp -i --preserve=all $$systemdPath/hss-supercollider.service $(userHome)/.config/systemd/user/;
-
-installTLSCert : certs/hss-key.pem certs/hss-crt.pem
-	@mkcert -install; \
-	cp $$(mkcert -CAROOT)/rootCA.pem public/
+install :
+	@systemServiceDir=/lib/systemd/system/; \
+	cp -i systemd/10-$(WIFI_INTERFACE).network /lib/systemd/network/; \
+	cp -i systemd/dhcpd4@.service systemd/hostapd@.service systemd/hss-web-server.service $$systemServiceDir; \
+	cp -i conf/dhcpd.conf /etc/dhcp/; \
+	cp -i conf/hostapd-$(WIFI_INTERFACE).conf /etc/hostapd/
 
 uninstall :
 	@systemServiceDir=/lib/systemd/system; \
-	rm -i /lib/systemd/network/10-$(WIFI_INTERFACE).network; \
-	rm -i $$systemServiceDir/{dhcpd4@.service,hostapd@.service,hss-web-server}.service; \
-	rm /etc/dhcp/dhcpd-hss.conf; \
-	rm -r $(userHome)/.config/systemd/user/hss-supercollider.service
-
+	rm -i /lib/systemd/network/10-$(WIFI_INTERFACE).network $$systemServiceDir/dhcpd4@.service \
+	$$systemServiceDir/hostapd@.service $$systemServiceDir/hss-web-server.service /etc/dhcp/dhcpd.conf \
+	/etc/hostapd/hostapd-$(WIFI_INTERFACE).conf
 clean :
-	rm -r webserver systemd conf public certs
+	@rm -r webserver/origin.mjs systemd conf webclient/javascript/origin.mjs
+
+cleanCertificates :
+	@rm -ir certs/
