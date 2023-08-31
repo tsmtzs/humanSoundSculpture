@@ -53,7 +53,7 @@ class NoteWalk {
       const dur = this.durs[vertex] * this.durMultiplier
 
       if (vertex !== 12) {
-	const octaves = this.freqs[vertex]
+        const octaves = this.freqs[vertex]
         const freq = octaves[Math.floor(Math.random() * octaves.length)]
         const amp = this.amps[vertex] * this.ampMultiplier
 

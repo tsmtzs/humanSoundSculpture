@@ -36,7 +36,7 @@ const webServerPort = argv.port ?? PARAMETERS.WEB_SERVER_PORT ?? 8080
 const workerURL = new URL('./randomWalkOnGraph.mjs', import.meta.url)
 
 const server = https.createServer(credentials, app)
-const wss = new HSS_WSS({ server: server })
+const wss = new HSS_WSS({ server })
 
 server.listen({ port: webServerPort, host: ip }, () => { console.log('Server listening on port: ', webServerPort) })
 
